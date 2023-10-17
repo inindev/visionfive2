@@ -1,0 +1,14 @@
+*._*
+.DS_Store
+/distfiles
+/dtb/linux-*
+/dtb/*.dt?
+/dtb/*.dtsi
+/uboot/opensbi
+/uboot/u-boot
+/uboot/u-boot-spl.bin.normal.out
+/uboot/u-boot*.itb
+/ubuntu/cache*
+/ubuntu/rootfs
+/ubuntu/*.img
+/ubuntu/*.img.xz
