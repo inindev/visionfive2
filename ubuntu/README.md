@@ -25,10 +25,9 @@ sync
 **multiple build options are available by editing make_ubuntu_img.sh**
 ```
 media='mmc_4g.img' # or block device '/dev/sdX'
-deb_dist='mantic'
+ubu_dist='mantic'
 hostname='visionfive2'
 acct_uid='ubuntu'
 acct_pass='ubuntu'
-disable_ipv6=true
-extra_pkgs='curl, pciutils, sudo, u-boot-tools, unzip, wget, xxd, xz-utils, zip, zstd'
+extra_pkgs='curl, pciutils, nano, unzip, wget, xxd, xz-utils, zip, zstd'
 ```
