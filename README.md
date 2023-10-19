@@ -44,6 +44,7 @@ sudo sh -c 'xzcat visionfive2_mantic-v23.10.img.xz > /dev/sdX && sync'
 ```
 
 #### when the micro sd has finished imaging, eject and use it to boot the visionfive2 to finish setup
+#### Note the [boot switch configuration setting](https://github.com/inindev/visionfive2/blob/main/misc/vf2_mmc.jpg) needed to select mmc boot.
 
 <br/>
 
