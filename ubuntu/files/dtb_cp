@@ -9,6 +9,7 @@
 version="$1"
 source1='/boot/jh7110-starfive-visionfive-2-v1.3b.dtb'
 source2="/usr/lib/firmware/${version}/device-tree/starfive/jh7110-starfive-visionfive-2-v1.3b.dtb"
+source3="/usr/lib/linux-image-${version}/starfive/jh7110-starfive-visionfive-2-v1.3b.dtb"
 target="/boot/jh7110-starfive-visionfive-2-v1.3b.dtb-${version}"
 
 # passing the kernel version is required
@@ -23,6 +24,9 @@ if [ -e "${source1}" ]; then
 elif [ -e "${source2}" ]; then
 	echo "I: dtb_cp: installing ${source2} to ${target}"
 	install -vm 644 "${source2}" "${target}"
+elif [ -e "${source3}" ]; then
+	echo "I: dtb_cp: installing ${source3} to ${target}"
+	install -vm 644 "${source3}" "${target}"
 else
 	echo >&2 "E: dtb_cp: neither ${source1} nor ${source2} found"
 	exit 3
