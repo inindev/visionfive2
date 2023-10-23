@@ -34,8 +34,10 @@ main() {
 
     local sfpath="linux-$lv/arch/riscv/boot/dts/starfive"
     if ! [ -d "linux-$lv" ]; then
+        print_hdr "unpacking linux $lv"
         tar xavf "$lf" "linux-$lv/include/dt-bindings" "$sfpath"
 
+        print_hdr 'applying patches'
         local patch patches="$(find patches -maxdepth 1 -name '*.patch' 2>/dev/null | sort)"
         for patch in $patches; do
             patch -p1 -d "linux-$lv" -i "../$patch"
@@ -53,6 +55,7 @@ main() {
 
     # build
     local dt dts='jh7110-starfive-visionfive-2-v1.3b'
+    print_hdr "building device tree ${dt}.dtb"
     local fldtc='-Wno-interrupt_provider -Wno-unique_unit_address -Wno-unit_address_vs_reg -Wno-avoid_unnecessary_addr_size -Wno-alias_paths -Wno-graph_child_address -Wno-simple_bus_reg'
     for dt in $dts; do
         gcc -I "linux-$lv/include" -E -nostdinc -undef -D__DTS__ -x assembler-with-cpp -o "${dt}-top.dts" "$sfpath/${dt}.dts"
