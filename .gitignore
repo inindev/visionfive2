@@ -4,6 +4,8 @@
 /dtb/linux-*
 /dtb/*.dt?
 /dtb/*.dtsi
+/kernel/kernel-*
+/kernel/linux-*
 /uboot/opensbi
 /uboot/u-boot
 /uboot/u-boot-spl.bin.normal.out
