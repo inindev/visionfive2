@@ -1,0 +1,55 @@
+From 57ca4198a8b6214a663410b3340e53dede64c6a4 Mon Sep 17 00:00:00 2001
+From: Minda Chen <minda.chen@starfivetech.com>
+Date: Fri, 20 Oct 2023 18:43:29 +0800
+Subject: [PATCH 08/21] PCI: microchip: Change the argument of
+ plda_pcie_setup_iomems()
+
+If other vendor do not select PCI_HOST_COMMON,
+The driver data is not struct pci_host_bridge.
+
+Move calling platform_get_drvdata() to
+mc_platform_init().
+
+Signed-off-by: Minda Chen <minda.chen@starfivetech.com>
+Reviewed-by: Conor Dooley <conor.dooley@microchip.com>
+---
+ drivers/pci/controller/plda/pcie-microchip-host.c | 6 +++---
+ 1 file changed, 3 insertions(+), 3 deletions(-)
+
+diff --git a/drivers/pci/controller/plda/pcie-microchip-host.c b/drivers/pci/controller/plda/pcie-microchip-host.c
+index 4877d130e..31ca8d44e 100644
+--- a/drivers/pci/controller/plda/pcie-microchip-host.c
++++ b/drivers/pci/controller/plda/pcie-microchip-host.c
+@@ -876,11 +876,10 @@ static void plda_pcie_setup_window(void __iomem *bridge_base_addr, u32 index,
+ 	writel(0, bridge_base_addr + ATR0_PCIE_WIN0_SRC_ADDR);
+ }
+ 
+-static int plda_pcie_setup_iomems(struct platform_device *pdev,
++static int plda_pcie_setup_iomems(struct pci_host_bridge *bridge,
+ 				  struct plda_pcie_rp *port)
+ {
+ 	void __iomem *bridge_base_addr = port->bridge_addr;
+-	struct pci_host_bridge *bridge = platform_get_drvdata(pdev);
+ 	struct resource_entry *entry;
+ 	u64 pci_addr;
+ 	u32 index = 1;
+@@ -1018,6 +1017,7 @@ static int mc_platform_init(struct pci_config_window *cfg)
+ {
+ 	struct device *dev = cfg->parent;
+ 	struct platform_device *pdev = to_platform_device(dev);
++	struct pci_host_bridge *bridge = platform_get_drvdata(pdev);
+ 	void __iomem *bridge_base_addr =
+ 		port->axi_base_addr + MC_PCIE_BRIDGE_ADDR;
+ 	int ret;
+@@ -1031,7 +1031,7 @@ static int mc_platform_init(struct pci_config_window *cfg)
+ 	mc_pcie_enable_msi(port, cfg->win);
+ 
+ 	/* Configure non-config space outbound ranges */
+-	ret = plda_pcie_setup_iomems(pdev, &port->plda);
++	ret = plda_pcie_setup_iomems(bridge, &port->plda);
+ 	if (ret)
+ 		return ret;
+ 
+-- 
+2.40.1
+

@@ -1,0 +1,106 @@
+From 104ca3175a7d4ff7a23aa92b7d66dd9041f9335b Mon Sep 17 00:00:00 2001
+From: Minda Chen <minda.chen@starfivetech.com>
+Date: Fri, 20 Oct 2023 18:43:35 +0800
+Subject: [PATCH 14/21] PCI: microchip: Add get_events() callback function
+
+PolarFire implements their own PCIe interrupts,
+which added to global PCIe field for PLDA lack of
+MSI controller, the interrupts to event num mapping
+is different to PLDA local interrupts. So add
+get_events() function pointer.
+
+Also add struct plda_event_ops function pointer structure
+to struct plda_pcie_rp.
+
+plda_handle_events() will call the get_events() callback
+function pointer directly. For the robustness of codes,
+add checking in plda_init_interrupts().
+
+Signed-off-by: Minda Chen <minda.chen@starfivetech.com>
+Acked-by: Conor Dooley <conor.dooley@microchip.com>
+---
+ drivers/pci/controller/plda/pcie-microchip-host.c | 14 +++++++++++++-
+ drivers/pci/controller/plda/pcie-plda.h           |  8 ++++++++
+ 2 files changed, 21 insertions(+), 1 deletion(-)
+
+diff --git a/drivers/pci/controller/plda/pcie-microchip-host.c b/drivers/pci/controller/plda/pcie-microchip-host.c
+index e57827bdb..5a8c134bf 100644
+--- a/drivers/pci/controller/plda/pcie-microchip-host.c
++++ b/drivers/pci/controller/plda/pcie-microchip-host.c
+@@ -652,7 +652,7 @@ static void plda_handle_event(struct irq_desc *desc)
+ 
+ 	chained_irq_enter(chip, desc);
+ 
+-	events = mc_get_events(port);
++	events = port->event_ops->get_events(port);
+ 
+ 	for_each_set_bit(bit, &events, port->num_events)
+ 		generic_handle_domain_irq(port->event_domain, bit);
+@@ -811,7 +811,12 @@ static int mc_request_event_irq(struct plda_pcie_rp *plda, int event_irq,
+ 				0, event_cause[event].sym, plda);
+ }
+ 
++static const struct plda_event_ops mc_event_ops = {
++	.get_events = mc_get_events,
++};
++
+ static const struct plda_event mc_event = {
++	.event_ops         = &mc_event_ops,
+ 	.request_event_irq = mc_request_event_irq,
+ 	.intx_event        = EVENT_LOCAL_PM_MSI_INT_INTX,
+ 	.msi_event         = EVENT_LOCAL_PM_MSI_INT_MSI,
+@@ -925,6 +930,11 @@ static int plda_init_interrupts(struct platform_device *pdev,
+ 	int i, intx_irq, msi_irq, event_irq;
+ 	int ret;
+ 
++	if (!event->event_ops || !event->event_ops->get_events) {
++		dev_err(dev, "no get events ops\n");
++		return -EINVAL;
++	}
++
+ 	ret = plda_pcie_init_irq_domains(port);
+ 	if (ret) {
+ 		dev_err(dev, "failed creating IRQ domains\n");
+@@ -935,6 +945,8 @@ static int plda_init_interrupts(struct platform_device *pdev,
+ 	if (irq < 0)
+ 		return -ENODEV;
+ 
++	port->event_ops = event->event_ops;
++
+ 	for (i = 0; i < port->num_events; i++) {
+ 		event_irq = irq_create_mapping(port->event_domain, i);
+ 		if (!event_irq) {
+diff --git a/drivers/pci/controller/plda/pcie-plda.h b/drivers/pci/controller/plda/pcie-plda.h
+index fba7343f9..df1729095 100644
+--- a/drivers/pci/controller/plda/pcie-plda.h
++++ b/drivers/pci/controller/plda/pcie-plda.h
+@@ -102,6 +102,12 @@
+ #define EVENT_PM_MSI_INT_SYS_ERR		12
+ #define NUM_PLDA_EVENTS				13
+ 
++struct plda_pcie_rp;
++
++struct plda_event_ops {
++	u32 (*get_events)(struct plda_pcie_rp *pcie);
++};
++
+ struct plda_msi {
+ 	struct mutex lock;		/* Protect used bitmap */
+ 	struct irq_domain *msi_domain;
+@@ -117,11 +123,13 @@ struct plda_pcie_rp {
+ 	struct irq_domain *event_domain;
+ 	raw_spinlock_t lock;
+ 	struct plda_msi msi;
++	const struct plda_event_ops *event_ops;
+ 	void __iomem *bridge_addr;
+ 	int num_events;
+ };
+ 
+ struct plda_event {
++	const struct plda_event_ops *event_ops;
+ 	int (*request_event_irq)(struct plda_pcie_rp *pcie,
+ 				 int event_irq, int event);
+ 	int intx_event;
+-- 
+2.40.1
+
