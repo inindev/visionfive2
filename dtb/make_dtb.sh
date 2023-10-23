@@ -25,7 +25,15 @@ main() {
 
     check_installed 'device-tree-compiler' 'gcc' 'wget' 'xz-utils'
 
-    [ -f "$lf" ] || wget "$linux"
+    if [ ! -e "$lf" ]; then
+        if [ -e "../kernel/kernel-$lv/$lf" ]; then
+            print_hdr "linking local copy of linux $lv from ../kernel"
+            ln -sv "../kernel/kernel-$lv/$lf"
+        else
+            print_hdr "downloading linux $lv"
+            wget "$linux"
+        fi
+    fi
 
     if [ "_$lxsha" != "_$(sha256sum "$lf" | cut -c1-64)" ]; then
         echo "invalid hash for linux source file: $lf"

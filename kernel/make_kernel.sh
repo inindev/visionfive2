@@ -23,7 +23,7 @@ main() {
     local lpath="kernel-$lv/linux-$lv"
 
     if [ '_clean' = "_$1" ]; then
-        echo "\n${h1}cleaning...${rst}"
+        print_hdr 'cleaning'
         rm -fv *.deb
         rm -rfv kernel-$lv/*.deb
         rm -rfv kernel-$lv/*.buildinfo
@@ -41,7 +41,15 @@ main() {
     fi
 
     mkdir -p "kernel-$lv"
-    [ -f "kernel-$lv/$lf" ] || wget "$linux" -P "kernel-$lv"
+    if [ ! -e "kernel-$lv/$lf" ]; then
+        if [ -e "../dtb/$lf" ]; then
+            print_hdr "linking local copy of linux $lv from ../dtb"
+            ln -sv "../../dtb/$lf" "kernel-$lv/$lf"
+        else
+            print_hdr "downloading linux $lv"
+            wget "$linux" -P "kernel-$lv"
+        fi
+    fi
 
     if [ "_$lxsha" != "_$(sha256sum "kernel-$lv/$lf" | cut -c1-64)" ]; then
         echo "invalid hash for linux source file: $lf"
@@ -59,14 +67,14 @@ main() {
 
     # build
     if [ '_inc' != "_$1" ]; then
-        echo "\n${h1}configuring source tree...${rst}"
+        print_hdr 'configuring source tree'
         make -C "$lpath" mrproper
         [ -z "$1" ] || echo "$1" > "$lpath/.version"
         config_fixups "$lpath"
         make -C "$lpath" ARCH=riscv starfive_visionfive2_defconfig
     fi
 
-    echo "\n${h1}beginning compile...${rst}"
+    print_hdr 'beginning compile'
     rm -f linux-image-*.deb
     local kver="$(make --no-print-directory -C "$lpath" kernelversion)"
     local bver="$(expr "$(cat "$lpath/.version" 2>/dev/null || echo 0)" + 1 2>/dev/null)"
@@ -97,6 +105,11 @@ check_installed() {
         echo "   run: ${bld}${grn}sudo apt update && sudo apt -y install$todo${rst}\n"
         exit 1
     fi
+}
+
+print_hdr() {
+    local msg="$1"
+    echo "\n${h1}$msg...${rst}"
 }
 
 rst='\033[m'
