@@ -299,7 +299,7 @@ check_mount_only() {
     fi
 
     echo "mounting file ${yel}$img${rst}..."
-    mount_media "$img"
+    mount_media "$img" 3 16384  # todo: remove hardcode
     trap - EXIT INT QUIT ABRT TERM
     echo "media mounted, use ${grn}sudo umount $mountpt${rst} to unmount"
 
