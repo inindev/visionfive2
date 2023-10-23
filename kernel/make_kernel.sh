@@ -11,6 +11,9 @@ set -e
 config_fixups() {
     local lpath="$1"
 
+    # enable nvme hardware monitoring
+    "$lpath/scripts/config" --file "$lpath/.config" -e 'NVME_HWMON'
+
     [ -e "$lpath/.version" ] || echo 1002 > "$lpath/.version"
 }
 
@@ -70,8 +73,8 @@ main() {
         print_hdr 'configuring source tree'
         make -C "$lpath" mrproper
         [ -z "$1" ] || echo "$1" > "$lpath/.version"
-        config_fixups "$lpath"
         make -C "$lpath" ARCH=riscv starfive_visionfive2_defconfig
+        config_fixups "$lpath"
     fi
 
     print_hdr 'beginning compile'
@@ -89,7 +92,7 @@ main() {
     local t1=$(date +%s)
     nice make -C "$lpath" -j"$(nproc)" ARCH=riscv CC="$(readlink /usr/bin/gcc)" bindeb-pkg KBUILD_IMAGE='arch/riscv/boot/Image' LOCALVERSION="-$lver"
     local t2=$(date +%s)
-    echo "\n${cya}kernel package ready (elapsed: $(date -d@$((t2-t1)) -u +%H:%M:%S))${mag}"
+    echo "\n${cya}kernel package ready (elapsed: $(date -d@$((t2-t1)) '+%H:%M:%S'))${mag}"
     ln -sfv "kernel-$lv/linux-image-${kver}-${lver}_${kver}-${bver}_riscv64.deb"
     echo "${rst}"
 }
