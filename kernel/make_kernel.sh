@@ -9,9 +9,9 @@ set -e
 #   8: superuser disallowed
 
 config_fixups() {
-    local lpath=$1
+    local lpath="$1"
 
-#    echo 1002 > "$lpath/.version"
+    [ -e "$lpath/.version" ] || echo 1002 > "$lpath/.version"
 }
 
 main() {
@@ -81,7 +81,7 @@ main() {
     local t1=$(date +%s)
     nice make -C "$lpath" -j"$(nproc)" ARCH=riscv CC="$(readlink /usr/bin/gcc)" bindeb-pkg KBUILD_IMAGE='arch/riscv/boot/Image' LOCALVERSION="-$lver"
     local t2=$(date +%s)
-    echo "\n${cya}kernel package ready (elapsed: $((t2-t1)) sec)${mag}"
+    echo "\n${cya}kernel package ready (elapsed: $(date -d@$((t2-t1)) -u +%H:%M:%S))${mag}"
     ln -sfv "kernel-$lv/linux-image-${kver}-${lver}_${kver}-${bver}_riscv64.deb"
     echo "${rst}"
 }
