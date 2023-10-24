@@ -28,7 +28,7 @@ elif [ -e "${source3}" ]; then
 	echo "I: dtb_cp: installing ${source3} to ${target}"
 	install -vm 644 "${source3}" "${target}"
 else
-	echo >&2 "E: dtb_cp: neither ${source1} nor ${source2} found"
+	echo >&2 "E: dtb_cp: not found: $(basename "${source1}") search path: $(dirname "${source1}"); $(dirname "${source2}"); $(dirname "${source3}")"
 	exit 3
 fi
 
