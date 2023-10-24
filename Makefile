@@ -32,7 +32,7 @@ package-%: screen ubuntu
 	@install -vm 644 ubuntu/mmc_4g.img distfiles/visionfive2_$(LDIST)-$*.img
 	@xz -zve8 distfiles/visionfive2_$(LDIST)-$*.img
 
-	@cd distfiles ; sha256sum * > sha256sums.txt ; echo sha256sums.txt
+	@cd distfiles ; sha256sum * | tee sha256sums.txt
 
 packagek-%: ubuntuk package-%
 	@echo "package with kernel $* ready"
