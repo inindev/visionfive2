@@ -1,0 +1,32 @@
+From 9be82d74bf2b36d2977873f9149dc7a3597623a2 Mon Sep 17 00:00:00 2001
+From: John Clark <inindev@gmail.com>
+Date: Fri, 27 Oct 2023 17:37:28 +0000
+Subject: [PATCH 3/3] change boot order: "nvme0 usb0 mmc0 mmc1 dhcp" -> "mmc1
+ mmc0 usb0 nvme0 dhcp"
+
+Signed-off-by: John Clark <inindev@gmail.com>
+---
+ include/configs/starfive-visionfive2.h | 6 +++---
+ 1 file changed, 3 insertions(+), 3 deletions(-)
+
+diff --git a/include/configs/starfive-visionfive2.h b/include/configs/starfive-visionfive2.h
+index 35db525440..10593c125d 100644
+--- a/include/configs/starfive-visionfive2.h
++++ b/include/configs/starfive-visionfive2.h
+@@ -18,10 +18,10 @@
+ /* Environment options */
+ 
+ #define BOOT_TARGET_DEVICES(func) \
+-	func(NVME, nvme, 0) \
+-	func(USB, usb, 0) \
+-	func(MMC, mmc, 0) \
+ 	func(MMC, mmc, 1) \
++	func(MMC, mmc, 0) \
++	func(USB, usb, 0) \
++	func(NVME, nvme, 0) \
+ 	func(DHCP, dhcp, na)
+ 
+ #include <config_distro_bootcmd.h>
+-- 
+2.40.1
+
