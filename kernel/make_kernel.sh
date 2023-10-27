@@ -11,10 +11,7 @@ set -e
 config_fixups() {
     local lpath="$1"
 
-    # enable nvme hardware monitoring
-    "$lpath/scripts/config" --file "$lpath/.config" -e 'NVME_HWMON'
-
-    [ -e "$lpath/.version" ] || echo 1002 > "$lpath/.version"
+#    [ -e "$lpath/.version" ] || echo 1002 > "$lpath/.version"
 }
 
 main() {
