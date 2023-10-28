@@ -5,16 +5,16 @@ Subject: [PATCH 21/21] default config for the starfive visionfive2
 
 Signed-off-by: John Clark <inindev@gmail.com>
 ---
- .../configs/starfive_visionfive2_defconfig    | 795 ++++++++++++++++++
- 1 file changed, 795 insertions(+)
+ .../configs/starfive_visionfive2_defconfig    | 794 ++++++++++++++++++
+ 1 file changed, 794 insertions(+)
  create mode 100644 arch/riscv/configs/starfive_visionfive2_defconfig
 
 diff --git a/arch/riscv/configs/starfive_visionfive2_defconfig b/arch/riscv/configs/starfive_visionfive2_defconfig
 new file mode 100644
-index 0000000..29c9344
+index 0000000..ae49b55
 --- /dev/null
 +++ b/arch/riscv/configs/starfive_visionfive2_defconfig
-@@ -0,0 +1,795 @@
+@@ -0,0 +1,794 @@
 +CONFIG_WERROR=y
 +CONFIG_SYSVIPC=y
 +CONFIG_POSIX_MQUEUE=y
@@ -475,7 +475,6 @@ index 0000000..29c9344
 +CONFIG_VIDEO_IMX412=m
 +CONFIG_VIDEO_OV5640=m
 +CONFIG_VIDEO_OV5645=m
-+# CONFIG_DVB_DS3000 is not set
 +CONFIG_DRM=y
 +CONFIG_DRM_I2C_NXP_TDA998X=m
 +CONFIG_DRM_KOMEDA=m
