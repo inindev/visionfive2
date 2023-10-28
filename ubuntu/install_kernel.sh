@@ -33,6 +33,7 @@ main() {
     mount -vo bind '/dev/pts' "$mountpt/dev/pts"
 
     print_hdr "installing kernel $kernver"
+    [ -L "$mountpt/boot/jh7110-starfive-visionfive-2-v1.3b.dtb-"* ] && mv "$mountpt/boot/jh7110-starfive-visionfive-2-v1.3b.dtb" "$mountpt/boot/jh7110-starfive-visionfive-2-v1.3b.dtb-"*
     chroot "$mountpt" "/usr/bin/dpkg" -i "/mnt/$kernfile"
 }
 
