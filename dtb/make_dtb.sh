@@ -9,8 +9,8 @@ set -e
 #   5: invalid file hash
 
 main() {
-    local linux='https://git.kernel.org/torvalds/t/linux-6.6-rc7.tar.gz'
-    local lxsha='c86e8fcc8aeb757ed08158e09f14b734c2ee77b99aa0123e46edbdde34f1aaad'
+    local linux='https://git.kernel.org/torvalds/t/linux-6.6.tar.gz'
+    local lxsha='9a72c005a62f109f96ee00552502d16c4f06c248e6baba1629506627396ac0a7'
 
     local lf="$(basename "$linux")"
     local lv="$(echo "$lf" | sed -nE 's/linux-(.*)\.tar\..z/\1/p')"
