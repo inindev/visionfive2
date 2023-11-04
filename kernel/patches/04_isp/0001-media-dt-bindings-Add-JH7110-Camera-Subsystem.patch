@@ -1,4 +1,4 @@
-From a1d5a260389e10d525bd0c4fa256dcfdbe4b30cd Mon Sep 17 00:00:00 2001
+From b02b47d7e0c297257bc334c4d4e2639f7d70b701 Mon Sep 17 00:00:00 2001
 From: Jack Zhu <jack.zhu@starfivetech.com>
 Date: Wed, 25 Oct 2023 11:14:14 +0800
 Subject: [PATCH 1/9] media: dt-bindings: Add JH7110 Camera Subsystem
@@ -202,10 +202,10 @@ index 000000000..c66586d90
 +        };
 +    };
 diff --git a/MAINTAINERS b/MAINTAINERS
-index dd5de540e..975b39c95 100644
+index bfb5244c1..b3ca9750d 100644
 --- a/MAINTAINERS
 +++ b/MAINTAINERS
-@@ -20425,6 +20425,13 @@ M:	Ion Badulescu <ionut@badula.org>
+@@ -20439,6 +20439,13 @@ M:	Ion Badulescu <ionut@badula.org>
  S:	Odd Fixes
  F:	drivers/net/ethernet/adaptec/starfire*
  

@@ -1,4 +1,4 @@
-From 255ec9de60c43f0305614dee3e3d2b3518d80b66 Mon Sep 17 00:00:00 2001
+From 73107151d5873f1ba38eab817524a8bbff0575f6 Mon Sep 17 00:00:00 2001
 From: Keith Zhao <keith.zhao@starfivetech.com>
 Date: Wed, 25 Oct 2023 18:39:53 +0800
 Subject: [PATCH 2/6] riscv: dts: starfive: jh7110: add dc controller and hdmi
@@ -13,7 +13,7 @@ Signed-off-by: Keith Zhao <keith.zhao@starfivetech.com>
  2 files changed, 132 insertions(+)
 
 diff --git a/arch/riscv/boot/dts/starfive/jh7110-starfive-visionfive-2.dtsi b/arch/riscv/boot/dts/starfive/jh7110-starfive-visionfive-2.dtsi
-index 2c02358ab..b2de50f77 100644
+index 823f298c3..9edb08b7d 100644
 --- a/arch/riscv/boot/dts/starfive/jh7110-starfive-visionfive-2.dtsi
 +++ b/arch/riscv/boot/dts/starfive/jh7110-starfive-visionfive-2.dtsi
 @@ -35,6 +35,25 @@ memory@40000000 {
@@ -83,8 +83,8 @@ index 2c02358ab..b2de50f77 100644
 +
  };
  
- &spi0 {
-@@ -531,3 +585,40 @@ &U74_3 {
+ &pwm {
+@@ -553,3 +607,40 @@ &U74_3 {
  &U74_4 {
  	cpu-supply = <&vdd_cpu>;
  };
@@ -126,7 +126,7 @@ index 2c02358ab..b2de50f77 100644
 +	};
 +};
 diff --git a/arch/riscv/boot/dts/starfive/jh7110.dtsi b/arch/riscv/boot/dts/starfive/jh7110.dtsi
-index e85464c32..f7faca02a 100644
+index a37d0415a..f655a51a2 100644
 --- a/arch/riscv/boot/dts/starfive/jh7110.dtsi
 +++ b/arch/riscv/boot/dts/starfive/jh7110.dtsi
 @@ -329,6 +329,11 @@ tdm_ext: tdm-ext-clock {
@@ -141,7 +141,7 @@ index e85464c32..f7faca02a 100644
  	soc {
  		compatible = "simple-bus";
  		interrupt-parent = <&plic>;
-@@ -1045,5 +1050,41 @@ voutcrg: clock-controller@295c0000 {
+@@ -1074,5 +1079,41 @@ voutcrg: clock-controller@295c0000 {
  			#reset-cells = <1>;
  			power-domains = <&pwrc JH7110_PD_VOUT>;
  		};

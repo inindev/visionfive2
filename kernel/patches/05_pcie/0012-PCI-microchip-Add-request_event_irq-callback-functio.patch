@@ -1,4 +1,4 @@
-From 2b23b769b8fbd75b16de3c1a4c2e7bffef71247d Mon Sep 17 00:00:00 2001
+From 1b23d0276a9231ecb4a1e632c4e8ca4a8b65e439 Mon Sep 17 00:00:00 2001
 From: Minda Chen <minda.chen@starfivetech.com>
 Date: Tue, 31 Oct 2023 19:54:22 +0800
 Subject: [PATCH 12/20] PCI: microchip: Add request_event_irq() callback
@@ -24,7 +24,7 @@ Acked-by: Conor Dooley <conor.dooley@microchip.com>
  2 files changed, 32 insertions(+), 4 deletions(-)
 
 diff --git a/drivers/pci/controller/plda/pcie-microchip-host.c b/drivers/pci/controller/plda/pcie-microchip-host.c
-index d42278c..f89d102 100644
+index d42278c00..f89d102f4 100644
 --- a/drivers/pci/controller/plda/pcie-microchip-host.c
 +++ b/drivers/pci/controller/plda/pcie-microchip-host.c
 @@ -643,6 +643,11 @@ static irqreturn_t mc_event_handler(int irq, void *dev_id)
@@ -94,7 +94,7 @@ index d42278c..f89d102 100644
  		return ret;
  
 diff --git a/drivers/pci/controller/plda/pcie-plda.h b/drivers/pci/controller/plda/pcie-plda.h
-index e3d35ce..28ed137 100644
+index e3d35cef9..28ed1374e 100644
 --- a/drivers/pci/controller/plda/pcie-plda.h
 +++ b/drivers/pci/controller/plda/pcie-plda.h
 @@ -121,6 +121,11 @@ struct plda_pcie_rp {

@@ -1,4 +1,4 @@
-From 7da7d0ea65d7c8093832d21ea44490110b7c06e3 Mon Sep 17 00:00:00 2001
+From b1514b4eb98b43ee17c6d1a87e27f100ba4126d6 Mon Sep 17 00:00:00 2001
 From: Minda Chen <minda.chen@starfivetech.com>
 Date: Tue, 31 Oct 2023 19:54:25 +0800
 Subject: [PATCH 15/20] PCI: microchip: Add event IRQ domain ops to struct
@@ -18,7 +18,7 @@ Acked-by: Conor Dooley <conor.dooley@microchip.com>
  2 files changed, 5 insertions(+), 2 deletions(-)
 
 diff --git a/drivers/pci/controller/plda/pcie-microchip-host.c b/drivers/pci/controller/plda/pcie-microchip-host.c
-index f5e7da2..e6dcc57 100644
+index f5e7da242..e6dcc572b 100644
 --- a/drivers/pci/controller/plda/pcie-microchip-host.c
 +++ b/drivers/pci/controller/plda/pcie-microchip-host.c
 @@ -821,13 +821,15 @@ static const struct plda_event_ops mc_event_ops = {
@@ -48,7 +48,7 @@ index f5e7da2..e6dcc57 100644
  		dev_err(dev, "failed creating IRQ domains\n");
  		return ret;
 diff --git a/drivers/pci/controller/plda/pcie-plda.h b/drivers/pci/controller/plda/pcie-plda.h
-index df17290..820ea16 100644
+index df1729095..820ea1685 100644
 --- a/drivers/pci/controller/plda/pcie-plda.h
 +++ b/drivers/pci/controller/plda/pcie-plda.h
 @@ -129,6 +129,7 @@ struct plda_pcie_rp {

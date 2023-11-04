@@ -1,4 +1,4 @@
-From caedc11bdd212d157075ff3fbd0fd57811e3f02c Mon Sep 17 00:00:00 2001
+From 8e4726236b8ca4a0cebc1413fbc8509ae13ab7f9 Mon Sep 17 00:00:00 2001
 From: Minda Chen <minda.chen@starfivetech.com>
 Date: Tue, 31 Oct 2023 19:54:21 +0800
 Subject: [PATCH 11/20] PCI: microchip: Add num_events field to struct
@@ -15,7 +15,7 @@ Reviewed-by: Conor Dooley <conor.dooley@microchip.com>
  2 files changed, 6 insertions(+), 3 deletions(-)
 
 diff --git a/drivers/pci/controller/plda/pcie-microchip-host.c b/drivers/pci/controller/plda/pcie-microchip-host.c
-index 54a0d43..d42278c 100644
+index 54a0d431a..d42278c00 100644
 --- a/drivers/pci/controller/plda/pcie-microchip-host.c
 +++ b/drivers/pci/controller/plda/pcie-microchip-host.c
 @@ -654,7 +654,7 @@ static void plda_handle_event(struct irq_desc *desc)
@@ -55,7 +55,7 @@ index 54a0d43..d42278c 100644
  	/* Allow enabling MSI by disabling MSI-X */
  	val = readl(bridge_base_addr + PCIE_PCI_IRQ_DW0);
 diff --git a/drivers/pci/controller/plda/pcie-plda.h b/drivers/pci/controller/plda/pcie-plda.h
-index 3deefd3..e3d35ce 100644
+index 3deefd35f..e3d35cef9 100644
 --- a/drivers/pci/controller/plda/pcie-plda.h
 +++ b/drivers/pci/controller/plda/pcie-plda.h
 @@ -118,6 +118,7 @@ struct plda_pcie_rp {

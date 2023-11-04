@@ -1,4 +1,4 @@
-From 4330cc20a3ecba909a79702f7f61994bc5e64096 Mon Sep 17 00:00:00 2001
+From 9dddbf838965810636fa45f29dc49f4afa663849 Mon Sep 17 00:00:00 2001
 From: Minda Chen <minda.chen@starfivetech.com>
 Date: Tue, 31 Oct 2023 19:54:23 +0800
 Subject: [PATCH 13/20] PCI: microchip: Add INTx and MSI event num to struct
@@ -15,7 +15,7 @@ Acked-by: Conor Dooley <conor.dooley@microchip.com>
  2 files changed, 6 insertions(+), 2 deletions(-)
 
 diff --git a/drivers/pci/controller/plda/pcie-microchip-host.c b/drivers/pci/controller/plda/pcie-microchip-host.c
-index f89d102..2c03b03 100644
+index f89d102f4..2c03b0354 100644
 --- a/drivers/pci/controller/plda/pcie-microchip-host.c
 +++ b/drivers/pci/controller/plda/pcie-microchip-host.c
 @@ -818,6 +818,8 @@ static int mc_request_event_irq(struct plda_pcie_rp *plda, int event_irq,
@@ -46,7 +46,7 @@ index f89d102..2c03b03 100644
  		return -ENXIO;
  
 diff --git a/drivers/pci/controller/plda/pcie-plda.h b/drivers/pci/controller/plda/pcie-plda.h
-index 28ed137..fba7343 100644
+index 28ed1374e..fba7343f9 100644
 --- a/drivers/pci/controller/plda/pcie-plda.h
 +++ b/drivers/pci/controller/plda/pcie-plda.h
 @@ -124,6 +124,8 @@ struct plda_pcie_rp {

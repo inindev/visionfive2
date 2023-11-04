@@ -1,4 +1,4 @@
-From e9af1b5136d4159838733fc771a48d0b7fe4de46 Mon Sep 17 00:00:00 2001
+From b0fa8e3978caeee7de4b3dd1de948acfbb56d8a9 Mon Sep 17 00:00:00 2001
 From: Jack Zhu <jack.zhu@starfivetech.com>
 Date: Wed, 25 Oct 2023 11:14:16 +0800
 Subject: [PATCH 3/9] media: staging: media: starfive: camss: Add core driver
@@ -27,10 +27,10 @@ Signed-off-by: Jack Zhu <jack.zhu@starfivetech.com>
  create mode 100644 drivers/staging/media/starfive/camss/stf-camss.h
 
 diff --git a/MAINTAINERS b/MAINTAINERS
-index 2bdbcd408..166f8bc57 100644
+index 25660bb15..0b59d9e60 100644
 --- a/MAINTAINERS
 +++ b/MAINTAINERS
-@@ -20432,6 +20432,7 @@ L:	linux-media@vger.kernel.org
+@@ -20446,6 +20446,7 @@ L:	linux-media@vger.kernel.org
  S:	Maintained
  F:	Documentation/admin-guide/media/starfive_camss.rst
  F:	Documentation/devicetree/bindings/media/starfive,jh7110-camss.yaml

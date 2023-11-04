@@ -1,4 +1,4 @@
-From bf4526052411035acda04beb0b97f204d360c88e Mon Sep 17 00:00:00 2001
+From a9a4597bc5864a49971be8c389bee2e2203e3559 Mon Sep 17 00:00:00 2001
 From: Keith Zhao <keith.zhao@starfivetech.com>
 Date: Wed, 25 Oct 2023 18:39:52 +0800
 Subject: [PATCH 1/6] dt-bindings: display: Add yamls for JH7110 display system
@@ -278,7 +278,7 @@ index 000000000..f6c473a10
 +        };
 +    };
 diff --git a/MAINTAINERS b/MAINTAINERS
-index dd5de540e..b9a4f1655 100644
+index 07dc4461d..bfb5244c1 100644
 --- a/MAINTAINERS
 +++ b/MAINTAINERS
 @@ -6810,6 +6810,13 @@ T:	git git://anongit.freedesktop.org/drm/drm-misc

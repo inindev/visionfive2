@@ -1,4 +1,4 @@
-From b216b533acfbd1d08c73015d53c3f6b5d8d3d1a5 Mon Sep 17 00:00:00 2001
+From f3d85b56dd85fc338827328930e7d646a16bc86d Mon Sep 17 00:00:00 2001
 From: Jack Zhu <jack.zhu@starfivetech.com>
 Date: Wed, 25 Oct 2023 11:14:17 +0800
 Subject: [PATCH 4/9] media: staging: media: starfive: camss: Add video driver

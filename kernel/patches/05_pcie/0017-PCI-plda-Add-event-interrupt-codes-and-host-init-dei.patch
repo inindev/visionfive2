@@ -1,4 +1,4 @@
-From 0f695bbdcec4fa3b8f1fef937dfa6dcb04a683e0 Mon Sep 17 00:00:00 2001
+From 44cfab0910f91cee4ae998e6445d57208928201c Mon Sep 17 00:00:00 2001
 From: Minda Chen <minda.chen@starfivetech.com>
 Date: Tue, 31 Oct 2023 19:54:27 +0800
 Subject: [PATCH 17/20] PCI: plda: Add event interrupt codes and host
@@ -20,7 +20,7 @@ Signed-off-by: Minda Chen <minda.chen@starfivetech.com>
  2 files changed, 266 insertions(+), 13 deletions(-)
 
 diff --git a/drivers/pci/controller/plda/pcie-plda-host.c b/drivers/pci/controller/plda/pcie-plda-host.c
-index e155d1d..10ad262 100644
+index e155d1d78..10ad26216 100644
 --- a/drivers/pci/controller/plda/pcie-plda-host.c
 +++ b/drivers/pci/controller/plda/pcie-plda-host.c
 @@ -3,6 +3,7 @@
@@ -311,7 +311,7 @@ index e155d1d..10ad262 100644
 +}
 +EXPORT_SYMBOL_GPL(plda_pcie_host_deinit);
 diff --git a/drivers/pci/controller/plda/pcie-plda.h b/drivers/pci/controller/plda/pcie-plda.h
-index ce7787a..6b29bf1 100644
+index ce7787aef..6b29bf1f5 100644
 --- a/drivers/pci/controller/plda/pcie-plda.h
 +++ b/drivers/pci/controller/plda/pcie-plda.h
 @@ -40,6 +40,7 @@

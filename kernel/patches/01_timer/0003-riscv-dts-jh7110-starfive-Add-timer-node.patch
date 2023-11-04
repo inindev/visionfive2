@@ -1,4 +1,4 @@
-From 631e624deac2c0fcf6a9b8509f0ce64af1c2e306 Mon Sep 17 00:00:00 2001
+From 00a1a906c9f10f161070d847ff18d1fb46f37544 Mon Sep 17 00:00:00 2001
 From: Xingyu Wu <xingyu.wu@starfivetech.com>
 Date: Thu, 19 Oct 2023 13:35:01 +0800
 Subject: [PATCH 3/3] riscv: dts: jh7110: starfive: Add timer node

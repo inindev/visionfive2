@@ -1,4 +1,4 @@
-From 3289edf034da8b28ec3d39925821d93d87bb2d59 Mon Sep 17 00:00:00 2001
+From 20be7d6ebdedc16abc810d21b917273b061d733b Mon Sep 17 00:00:00 2001
 From: Minda Chen <minda.chen@starfivetech.com>
 Date: Tue, 31 Oct 2023 19:54:13 +0800
 Subject: [PATCH 03/20] PCI: microchip: Move PLDA IP register macros to
@@ -17,10 +17,10 @@ Reviewed-by: Conor Dooley <conor.dooley@microchip.com>
  create mode 100644 drivers/pci/controller/plda/pcie-plda.h
 
 diff --git a/MAINTAINERS b/MAINTAINERS
-index 12f918e..1486cbc 100644
+index 5e1b58c9d..de9e09908 100644
 --- a/MAINTAINERS
 +++ b/MAINTAINERS
-@@ -16417,6 +16417,14 @@ S:	Maintained
+@@ -16431,6 +16431,14 @@ S:	Maintained
  F:	Documentation/devicetree/bindings/pci/layerscape-pcie-gen4.txt
  F:	drivers/pci/controller/mobiveil/pcie-layerscape-gen4.c
  
@@ -36,7 +36,7 @@ index 12f918e..1486cbc 100644
  M:	Marek Vasut <marek.vasut+renesas@gmail.com>
  M:	Yoshihiro Shimoda <yoshihiro.shimoda.uh@renesas.com>
 diff --git a/drivers/pci/controller/plda/pcie-microchip-host.c b/drivers/pci/controller/plda/pcie-microchip-host.c
-index cb09a81..a34ec6a 100644
+index cb09a8137..a34ec6aad 100644
 --- a/drivers/pci/controller/plda/pcie-microchip-host.c
 +++ b/drivers/pci/controller/plda/pcie-microchip-host.c
 @@ -19,6 +19,7 @@
@@ -170,7 +170,7 @@ index cb09a81..a34ec6a 100644
  	[EVENT_PCIE_ ## x] = { __stringify(x), s }
 diff --git a/drivers/pci/controller/plda/pcie-plda.h b/drivers/pci/controller/plda/pcie-plda.h
 new file mode 100644
-index 0000000..727fc54
+index 000000000..727fc5431
 --- /dev/null
 +++ b/drivers/pci/controller/plda/pcie-plda.h
 @@ -0,0 +1,102 @@

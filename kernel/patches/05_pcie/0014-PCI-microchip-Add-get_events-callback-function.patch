@@ -1,4 +1,4 @@
-From fcc82b544d7dcffebc72de8bce5e707cdf632643 Mon Sep 17 00:00:00 2001
+From 9930879eaf593b28f10b113a0b7e178aaafce2ed Mon Sep 17 00:00:00 2001
 From: Minda Chen <minda.chen@starfivetech.com>
 Date: Tue, 31 Oct 2023 19:54:24 +0800
 Subject: [PATCH 14/20] PCI: microchip: Add get_events() callback function
@@ -20,7 +20,7 @@ Acked-by: Conor Dooley <conor.dooley@microchip.com>
  2 files changed, 21 insertions(+), 1 deletion(-)
 
 diff --git a/drivers/pci/controller/plda/pcie-microchip-host.c b/drivers/pci/controller/plda/pcie-microchip-host.c
-index 2c03b03..f5e7da2 100644
+index 2c03b0354..f5e7da242 100644
 --- a/drivers/pci/controller/plda/pcie-microchip-host.c
 +++ b/drivers/pci/controller/plda/pcie-microchip-host.c
 @@ -657,7 +657,7 @@ static void plda_handle_event(struct irq_desc *desc)
@@ -67,7 +67,7 @@ index 2c03b03..f5e7da2 100644
  		event_irq = irq_create_mapping(port->event_domain, i);
  		if (!event_irq) {
 diff --git a/drivers/pci/controller/plda/pcie-plda.h b/drivers/pci/controller/plda/pcie-plda.h
-index fba7343..df17290 100644
+index fba7343f9..df1729095 100644
 --- a/drivers/pci/controller/plda/pcie-plda.h
 +++ b/drivers/pci/controller/plda/pcie-plda.h
 @@ -102,6 +102,12 @@

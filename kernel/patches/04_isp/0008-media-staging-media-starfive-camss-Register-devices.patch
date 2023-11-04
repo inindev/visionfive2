@@ -1,4 +1,4 @@
-From c02226623025fa89509193dd51ff34673785f602 Mon Sep 17 00:00:00 2001
+From 17e84fa6f409d82e664a8e5d420c03b05add91d7 Mon Sep 17 00:00:00 2001
 From: Jack Zhu <jack.zhu@starfivetech.com>
 Date: Wed, 25 Oct 2023 11:14:21 +0800
 Subject: [PATCH 8/9] media: staging: media: starfive: camss: Register devices

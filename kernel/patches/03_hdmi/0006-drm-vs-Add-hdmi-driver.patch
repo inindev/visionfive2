@@ -1,4 +1,4 @@
-From 0a0c7349c649cd2bfd60d75e178d7bc7d7c2122d Mon Sep 17 00:00:00 2001
+From 38b75cadbbef1e33239a7b23c6007ea3dc4518b5 Mon Sep 17 00:00:00 2001
 From: Keith Zhao <keith.zhao@starfivetech.com>
 Date: Wed, 25 Oct 2023 18:39:57 +0800
 Subject: [PATCH 6/6] drm/vs: Add hdmi driver

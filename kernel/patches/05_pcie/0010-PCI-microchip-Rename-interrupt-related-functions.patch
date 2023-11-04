@@ -1,4 +1,4 @@
-From 1c37b31ad9c94534d99b947d4c6a3e87539e782c Mon Sep 17 00:00:00 2001
+From 962cbe1125ddb37d1a8606119f37e22777bdd2cb Mon Sep 17 00:00:00 2001
 From: Minda Chen <minda.chen@starfivetech.com>
 Date: Tue, 31 Oct 2023 19:54:20 +0800
 Subject: [PATCH 10/20] PCI: microchip: Rename interrupt related functions
@@ -29,7 +29,7 @@ Acked-by: Conor Dooley <conor.dooley@microchip.com>
  1 file changed, 55 insertions(+), 50 deletions(-)
 
 diff --git a/drivers/pci/controller/plda/pcie-microchip-host.c b/drivers/pci/controller/plda/pcie-microchip-host.c
-index 2e79bcc..54a0d43 100644
+index 2e79bcc7c..54a0d431a 100644
 --- a/drivers/pci/controller/plda/pcie-microchip-host.c
 +++ b/drivers/pci/controller/plda/pcie-microchip-host.c
 @@ -318,7 +318,7 @@ static void mc_pcie_enable_msi(struct mc_pcie *port, void __iomem *ecam)

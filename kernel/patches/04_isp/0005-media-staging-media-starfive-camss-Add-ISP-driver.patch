@@ -1,4 +1,4 @@
-From f1cf77d2168034aef79f609a411377b6f9df1824 Mon Sep 17 00:00:00 2001
+From e1bdcc09cd36bfc6bff88175e9033f76184f9ffa Mon Sep 17 00:00:00 2001
 From: Jack Zhu <jack.zhu@starfivetech.com>
 Date: Wed, 25 Oct 2023 11:14:18 +0800
 Subject: [PATCH 5/9] media: staging: media: starfive: camss: Add ISP driver

@@ -1,4 +1,4 @@
-From ec6bd8d868587ac70cb225adc1d9b3081ca6b4ec Mon Sep 17 00:00:00 2001
+From 20c9e65c578018a246748a4504a5641a7be7118f Mon Sep 17 00:00:00 2001
 From: Jack Zhu <jack.zhu@starfivetech.com>
 Date: Wed, 25 Oct 2023 11:14:19 +0800
 Subject: [PATCH 6/9] media: staging: media: starfive: camss: Add capture

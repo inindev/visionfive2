@@ -1,4 +1,4 @@
-From b352b4c6e97280c52b45bb9df346f1389b1438bc Mon Sep 17 00:00:00 2001
+From a52a0fad7bfed6fb2be38a54630960c7e99bd0f8 Mon Sep 17 00:00:00 2001
 From: Keith Zhao <keith.zhao@starfivetech.com>
 Date: Wed, 25 Oct 2023 18:39:56 +0800
 Subject: [PATCH 5/6] drm/vs: Add KMS crtc&plane

@@ -1,4 +1,4 @@
-From cebe35553bf29c6680a8758ac5349a201d66664a Mon Sep 17 00:00:00 2001
+From 1903e3e7ceed07ae57c7f33d1bfc362eb95f08c6 Mon Sep 17 00:00:00 2001
 From: Minda Chen <minda.chen@starfivetech.com>
 Date: Tue, 31 Oct 2023 19:54:15 +0800
 Subject: [PATCH 05/20] PCI: microchip: Rename two PCIe data structures
@@ -23,7 +23,7 @@ Reviewed-by: Conor Dooley <conor.dooley@microchip.com>
  1 file changed, 53 insertions(+), 43 deletions(-)
 
 diff --git a/drivers/pci/controller/plda/pcie-microchip-host.c b/drivers/pci/controller/plda/pcie-microchip-host.c
-index 60870ee..3dc4d4c 100644
+index 60870ee1f..3dc4d4ca9 100644
 --- a/drivers/pci/controller/plda/pcie-microchip-host.c
 +++ b/drivers/pci/controller/plda/pcie-microchip-host.c
 @@ -22,7 +22,7 @@

@@ -1,4 +1,4 @@
-From d02eff69ad61af41b9afda578811c2dd573ba609 Mon Sep 17 00:00:00 2001
+From 3fee6657d28b9d6eae73990798606bd7d4b95a9c Mon Sep 17 00:00:00 2001
 From: Keith Zhao <keith.zhao@starfivetech.com>
 Date: Wed, 25 Oct 2023 18:39:55 +0800
 Subject: [PATCH 4/6] drm/vs: Register DRM device

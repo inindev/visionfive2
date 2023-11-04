@@ -1,4 +1,4 @@
-From 28a0669337a4f7256b201b8aeb176c521b6bbeda Mon Sep 17 00:00:00 2001
+From 9e5acb2cc8a8196022f5528017a36ae06751d3af Mon Sep 17 00:00:00 2001
 From: Jack Zhu <jack.zhu@starfivetech.com>
 Date: Wed, 25 Oct 2023 11:14:20 +0800
 Subject: [PATCH 7/9] media: staging: media: starfive: camss: Add interrupt

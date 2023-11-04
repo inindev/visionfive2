@@ -1,4 +1,4 @@
-From cefd407efd610848d429d09443bfa2b16fa66fb3 Mon Sep 17 00:00:00 2001
+From 321045cc7089f29a121570b4af4c72d7a84e045e Mon Sep 17 00:00:00 2001
 From: Jack Zhu <jack.zhu@starfivetech.com>
 Date: Wed, 25 Oct 2023 11:14:15 +0800
 Subject: [PATCH 2/9] media: admin-guide: Add starfive_camss.rst for Starfive
@@ -126,10 +126,10 @@ index 1c41f87c3..2274fd29c 100644
  	visl
  	vivid
 diff --git a/MAINTAINERS b/MAINTAINERS
-index 975b39c95..2bdbcd408 100644
+index b3ca9750d..25660bb15 100644
 --- a/MAINTAINERS
 +++ b/MAINTAINERS
-@@ -20430,6 +20430,7 @@ M:	Jack Zhu <jack.zhu@starfivetech.com>
+@@ -20444,6 +20444,7 @@ M:	Jack Zhu <jack.zhu@starfivetech.com>
  M:	Changhuang Liang <changhuang.liang@starfivetech.com>
  L:	linux-media@vger.kernel.org
  S:	Maintained

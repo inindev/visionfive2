@@ -1,4 +1,4 @@
-From 10bb39a9b788ea86071827d88c92d2b32845a46d Mon Sep 17 00:00:00 2001
+From dd9dd95c9f06e421e577b2e72641f9b345ab47bd Mon Sep 17 00:00:00 2001
 From: Minda Chen <minda.chen@starfivetech.com>
 Date: Tue, 31 Oct 2023 19:54:18 +0800
 Subject: [PATCH 08/20] PCI: microchip: Change the argument of
@@ -16,7 +16,7 @@ Reviewed-by: Conor Dooley <conor.dooley@microchip.com>
  1 file changed, 3 insertions(+), 3 deletions(-)
 
 diff --git a/drivers/pci/controller/plda/pcie-microchip-host.c b/drivers/pci/controller/plda/pcie-microchip-host.c
-index 4877d13..31ca8d4 100644
+index 4877d130e..31ca8d44e 100644
 --- a/drivers/pci/controller/plda/pcie-microchip-host.c
 +++ b/drivers/pci/controller/plda/pcie-microchip-host.c
 @@ -876,11 +876,10 @@ static void plda_pcie_setup_window(void __iomem *bridge_base_addr, u32 index,

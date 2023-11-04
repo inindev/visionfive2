@@ -1,4 +1,4 @@
-From f9a4ec57441acf0cb22414852c80caab384cb559 Mon Sep 17 00:00:00 2001
+From c1cea8c93d44458620a38ed87db1ad5678fb9a3d Mon Sep 17 00:00:00 2001
 From: William Qiu <william.qiu@starfivetech.com>
 Date: Fri, 20 Oct 2023 18:37:39 +0800
 Subject: [PATCH 2/4] pwm: opencores: Add PWM driver support
@@ -17,7 +17,7 @@ Signed-off-by: William Qiu <william.qiu@starfivetech.com>
  create mode 100644 drivers/pwm/pwm-ocores.c
 
 diff --git a/MAINTAINERS b/MAINTAINERS
-index dd5de540e..1861067cf 100644
+index 22a8face0..07dc4461d 100644
 --- a/MAINTAINERS
 +++ b/MAINTAINERS
 @@ -16006,6 +16006,13 @@ F:	Documentation/i2c/busses/i2c-ocores.rst

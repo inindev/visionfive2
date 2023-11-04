@@ -1,4 +1,4 @@
-From a445f06f41c358cb70295e8d3233ccc80c83c018 Mon Sep 17 00:00:00 2001
+From bb7f3ac5b73d2b243b87417ec633f103653585a6 Mon Sep 17 00:00:00 2001
 From: Minda Chen <minda.chen@starfivetech.com>
 Date: Tue, 31 Oct 2023 19:54:16 +0800
 Subject: [PATCH 06/20] PCI: microchip: Move PCIe host data structure to
@@ -15,7 +15,7 @@ Reviewed-by: Conor Dooley <conor.dooley@microchip.com>
  2 files changed, 21 insertions(+), 20 deletions(-)
 
 diff --git a/drivers/pci/controller/plda/pcie-microchip-host.c b/drivers/pci/controller/plda/pcie-microchip-host.c
-index 3dc4d4c..261147a 100644
+index 3dc4d4ca9..261147a0a 100644
 --- a/drivers/pci/controller/plda/pcie-microchip-host.c
 +++ b/drivers/pci/controller/plda/pcie-microchip-host.c
 @@ -21,9 +21,6 @@
@@ -53,7 +53,7 @@ index 3dc4d4c..261147a 100644
  struct mc_pcie {
  	struct plda_pcie_rp plda;
 diff --git a/drivers/pci/controller/plda/pcie-plda.h b/drivers/pci/controller/plda/pcie-plda.h
-index 727fc54..363fcbb 100644
+index 727fc5431..363fcbbaf 100644
 --- a/drivers/pci/controller/plda/pcie-plda.h
 +++ b/drivers/pci/controller/plda/pcie-plda.h
 @@ -6,6 +6,9 @@

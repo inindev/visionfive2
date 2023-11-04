@@ -1,4 +1,4 @@
-From ced3870006230759451a34b40bf4ecff71351a98 Mon Sep 17 00:00:00 2001
+From ad46d317d599f0e7bb822b1e6a19f4b710b76953 Mon Sep 17 00:00:00 2001
 From: Minda Chen <minda.chen@starfivetech.com>
 Date: Tue, 31 Oct 2023 19:54:28 +0800
 Subject: [PATCH 18/20] dt-bindings: PCI: Add StarFive JH7110 PCIe controller
@@ -17,7 +17,7 @@ Reviewed-by: Rob Herring <robh@kernel.org>
 
 diff --git a/Documentation/devicetree/bindings/pci/starfive,jh7110-pcie.yaml b/Documentation/devicetree/bindings/pci/starfive,jh7110-pcie.yaml
 new file mode 100644
-index 0000000..67151aa
+index 000000000..67151aaa3
 --- /dev/null
 +++ b/Documentation/devicetree/bindings/pci/starfive,jh7110-pcie.yaml
 @@ -0,0 +1,120 @@
