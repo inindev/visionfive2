@@ -1,0 +1,188 @@
+From 255ec9de60c43f0305614dee3e3d2b3518d80b66 Mon Sep 17 00:00:00 2001
+From: Keith Zhao <keith.zhao@starfivetech.com>
+Date: Wed, 25 Oct 2023 18:39:53 +0800
+Subject: [PATCH 2/6] riscv: dts: starfive: jh7110: add dc controller and hdmi
+ node
+
+Add the dc controller and hdmi node for the Starfive JH7110 SoC.
+
+Signed-off-by: Keith Zhao <keith.zhao@starfivetech.com>
+---
+ .../jh7110-starfive-visionfive-2.dtsi         | 91 +++++++++++++++++++
+ arch/riscv/boot/dts/starfive/jh7110.dtsi      | 41 +++++++++
+ 2 files changed, 132 insertions(+)
+
+diff --git a/arch/riscv/boot/dts/starfive/jh7110-starfive-visionfive-2.dtsi b/arch/riscv/boot/dts/starfive/jh7110-starfive-visionfive-2.dtsi
+index 2c02358ab..b2de50f77 100644
+--- a/arch/riscv/boot/dts/starfive/jh7110-starfive-visionfive-2.dtsi
++++ b/arch/riscv/boot/dts/starfive/jh7110-starfive-visionfive-2.dtsi
+@@ -35,6 +35,25 @@ memory@40000000 {
+ 		reg = <0x0 0x40000000 0x1 0x0>;
+ 	};
+ 
++	reserved-memory {
++		#address-cells = <2>;
++		#size-cells = <2>;
++		ranges;
++
++		/* vout applies for space from this CMA
++		 * Without this CMA reservation,
++		 * vout may not work properly.
++		 */
++		linux,cma {
++			compatible = "shared-dma-pool";
++			reusable;
++			size = <0x0 0x20000000>;
++			alignment = <0x0 0x1000>;
++			alloc-ranges = <0x0 0x70000000 0x0 0x20000000>;
++			linux,cma-default;
++		};
++	};
++
+ 	gpio-restart {
+ 		compatible = "gpio-restart";
+ 		gpios = <&sysgpio 35 GPIO_ACTIVE_HIGH>;
+@@ -266,6 +285,41 @@ reserved-data@600000 {
+ 			};
+ 		};
+ 	};
++
++	hdmi_pins: hdmi-0 {
++		hdmi-scl-pins {
++			pinmux = <GPIOMUX(0, GPOUT_SYS_HDMI_DDC_SCL,
++					     GPOEN_SYS_HDMI_DDC_SCL,
++					     GPI_SYS_HDMI_DDC_SCL)>;
++			input-enable;
++			bias-pull-up;
++		};
++
++		hdmi-sda-pins {
++			pinmux = <GPIOMUX(1, GPOUT_SYS_HDMI_DDC_SDA,
++					     GPOEN_SYS_HDMI_DDC_SDA,
++					     GPI_SYS_HDMI_DDC_SDA)>;
++			input-enable;
++			bias-pull-up;
++		};
++
++		hdmi-cec-pins {
++			pinmux = <GPIOMUX(14, GPOUT_SYS_HDMI_CEC_SDA,
++					     GPOEN_SYS_HDMI_CEC_SDA,
++					     GPI_SYS_HDMI_CEC_SDA)>;
++			input-enable;
++			bias-pull-up;
++		};
++
++		hdmi-hpd-pins {
++			pinmux = <GPIOMUX(15, GPOUT_HIGH,
++					     GPOEN_ENABLE,
++					     GPI_SYS_HDMI_HPD)>;
++			input-enable;
++			bias-disable; /* external pull-up */
++		};
++	};
++
+ };
+ 
+ &spi0 {
+@@ -531,3 +585,40 @@ &U74_3 {
+ &U74_4 {
+ 	cpu-supply = <&vdd_cpu>;
+ };
++
++&voutcrg {
++	status = "okay";
++};
++
++&display {
++	status = "okay";
++};
++
++&hdmi {
++	status = "okay";
++	pinctrl-names = "default";
++	pinctrl-0 = <&hdmi_pins>;
++
++	hdmi_in: port {
++		#address-cells = <1>;
++		#size-cells = <0>;
++		hdmi_in_dc: endpoint@0 {
++			reg = <0>;
++			remote-endpoint = <&dc_out_hdmi>;
++		};
++	};
++};
++
++&dc8200 {
++	status = "okay";
++
++	dc_out: port {
++		#address-cells = <1>;
++		#size-cells = <0>;
++		dc_out_hdmi: endpoint@0 {
++			reg = <0>;
++			remote-endpoint = <&hdmi_in_dc>;
++		};
++
++	};
++};
+diff --git a/arch/riscv/boot/dts/starfive/jh7110.dtsi b/arch/riscv/boot/dts/starfive/jh7110.dtsi
+index e85464c32..f7faca02a 100644
+--- a/arch/riscv/boot/dts/starfive/jh7110.dtsi
++++ b/arch/riscv/boot/dts/starfive/jh7110.dtsi
+@@ -329,6 +329,11 @@ tdm_ext: tdm-ext-clock {
+ 		#clock-cells = <0>;
+ 	};
+ 
++	display: display-subsystem {
++		compatible = "starfive,display-subsystem";
++		ports = <&dc_out>;
++	};
++
+ 	soc {
+ 		compatible = "simple-bus";
+ 		interrupt-parent = <&plic>;
+@@ -1045,5 +1050,41 @@ voutcrg: clock-controller@295c0000 {
+ 			#reset-cells = <1>;
+ 			power-domains = <&pwrc JH7110_PD_VOUT>;
+ 		};
++
++		dc8200: lcd-controller@29400000 {
++			compatible = "starfive,jh7110-dc8200";
++			reg = <0x0 0x29400000 0x0 0x100>,
++			      <0x0 0x29400800 0x0 0x2000>;
++			interrupts = <95>;
++			clocks = <&syscrg JH7110_SYSCLK_NOC_BUS_DISP_AXI>,
++				<&voutcrg JH7110_VOUTCLK_DC8200_PIX0>,
++				<&voutcrg JH7110_VOUTCLK_DC8200_PIX1>,
++				<&voutcrg JH7110_VOUTCLK_DC8200_CORE>,
++				<&voutcrg JH7110_VOUTCLK_DC8200_AXI>,
++				<&voutcrg JH7110_VOUTCLK_DC8200_AHB>,
++				<&hdmitx0_pixelclk>,
++				<&voutcrg JH7110_VOUTCLK_DC8200_PIX>;
++			clock-names = "noc_bus", "channel0", "channel1",
++				      "dc_core", "axi_core", "ahb",
++				      "hdmi_tx", "dc_parent";
++			resets = <&voutcrg JH7110_VOUTRST_DC8200_AXI>,
++				 <&voutcrg JH7110_VOUTRST_DC8200_AHB>,
++				 <&voutcrg JH7110_VOUTRST_DC8200_CORE>;
++			reset-names = "axi","ahb", "core";
++		};
++
++		hdmi: hdmi@29590000 {
++			compatible = "starfive,jh7110-inno-hdmi";
++			reg = <0x0 0x29590000 0x0 0x4000>;
++			interrupts = <99>;
++
++			clocks = <&voutcrg JH7110_VOUTCLK_HDMI_TX_SYS>,
++				 <&voutcrg JH7110_VOUTCLK_HDMI_TX_MCLK>,
++				 <&voutcrg JH7110_VOUTCLK_HDMI_TX_BCLK>,
++				 <&hdmitx0_pixelclk>;
++			clock-names = "sysclk", "mclk", "bclk", "pclk";
++			resets = <&voutcrg JH7110_VOUTRST_HDMI_TX_HDMI>;
++			#sound-dai-cells = <0>;
++		};
+ 	};
+ };
+-- 
+2.40.1
+
