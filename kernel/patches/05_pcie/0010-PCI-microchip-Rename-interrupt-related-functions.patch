@@ -1,13 +1,12 @@
-From bd3f17644a6840da772be5316e8531b7a726620b Mon Sep 17 00:00:00 2001
+From 1c37b31ad9c94534d99b947d4c6a3e87539e782c Mon Sep 17 00:00:00 2001
 From: Minda Chen <minda.chen@starfivetech.com>
-Date: Fri, 20 Oct 2023 18:43:31 +0800
-Subject: [PATCH 10/21] PCI: microchip: Rename interrupt related functions
+Date: Tue, 31 Oct 2023 19:54:20 +0800
+Subject: [PATCH 10/20] PCI: microchip: Rename interrupt related functions
 
-Rename mc_* to plda_* for IRQ functions and related
-IRQ domain ops data instances.
+Rename mc_* to plda_* for IRQ functions and related IRQ domain ops data
+instances.
 
-MSI, INTx interrupt codes and IRQ init codes are all
-can be re-used.
+MSI, INTx interrupt codes and IRQ init codes are all can be re-used.
 
 - function rename list:
   mc_allocate_msi_domains()  --> plda_allocate_msi_domains()
@@ -26,11 +25,11 @@ can be re-used.
 Signed-off-by: Minda Chen <minda.chen@starfivetech.com>
 Acked-by: Conor Dooley <conor.dooley@microchip.com>
 ---
- .../pci/controller/plda/pcie-microchip-host.c | 98 +++++++++----------
- 1 file changed, 49 insertions(+), 49 deletions(-)
+ .../pci/controller/plda/pcie-microchip-host.c | 105 +++++++++---------
+ 1 file changed, 55 insertions(+), 50 deletions(-)
 
 diff --git a/drivers/pci/controller/plda/pcie-microchip-host.c b/drivers/pci/controller/plda/pcie-microchip-host.c
-index 2e79bcc7c..5a20d5a03 100644
+index 2e79bcc..54a0d43 100644
 --- a/drivers/pci/controller/plda/pcie-microchip-host.c
 +++ b/drivers/pci/controller/plda/pcie-microchip-host.c
 @@ -318,7 +318,7 @@ static void mc_pcie_enable_msi(struct mc_pcie *port, void __iomem *ecam)
@@ -42,7 +41,17 @@ index 2e79bcc7c..5a20d5a03 100644
  {
  	struct plda_pcie_rp *port = irq_desc_get_handler_data(desc);
  	struct irq_chip *chip = irq_desc_get_chip(desc);
-@@ -346,7 +346,7 @@ static void mc_handle_msi(struct irq_desc *desc)
+@@ -333,7 +333,8 @@ static void mc_handle_msi(struct irq_desc *desc)
+ 
+ 	status = readl_relaxed(bridge_base_addr + ISTATUS_LOCAL);
+ 	if (status & PM_MSI_INT_MSI_MASK) {
+-		writel_relaxed(status & PM_MSI_INT_MSI_MASK, bridge_base_addr + ISTATUS_LOCAL);
++		writel_relaxed(status & PM_MSI_INT_MSI_MASK,
++			       bridge_base_addr + ISTATUS_LOCAL);
+ 		status = readl_relaxed(bridge_base_addr + ISTATUS_MSI);
+ 		for_each_set_bit(bit, &status, msi->num_vectors) {
+ 			ret = generic_handle_domain_irq(msi->dev_domain, bit);
+@@ -346,7 +347,7 @@ static void mc_handle_msi(struct irq_desc *desc)
  	chained_irq_exit(chip, desc);
  }
  
@@ -51,7 +60,7 @@ index 2e79bcc7c..5a20d5a03 100644
  {
  	struct plda_pcie_rp *port = irq_data_get_irq_chip_data(data);
  	void __iomem *bridge_base_addr = port->bridge_addr;
-@@ -355,7 +355,7 @@ static void mc_msi_bottom_irq_ack(struct irq_data *data)
+@@ -355,7 +356,7 @@ static void mc_msi_bottom_irq_ack(struct irq_data *data)
  	writel_relaxed(BIT(bitpos), bridge_base_addr + ISTATUS_MSI);
  }
  
@@ -60,7 +69,7 @@ index 2e79bcc7c..5a20d5a03 100644
  {
  	struct plda_pcie_rp *port = irq_data_get_irq_chip_data(data);
  	phys_addr_t addr = port->msi.vector_phy;
-@@ -368,21 +368,21 @@ static void mc_compose_msi_msg(struct irq_data *data, struct msi_msg *msg)
+@@ -368,21 +369,23 @@ static void mc_compose_msi_msg(struct irq_data *data, struct msi_msg *msg)
  		(int)data->hwirq, msg->address_hi, msg->address_lo);
  }
  
@@ -86,12 +95,14 @@ index 2e79bcc7c..5a20d5a03 100644
  
 -static int mc_irq_msi_domain_alloc(struct irq_domain *domain, unsigned int virq,
 -				   unsigned int nr_irqs, void *args)
-+static int plda_irq_msi_domain_alloc(struct irq_domain *domain, unsigned int virq,
-+				     unsigned int nr_irqs, void *args)
++static int plda_irq_msi_domain_alloc(struct irq_domain *domain,
++				     unsigned int virq,
++				     unsigned int nr_irqs,
++				     void *args)
  {
  	struct plda_pcie_rp *port = domain->host_data;
  	struct plda_msi *msi = &port->msi;
-@@ -397,7 +397,7 @@ static int mc_irq_msi_domain_alloc(struct irq_domain *domain, unsigned int virq,
+@@ -397,7 +400,7 @@ static int mc_irq_msi_domain_alloc(struct irq_domain *domain, unsigned int virq,
  
  	set_bit(bit, msi->used);
  
@@ -100,18 +111,19 @@ index 2e79bcc7c..5a20d5a03 100644
  			    domain->host_data, handle_edge_irq, NULL, NULL);
  
  	mutex_unlock(&msi->lock);
-@@ -405,8 +405,8 @@ static int mc_irq_msi_domain_alloc(struct irq_domain *domain, unsigned int virq,
+@@ -405,8 +408,9 @@ static int mc_irq_msi_domain_alloc(struct irq_domain *domain, unsigned int virq,
  	return 0;
  }
  
 -static void mc_irq_msi_domain_free(struct irq_domain *domain, unsigned int virq,
 -				   unsigned int nr_irqs)
-+static void plda_irq_msi_domain_free(struct irq_domain *domain, unsigned int virq,
++static void plda_irq_msi_domain_free(struct irq_domain *domain,
++				     unsigned int virq,
 +				     unsigned int nr_irqs)
  {
  	struct irq_data *d = irq_domain_get_irq_data(domain, virq);
  	struct plda_pcie_rp *port = irq_data_get_irq_chip_data(d);
-@@ -423,24 +423,24 @@ static void mc_irq_msi_domain_free(struct irq_domain *domain, unsigned int virq,
+@@ -423,24 +427,24 @@ static void mc_irq_msi_domain_free(struct irq_domain *domain, unsigned int virq,
  }
  
  static const struct irq_domain_ops msi_domain_ops = {
@@ -143,16 +155,17 @@ index 2e79bcc7c..5a20d5a03 100644
  {
  	struct device *dev = port->dev;
  	struct fwnode_handle *fwnode = of_node_to_fwnode(dev->of_node);
-@@ -455,7 +455,7 @@ static int mc_allocate_msi_domains(struct plda_pcie_rp *port)
+@@ -455,7 +459,8 @@ static int mc_allocate_msi_domains(struct plda_pcie_rp *port)
  		return -ENOMEM;
  	}
  
 -	msi->msi_domain = pci_msi_create_irq_domain(fwnode, &mc_msi_domain_info,
-+	msi->msi_domain = pci_msi_create_irq_domain(fwnode, &plda_msi_domain_info,
++	msi->msi_domain = pci_msi_create_irq_domain(fwnode,
++						    &plda_msi_domain_info,
  						    msi->dev_domain);
  	if (!msi->msi_domain) {
  		dev_err(dev, "failed to create MSI domain\n");
-@@ -466,7 +466,7 @@ static int mc_allocate_msi_domains(struct plda_pcie_rp *port)
+@@ -466,7 +471,7 @@ static int mc_allocate_msi_domains(struct plda_pcie_rp *port)
  	return 0;
  }
  
@@ -161,7 +174,7 @@ index 2e79bcc7c..5a20d5a03 100644
  {
  	struct plda_pcie_rp *port = irq_desc_get_handler_data(desc);
  	struct irq_chip *chip = irq_desc_get_chip(desc);
-@@ -493,7 +493,7 @@ static void mc_handle_intx(struct irq_desc *desc)
+@@ -493,7 +498,7 @@ static void mc_handle_intx(struct irq_desc *desc)
  	chained_irq_exit(chip, desc);
  }
  
@@ -170,7 +183,7 @@ index 2e79bcc7c..5a20d5a03 100644
  {
  	struct plda_pcie_rp *port = irq_data_get_irq_chip_data(data);
  	void __iomem *bridge_base_addr = port->bridge_addr;
-@@ -502,7 +502,7 @@ static void mc_ack_intx_irq(struct irq_data *data)
+@@ -502,7 +507,7 @@ static void mc_ack_intx_irq(struct irq_data *data)
  	writel_relaxed(mask, bridge_base_addr + ISTATUS_LOCAL);
  }
  
@@ -179,7 +192,7 @@ index 2e79bcc7c..5a20d5a03 100644
  {
  	struct plda_pcie_rp *port = irq_data_get_irq_chip_data(data);
  	void __iomem *bridge_base_addr = port->bridge_addr;
-@@ -517,7 +517,7 @@ static void mc_mask_intx_irq(struct irq_data *data)
+@@ -517,7 +522,7 @@ static void mc_mask_intx_irq(struct irq_data *data)
  	raw_spin_unlock_irqrestore(&port->lock, flags);
  }
  
@@ -188,7 +201,7 @@ index 2e79bcc7c..5a20d5a03 100644
  {
  	struct plda_pcie_rp *port = irq_data_get_irq_chip_data(data);
  	void __iomem *bridge_base_addr = port->bridge_addr;
-@@ -532,24 +532,24 @@ static void mc_unmask_intx_irq(struct irq_data *data)
+@@ -532,24 +537,24 @@ static void mc_unmask_intx_irq(struct irq_data *data)
  	raw_spin_unlock_irqrestore(&port->lock, flags);
  }
  
@@ -222,7 +235,7 @@ index 2e79bcc7c..5a20d5a03 100644
  };
  
  static inline u32 reg_to_event(u32 reg, struct event_map field)
-@@ -609,7 +609,7 @@ static u32 local_events(struct mc_pcie *port)
+@@ -609,7 +614,7 @@ static u32 local_events(struct mc_pcie *port)
  	return val;
  }
  
@@ -231,7 +244,7 @@ index 2e79bcc7c..5a20d5a03 100644
  {
  	struct mc_pcie *mc_port = container_of(port, struct mc_pcie, plda);
  	u32 events = 0;
-@@ -638,7 +638,7 @@ static irqreturn_t mc_event_handler(int irq, void *dev_id)
+@@ -638,7 +643,7 @@ static irqreturn_t mc_event_handler(int irq, void *dev_id)
  	return IRQ_HANDLED;
  }
  
@@ -240,7 +253,7 @@ index 2e79bcc7c..5a20d5a03 100644
  {
  	struct plda_pcie_rp *port = irq_desc_get_handler_data(desc);
  	unsigned long events;
-@@ -647,7 +647,7 @@ static void mc_handle_event(struct irq_desc *desc)
+@@ -647,7 +652,7 @@ static void mc_handle_event(struct irq_desc *desc)
  
  	chained_irq_enter(chip, desc);
  
@@ -249,7 +262,7 @@ index 2e79bcc7c..5a20d5a03 100644
  
  	for_each_set_bit(bit, &events, NUM_EVENTS)
  		generic_handle_domain_irq(port->event_domain, bit);
-@@ -750,7 +750,7 @@ static int mc_pcie_event_map(struct irq_domain *domain, unsigned int irq,
+@@ -750,7 +755,7 @@ static int mc_pcie_event_map(struct irq_domain *domain, unsigned int irq,
  	return 0;
  }
  
@@ -258,7 +271,7 @@ index 2e79bcc7c..5a20d5a03 100644
  	.map = mc_pcie_event_map,
  };
  
-@@ -799,7 +799,7 @@ static int mc_pcie_init_clks(struct device *dev)
+@@ -799,7 +804,7 @@ static int mc_pcie_init_clks(struct device *dev)
  	return 0;
  }
  
@@ -267,7 +280,7 @@ index 2e79bcc7c..5a20d5a03 100644
  {
  	struct device *dev = port->dev;
  	struct device_node *node = dev->of_node;
-@@ -813,7 +813,7 @@ static int mc_pcie_init_irq_domains(struct plda_pcie_rp *port)
+@@ -813,7 +818,7 @@ static int mc_pcie_init_irq_domains(struct plda_pcie_rp *port)
  	}
  
  	port->event_domain = irq_domain_add_linear(pcie_intc_node, NUM_EVENTS,
@@ -276,7 +289,7 @@ index 2e79bcc7c..5a20d5a03 100644
  	if (!port->event_domain) {
  		dev_err(dev, "failed to get event domain\n");
  		of_node_put(pcie_intc_node);
-@@ -835,7 +835,7 @@ static int mc_pcie_init_irq_domains(struct plda_pcie_rp *port)
+@@ -835,7 +840,7 @@ static int mc_pcie_init_irq_domains(struct plda_pcie_rp *port)
  	of_node_put(pcie_intc_node);
  	raw_spin_lock_init(&port->lock);
  
@@ -285,7 +298,7 @@ index 2e79bcc7c..5a20d5a03 100644
  }
  
  static inline void mc_clear_secs(struct mc_pcie *port)
-@@ -898,14 +898,14 @@ static void mc_disable_interrupts(struct mc_pcie *port)
+@@ -898,14 +903,14 @@ static void mc_disable_interrupts(struct mc_pcie *port)
  	writel_relaxed(GENMASK(31, 0), bridge_base_addr + ISTATUS_HOST);
  }
  
@@ -302,7 +315,7 @@ index 2e79bcc7c..5a20d5a03 100644
  	if (ret) {
  		dev_err(dev, "failed creating IRQ domains\n");
  		return ret;
-@@ -938,7 +938,7 @@ static int mc_init_interrupts(struct platform_device *pdev, struct plda_pcie_rp
+@@ -938,7 +943,7 @@ static int mc_init_interrupts(struct platform_device *pdev, struct plda_pcie_rp
  	}
  
  	/* Plug the INTx chained handler */
@@ -311,7 +324,7 @@ index 2e79bcc7c..5a20d5a03 100644
  
  	msi_irq = irq_create_mapping(port->event_domain,
  				     EVENT_LOCAL_PM_MSI_INT_MSI);
-@@ -946,10 +946,10 @@ static int mc_init_interrupts(struct platform_device *pdev, struct plda_pcie_rp
+@@ -946,10 +951,10 @@ static int mc_init_interrupts(struct platform_device *pdev, struct plda_pcie_rp
  		return -ENXIO;
  
  	/* Plug the MSI chained handler */
@@ -324,7 +337,7 @@ index 2e79bcc7c..5a20d5a03 100644
  
  	return 0;
  }
-@@ -977,7 +977,7 @@ static int mc_platform_init(struct pci_config_window *cfg)
+@@ -977,7 +982,7 @@ static int mc_platform_init(struct pci_config_window *cfg)
  		return ret;
  
  	/* Address translation is up; safe to enable interrupts */

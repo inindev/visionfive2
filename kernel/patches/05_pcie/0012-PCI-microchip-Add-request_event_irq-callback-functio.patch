@@ -1,34 +1,33 @@
-From cd4723bc50e8fb765877f38251820796bd01d123 Mon Sep 17 00:00:00 2001
+From 2b23b769b8fbd75b16de3c1a4c2e7bffef71247d Mon Sep 17 00:00:00 2001
 From: Minda Chen <minda.chen@starfivetech.com>
-Date: Fri, 20 Oct 2023 18:43:33 +0800
-Subject: [PATCH 12/21] PCI: microchip: Add request_event_irq() callback
+Date: Tue, 31 Oct 2023 19:54:22 +0800
+Subject: [PATCH 12/20] PCI: microchip: Add request_event_irq() callback
  function
 
-PolarFire implements specific PCIe interrupts besides PLDA
-local interrupt. For PLDA lack of MSI controller, these
-interrupts can not be added to MSI. Polar driver also register
-these interrupt symbol name.
+PolarFire implements specific PCIe interrupts except PLDA local inter-
+rupt. For lack of MSI controller, these interrupts have to be added to
+global event field. PolarFire driver also register additional interrupt
+symbol name.
 
-PolarFire PCIe contain total 28 interrupts event while PLDA
-contain 13 local interrupts event, interrupt to event
-num mapping is different.
+PolarFire PCIe contain total 28 interrupts event while PLDA contain 13
+local interrupts event, interrupt to event num mapping is different.
 
-So add a callback function to support different IRQ register
-function. Also Add PLDA default handler function, which will
-be moved to pcie-plda-host.c in moving codes patch.
+So add a callback function to support different IRQ register function.
+Also Add PLDA default handler function, which will be moved to pcie-
+plda-host.c in moving codes patch.
 
 Signed-off-by: Minda Chen <minda.chen@starfivetech.com>
 Acked-by: Conor Dooley <conor.dooley@microchip.com>
 ---
- .../pci/controller/plda/pcie-microchip-host.c | 30 ++++++++++++++++---
- drivers/pci/controller/plda/pcie-plda.h       |  5 ++++
- 2 files changed, 31 insertions(+), 4 deletions(-)
+ .../pci/controller/plda/pcie-microchip-host.c | 31 ++++++++++++++++---
+ drivers/pci/controller/plda/pcie-plda.h       |  5 +++
+ 2 files changed, 32 insertions(+), 4 deletions(-)
 
 diff --git a/drivers/pci/controller/plda/pcie-microchip-host.c b/drivers/pci/controller/plda/pcie-microchip-host.c
-index 179945598..c95ef4679 100644
+index d42278c..f89d102 100644
 --- a/drivers/pci/controller/plda/pcie-microchip-host.c
 +++ b/drivers/pci/controller/plda/pcie-microchip-host.c
-@@ -638,6 +638,11 @@ static irqreturn_t mc_event_handler(int irq, void *dev_id)
+@@ -643,6 +643,11 @@ static irqreturn_t mc_event_handler(int irq, void *dev_id)
  	return IRQ_HANDLED;
  }
  
@@ -40,7 +39,7 @@ index 179945598..c95ef4679 100644
  static void plda_handle_event(struct irq_desc *desc)
  {
  	struct plda_pcie_rp *port = irq_desc_get_handler_data(desc);
-@@ -799,6 +804,17 @@ static int mc_pcie_init_clks(struct device *dev)
+@@ -804,6 +809,17 @@ static int mc_pcie_init_clks(struct device *dev)
  	return 0;
  }
  
@@ -58,7 +57,7 @@ index 179945598..c95ef4679 100644
  static int plda_pcie_init_irq_domains(struct plda_pcie_rp *port)
  {
  	struct device *dev = port->dev;
-@@ -898,7 +914,9 @@ static void mc_disable_interrupts(struct mc_pcie *port)
+@@ -904,7 +920,9 @@ static void mc_disable_interrupts(struct mc_pcie *port)
  	writel_relaxed(GENMASK(31, 0), bridge_base_addr + ISTATUS_HOST);
  }
  
@@ -69,7 +68,7 @@ index 179945598..c95ef4679 100644
  {
  	struct device *dev = &pdev->dev;
  	int irq;
-@@ -922,8 +940,12 @@ static int plda_init_interrupts(struct platform_device *pdev, struct plda_pcie_r
+@@ -928,8 +946,13 @@ static int plda_init_interrupts(struct platform_device *pdev, struct plda_pcie_r
  			return -ENXIO;
  		}
  
@@ -78,13 +77,14 @@ index 179945598..c95ef4679 100644
 +		if (event->request_event_irq)
 +			ret = event->request_event_irq(port, event_irq, i);
 +		else
-+			ret = devm_request_irq(dev, event_irq, plda_event_handler,
++			ret = devm_request_irq(dev, event_irq,
++					       plda_event_handler,
 +					       0, NULL, port);
 +
  		if (ret) {
  			dev_err(dev, "failed to request IRQ %d\n", event_irq);
  			return ret;
-@@ -977,7 +999,7 @@ static int mc_platform_init(struct pci_config_window *cfg)
+@@ -983,7 +1006,7 @@ static int mc_platform_init(struct pci_config_window *cfg)
  		return ret;
  
  	/* Address translation is up; safe to enable interrupts */
@@ -94,7 +94,7 @@ index 179945598..c95ef4679 100644
  		return ret;
  
 diff --git a/drivers/pci/controller/plda/pcie-plda.h b/drivers/pci/controller/plda/pcie-plda.h
-index e3d35cef9..28ed1374e 100644
+index e3d35ce..28ed137 100644
 --- a/drivers/pci/controller/plda/pcie-plda.h
 +++ b/drivers/pci/controller/plda/pcie-plda.h
 @@ -121,6 +121,11 @@ struct plda_pcie_rp {

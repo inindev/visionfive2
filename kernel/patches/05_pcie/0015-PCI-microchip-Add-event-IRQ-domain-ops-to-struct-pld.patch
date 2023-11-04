@@ -1,28 +1,27 @@
-From 5bef0522123dd8720c76afe0688f29d49d27262e Mon Sep 17 00:00:00 2001
+From 7da7d0ea65d7c8093832d21ea44490110b7c06e3 Mon Sep 17 00:00:00 2001
 From: Minda Chen <minda.chen@starfivetech.com>
-Date: Fri, 20 Oct 2023 18:43:36 +0800
-Subject: [PATCH 15/21] PCI: microchip: Add event IRQ domain ops to struct
+Date: Tue, 31 Oct 2023 19:54:25 +0800
+Subject: [PATCH 15/20] PCI: microchip: Add event IRQ domain ops to struct
  plda_event
 
-For PLDA lack of an MSI controller, The new added
-PCIe interrupts can not be added to MSI.PolarFire event
-domain ops can not be re-used.
+For lack of an MSI controller, The new added PCIe interrupts have to be
+added to global interrupt event field. PolarFire event domain ops can
+not be re-used.
 
-PLDA event domain ops instances will be implemented
-in later patch.
+PLDA event domain ops instances will be implemented in later patch.
 
 Signed-off-by: Minda Chen <minda.chen@starfivetech.com>
 Acked-by: Conor Dooley <conor.dooley@microchip.com>
 ---
- drivers/pci/controller/plda/pcie-microchip-host.c | 9 ++++++---
+ drivers/pci/controller/plda/pcie-microchip-host.c | 6 ++++--
  drivers/pci/controller/plda/pcie-plda.h           | 1 +
- 2 files changed, 7 insertions(+), 3 deletions(-)
+ 2 files changed, 5 insertions(+), 2 deletions(-)
 
 diff --git a/drivers/pci/controller/plda/pcie-microchip-host.c b/drivers/pci/controller/plda/pcie-microchip-host.c
-index 5a8c134bf..4765a596a 100644
+index f5e7da2..e6dcc57 100644
 --- a/drivers/pci/controller/plda/pcie-microchip-host.c
 +++ b/drivers/pci/controller/plda/pcie-microchip-host.c
-@@ -816,13 +816,15 @@ static const struct plda_event_ops mc_event_ops = {
+@@ -821,13 +821,15 @@ static const struct plda_event_ops mc_event_ops = {
  };
  
  static const struct plda_event mc_event = {
@@ -39,17 +38,7 @@ index 5a8c134bf..4765a596a 100644
  {
  	struct device *dev = port->dev;
  	struct device_node *node = dev->of_node;
-@@ -836,7 +838,8 @@ static int plda_pcie_init_irq_domains(struct plda_pcie_rp *port)
- 	}
- 
- 	port->event_domain = irq_domain_add_linear(pcie_intc_node, port->num_events,
--						   &mc_event_domain_ops, port);
-+						   ops, port);
-+
- 	if (!port->event_domain) {
- 		dev_err(dev, "failed to get event domain\n");
- 		of_node_put(pcie_intc_node);
-@@ -935,7 +938,7 @@ static int plda_init_interrupts(struct platform_device *pdev,
+@@ -941,7 +943,7 @@ static int plda_init_interrupts(struct platform_device *pdev,
  		return -EINVAL;
  	}
  
@@ -59,7 +48,7 @@ index 5a8c134bf..4765a596a 100644
  		dev_err(dev, "failed creating IRQ domains\n");
  		return ret;
 diff --git a/drivers/pci/controller/plda/pcie-plda.h b/drivers/pci/controller/plda/pcie-plda.h
-index df1729095..820ea1685 100644
+index df17290..820ea16 100644
 --- a/drivers/pci/controller/plda/pcie-plda.h
 +++ b/drivers/pci/controller/plda/pcie-plda.h
 @@ -129,6 +129,7 @@ struct plda_pcie_rp {

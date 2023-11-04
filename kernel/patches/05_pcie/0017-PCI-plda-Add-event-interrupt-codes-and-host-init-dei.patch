@@ -1,7 +1,7 @@
-From 0e97518aaaa76bf38c2a8b8b3e8c635db719a58b Mon Sep 17 00:00:00 2001
+From 0f695bbdcec4fa3b8f1fef937dfa6dcb04a683e0 Mon Sep 17 00:00:00 2001
 From: Minda Chen <minda.chen@starfivetech.com>
-Date: Fri, 20 Oct 2023 18:43:38 +0800
-Subject: [PATCH 17/21] PCI: plda: Add event interrupt codes and host
+Date: Tue, 31 Oct 2023 19:54:27 +0800
+Subject: [PATCH 17/20] PCI: plda: Add event interrupt codes and host
  init/deinit functions
 
 PLDA implements new codes and IRQ domain ops like PolarFire.
@@ -15,12 +15,12 @@ PLDA PCIe host core.
 
 Signed-off-by: Minda Chen <minda.chen@starfivetech.com>
 ---
- drivers/pci/controller/plda/pcie-plda-host.c | 221 +++++++++++++++++--
- drivers/pci/controller/plda/pcie-plda.h      |  47 ++++
- 2 files changed, 255 insertions(+), 13 deletions(-)
+ drivers/pci/controller/plda/pcie-plda-host.c | 230 +++++++++++++++++--
+ drivers/pci/controller/plda/pcie-plda.h      |  49 ++++
+ 2 files changed, 266 insertions(+), 13 deletions(-)
 
 diff --git a/drivers/pci/controller/plda/pcie-plda-host.c b/drivers/pci/controller/plda/pcie-plda-host.c
-index 4a4a2b5ef..052db70c3 100644
+index e155d1d..10ad262 100644
 --- a/drivers/pci/controller/plda/pcie-plda-host.c
 +++ b/drivers/pci/controller/plda/pcie-plda-host.c
 @@ -3,6 +3,7 @@
@@ -31,7 +31,23 @@ index 4a4a2b5ef..052db70c3 100644
   *
   * Author: Daire McNamara <daire.mcnamara@microchip.com>
   */
-@@ -257,6 +258,107 @@ static irqreturn_t plda_event_handler(int irq, void *dev_id)
+@@ -18,6 +19,15 @@
+ 
+ #include "pcie-plda.h"
+ 
++void __iomem *plda_pcie_map_bus(struct pci_bus *bus, unsigned int devfn,
++				int where)
++{
++	struct plda_pcie_rp *pcie = bus->sysdata;
++
++	return pcie->config_base + PCIE_ECAM_OFFSET(bus->number, devfn, where);
++}
++EXPORT_SYMBOL_GPL(plda_pcie_map_bus);
++
+ static void plda_handle_msi(struct irq_desc *desc)
+ {
+ 	struct plda_pcie_rp *port = irq_desc_get_handler_data(desc);
+@@ -262,6 +272,107 @@ static irqreturn_t plda_event_handler(int irq, void *dev_id)
  	return IRQ_HANDLED;
  }
  
@@ -139,7 +155,7 @@ index 4a4a2b5ef..052db70c3 100644
  static void plda_handle_event(struct irq_desc *desc)
  {
  	struct plda_pcie_rp *port = irq_desc_get_handler_data(desc);
-@@ -320,8 +422,7 @@ int plda_init_interrupts(struct platform_device *pdev,
+@@ -325,8 +436,7 @@ int plda_init_interrupts(struct platform_device *pdev,
  			 const struct plda_event *event)
  {
  	struct device *dev = &pdev->dev;
@@ -149,7 +165,7 @@ index 4a4a2b5ef..052db70c3 100644
  	int ret;
  
  	if (!event->event_ops || !event->event_ops->get_events) {
-@@ -335,8 +436,8 @@ int plda_init_interrupts(struct platform_device *pdev,
+@@ -340,8 +450,8 @@ int plda_init_interrupts(struct platform_device *pdev,
  		return ret;
  	}
  
@@ -160,7 +176,7 @@ index 4a4a2b5ef..052db70c3 100644
  		return -ENODEV;
  
  	port->event_ops = event->event_ops;
-@@ -360,26 +461,26 @@ int plda_init_interrupts(struct platform_device *pdev,
+@@ -366,26 +476,26 @@ int plda_init_interrupts(struct platform_device *pdev,
  		}
  	}
  
@@ -196,7 +212,7 @@ index 4a4a2b5ef..052db70c3 100644
  
  	return 0;
  }
-@@ -445,3 +546,97 @@ int plda_pcie_setup_iomems(struct pci_host_bridge *bridge,
+@@ -451,3 +561,97 @@ int plda_pcie_setup_iomems(struct pci_host_bridge *bridge,
  	return 0;
  }
  EXPORT_SYMBOL_GPL(plda_pcie_setup_iomems);
@@ -295,7 +311,7 @@ index 4a4a2b5ef..052db70c3 100644
 +}
 +EXPORT_SYMBOL_GPL(plda_pcie_host_deinit);
 diff --git a/drivers/pci/controller/plda/pcie-plda.h b/drivers/pci/controller/plda/pcie-plda.h
-index ce7787aef..ed99a51dd 100644
+index ce7787a..6b29bf1 100644
 --- a/drivers/pci/controller/plda/pcie-plda.h
 +++ b/drivers/pci/controller/plda/pcie-plda.h
 @@ -40,6 +40,7 @@
@@ -377,7 +393,16 @@ index ce7787aef..ed99a51dd 100644
  	int num_events;
  };
  
-@@ -145,4 +184,12 @@ void plda_pcie_setup_window(void __iomem *bridge_base_addr, u32 index,
+@@ -137,6 +176,8 @@ struct plda_event {
+ 	int msi_event;
+ };
+ 
++void __iomem *plda_pcie_map_bus(struct pci_bus *bus, unsigned int devfn,
++				int where);
+ int plda_init_interrupts(struct platform_device *pdev,
+ 			 struct plda_pcie_rp *port,
+ 			 const struct plda_event *event);
+@@ -145,4 +186,12 @@ void plda_pcie_setup_window(void __iomem *bridge_base_addr, u32 index,
  			    size_t size);
  int plda_pcie_setup_iomems(struct pci_host_bridge *bridge,
  			   struct plda_pcie_rp *port);

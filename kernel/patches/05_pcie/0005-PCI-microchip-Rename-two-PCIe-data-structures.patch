@@ -1,17 +1,16 @@
-From 56866803c81d6df8630d4a27823e0e40032985f1 Mon Sep 17 00:00:00 2001
+From cebe35553bf29c6680a8758ac5349a201d66664a Mon Sep 17 00:00:00 2001
 From: Minda Chen <minda.chen@starfivetech.com>
-Date: Fri, 20 Oct 2023 18:43:26 +0800
-Subject: [PATCH 05/21] PCI: microchip: Rename two PCIe data structures
+Date: Tue, 31 Oct 2023 19:54:15 +0800
+Subject: [PATCH 05/20] PCI: microchip: Rename two PCIe data structures
 
-Add PLDA PCIe related data structures by rename
-data structure name from mc_* to plda_*.
+Add PLDA PCIe related data structures by rename data structure name
+from mc_* to plda_*.
 
-axi_base_addr is stayed in struct mc_pcie for it
-is microchip its own data.
+axi_base_addr is stayed in struct mc_pcie for it's microchip its own
+data.
 
-The event interrupt codes is still using struct
-mc_pcie because the event interrupt codes can not
-be re-used.
+The event interrupt codes is still using struct mc_pcie because the
+event interrupt codes can not be re-used.
 
 The modification includes:
 mc_pcie --> plda_pcie_rp (Get most of data members)
@@ -24,7 +23,7 @@ Reviewed-by: Conor Dooley <conor.dooley@microchip.com>
  1 file changed, 53 insertions(+), 43 deletions(-)
 
 diff --git a/drivers/pci/controller/plda/pcie-microchip-host.c b/drivers/pci/controller/plda/pcie-microchip-host.c
-index 60870ee1f..3dc4d4ca9 100644
+index 60870ee..3dc4d4c 100644
 --- a/drivers/pci/controller/plda/pcie-microchip-host.c
 +++ b/drivers/pci/controller/plda/pcie-microchip-host.c
 @@ -22,7 +22,7 @@

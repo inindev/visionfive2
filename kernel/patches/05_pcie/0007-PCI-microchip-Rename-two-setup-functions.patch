@@ -1,13 +1,13 @@
-From 47a6296dfe742c2564f18c5bd5b506769531f410 Mon Sep 17 00:00:00 2001
+From dd011f6f794241d88f8faa0c732762a75cb322c2 Mon Sep 17 00:00:00 2001
 From: Minda Chen <minda.chen@starfivetech.com>
-Date: Fri, 20 Oct 2023 18:43:28 +0800
-Subject: [PATCH 07/21] PCI: microchip: Rename two setup functions
+Date: Tue, 31 Oct 2023 19:54:17 +0800
+Subject: [PATCH 07/20] PCI: microchip: Rename two setup functions
 
-Rename two setup functions to plda prefix.
-Prepare to re-use these two setup function.
+Rename two setup functions to plda prefix. Prepare to re-use these two
+setup function.
 
-For two setup functions names are similar, rename
-mc_pcie_setup_windows() to plda_pcie_setup_iomems()
+For two setup functions names are similar, rename mc_pcie_setup_
+windows() to plda_pcie_setup_iomems().
 
 Signed-off-by: Minda Chen <minda.chen@starfivetech.com>
 Reviewed-by: Conor Dooley <conor.dooley@microchip.com>
@@ -16,7 +16,7 @@ Reviewed-by: Conor Dooley <conor.dooley@microchip.com>
  1 file changed, 12 insertions(+), 12 deletions(-)
 
 diff --git a/drivers/pci/controller/plda/pcie-microchip-host.c b/drivers/pci/controller/plda/pcie-microchip-host.c
-index 261147a0a..4877d130e 100644
+index 261147a..4877d13 100644
 --- a/drivers/pci/controller/plda/pcie-microchip-host.c
 +++ b/drivers/pci/controller/plda/pcie-microchip-host.c
 @@ -838,9 +838,9 @@ static int mc_pcie_init_irq_domains(struct plda_pcie_rp *port)

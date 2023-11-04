@@ -1,11 +1,11 @@
-From 638f9e65e3e1a665d908d8ab00f2400efbb1fae6 Mon Sep 17 00:00:00 2001
+From 4d046b192a8ff94a7b1806a3b78748e3e125dbe0 Mon Sep 17 00:00:00 2001
 From: Minda Chen <minda.chen@starfivetech.com>
-Date: Fri, 20 Oct 2023 18:43:30 +0800
-Subject: [PATCH 09/21] PCI: microchip: Move setup functions to
+Date: Tue, 31 Oct 2023 19:54:19 +0800
+Subject: [PATCH 09/20] PCI: microchip: Move setup functions to
  pcie-plda-host.c
 
-Move setup functions to common pcie-plda-host.c.
-So these two functions can be re-used.
+Move setup functions to common pcie-plda-host.c. So these two functions
+can be re-used.
 
 Signed-off-by: Minda Chen <minda.chen@starfivetech.com>
 Reviewed-by: Conor Dooley <conor.dooley@microchip.com>
@@ -19,7 +19,7 @@ Reviewed-by: Conor Dooley <conor.dooley@microchip.com>
  create mode 100644 drivers/pci/controller/plda/pcie-plda-host.c
 
 diff --git a/drivers/pci/controller/plda/Kconfig b/drivers/pci/controller/plda/Kconfig
-index 5cb3be4fc..e54a82ee9 100644
+index 5cb3be4..e54a82e 100644
 --- a/drivers/pci/controller/plda/Kconfig
 +++ b/drivers/pci/controller/plda/Kconfig
 @@ -3,10 +3,14 @@
@@ -38,7 +38,7 @@ index 5cb3be4fc..e54a82ee9 100644
  	  Say Y here if you want kernel to support the Microchip AXI PCIe
  	  Host Bridge driver.
 diff --git a/drivers/pci/controller/plda/Makefile b/drivers/pci/controller/plda/Makefile
-index e1a265cbf..4340ab007 100644
+index e1a265c..4340ab0 100644
 --- a/drivers/pci/controller/plda/Makefile
 +++ b/drivers/pci/controller/plda/Makefile
 @@ -1,2 +1,3 @@
@@ -46,7 +46,7 @@ index e1a265cbf..4340ab007 100644
 +obj-$(CONFIG_PCIE_PLDA_HOST) += pcie-plda-host.o
  obj-$(CONFIG_PCIE_MICROCHIP_HOST) += pcie-microchip-host.o
 diff --git a/drivers/pci/controller/plda/pcie-microchip-host.c b/drivers/pci/controller/plda/pcie-microchip-host.c
-index 31ca8d44e..2e79bcc7c 100644
+index 31ca8d4..2e79bcc 100644
 --- a/drivers/pci/controller/plda/pcie-microchip-host.c
 +++ b/drivers/pci/controller/plda/pcie-microchip-host.c
 @@ -838,65 +838,6 @@ static int mc_pcie_init_irq_domains(struct plda_pcie_rp *port)
@@ -117,7 +117,7 @@ index 31ca8d44e..2e79bcc7c 100644
  	void __iomem *ctrl_base_addr = port->axi_base_addr + MC_PCIE_CTRL_ADDR;
 diff --git a/drivers/pci/controller/plda/pcie-plda-host.c b/drivers/pci/controller/plda/pcie-plda-host.c
 new file mode 100644
-index 000000000..191311818
+index 0000000..1913118
 --- /dev/null
 +++ b/drivers/pci/controller/plda/pcie-plda-host.c
 @@ -0,0 +1,80 @@
@@ -202,7 +202,7 @@ index 000000000..191311818
 +}
 +EXPORT_SYMBOL_GPL(plda_pcie_setup_iomems);
 diff --git a/drivers/pci/controller/plda/pcie-plda.h b/drivers/pci/controller/plda/pcie-plda.h
-index 363fcbbaf..3deefd35f 100644
+index 363fcbb..3deefd3 100644
 --- a/drivers/pci/controller/plda/pcie-plda.h
 +++ b/drivers/pci/controller/plda/pcie-plda.h
 @@ -120,4 +120,9 @@ struct plda_pcie_rp {

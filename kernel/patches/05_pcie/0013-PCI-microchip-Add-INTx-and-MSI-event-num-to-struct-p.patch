@@ -1,7 +1,7 @@
-From 693d20aabb2844e6f6ee9331bf95001ddc552a04 Mon Sep 17 00:00:00 2001
+From 4330cc20a3ecba909a79702f7f61994bc5e64096 Mon Sep 17 00:00:00 2001
 From: Minda Chen <minda.chen@starfivetech.com>
-Date: Fri, 20 Oct 2023 18:43:34 +0800
-Subject: [PATCH 13/21] PCI: microchip: Add INTx and MSI event num to struct
+Date: Tue, 31 Oct 2023 19:54:23 +0800
+Subject: [PATCH 13/20] PCI: microchip: Add INTx and MSI event num to struct
  plda_event
 
 The INTx and MSI interrupt event num is different in Microchip and
@@ -15,10 +15,10 @@ Acked-by: Conor Dooley <conor.dooley@microchip.com>
  2 files changed, 6 insertions(+), 2 deletions(-)
 
 diff --git a/drivers/pci/controller/plda/pcie-microchip-host.c b/drivers/pci/controller/plda/pcie-microchip-host.c
-index c95ef4679..e57827bdb 100644
+index f89d102..2c03b03 100644
 --- a/drivers/pci/controller/plda/pcie-microchip-host.c
 +++ b/drivers/pci/controller/plda/pcie-microchip-host.c
-@@ -813,6 +813,8 @@ static int mc_request_event_irq(struct plda_pcie_rp *plda, int event_irq,
+@@ -818,6 +818,8 @@ static int mc_request_event_irq(struct plda_pcie_rp *plda, int event_irq,
  
  static const struct plda_event mc_event = {
  	.request_event_irq = mc_request_event_irq,
@@ -27,7 +27,7 @@ index c95ef4679..e57827bdb 100644
  };
  
  static int plda_pcie_init_irq_domains(struct plda_pcie_rp *port)
-@@ -953,7 +955,7 @@ static int plda_init_interrupts(struct platform_device *pdev,
+@@ -960,7 +962,7 @@ static int plda_init_interrupts(struct platform_device *pdev,
  	}
  
  	intx_irq = irq_create_mapping(port->event_domain,
@@ -36,7 +36,7 @@ index c95ef4679..e57827bdb 100644
  	if (!intx_irq) {
  		dev_err(dev, "failed to map INTx interrupt\n");
  		return -ENXIO;
-@@ -963,7 +965,7 @@ static int plda_init_interrupts(struct platform_device *pdev,
+@@ -970,7 +972,7 @@ static int plda_init_interrupts(struct platform_device *pdev,
  	irq_set_chained_handler_and_data(intx_irq, plda_handle_intx, port);
  
  	msi_irq = irq_create_mapping(port->event_domain,
@@ -46,7 +46,7 @@ index c95ef4679..e57827bdb 100644
  		return -ENXIO;
  
 diff --git a/drivers/pci/controller/plda/pcie-plda.h b/drivers/pci/controller/plda/pcie-plda.h
-index 28ed1374e..fba7343f9 100644
+index 28ed137..fba7343 100644
 --- a/drivers/pci/controller/plda/pcie-plda.h
 +++ b/drivers/pci/controller/plda/pcie-plda.h
 @@ -124,6 +124,8 @@ struct plda_pcie_rp {

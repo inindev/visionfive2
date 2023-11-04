@@ -1,12 +1,11 @@
-From 7e73cd4c911bbc9d9f68b362c4e46c237a0d1bea Mon Sep 17 00:00:00 2001
+From 3289edf034da8b28ec3d39925821d93d87bb2d59 Mon Sep 17 00:00:00 2001
 From: Minda Chen <minda.chen@starfivetech.com>
-Date: Fri, 20 Oct 2023 18:43:24 +0800
-Subject: [PATCH 03/21] PCI: microchip: Move PLDA IP register macros to
+Date: Tue, 31 Oct 2023 19:54:13 +0800
+Subject: [PATCH 03/20] PCI: microchip: Move PLDA IP register macros to
  pcie-plda.h
 
-Move PLDA PCIe host controller IP registers macros to
-pcie-plda.h, Including bridge registers and local IRQ
-event number.
+Move PLDA PCIe host controller IP registers macros to pcie-plda.h,
+including bridge registers and local IRQ event number.
 
 Signed-off-by: Minda Chen <minda.chen@starfivetech.com>
 Reviewed-by: Conor Dooley <conor.dooley@microchip.com>
@@ -18,10 +17,10 @@ Reviewed-by: Conor Dooley <conor.dooley@microchip.com>
  create mode 100644 drivers/pci/controller/plda/pcie-plda.h
 
 diff --git a/MAINTAINERS b/MAINTAINERS
-index 4c6dad963..eb7dad449 100644
+index 12f918e..1486cbc 100644
 --- a/MAINTAINERS
 +++ b/MAINTAINERS
-@@ -16416,6 +16416,14 @@ S:	Maintained
+@@ -16417,6 +16417,14 @@ S:	Maintained
  F:	Documentation/devicetree/bindings/pci/layerscape-pcie-gen4.txt
  F:	drivers/pci/controller/mobiveil/pcie-layerscape-gen4.c
  
@@ -37,7 +36,7 @@ index 4c6dad963..eb7dad449 100644
  M:	Marek Vasut <marek.vasut+renesas@gmail.com>
  M:	Yoshihiro Shimoda <yoshihiro.shimoda.uh@renesas.com>
 diff --git a/drivers/pci/controller/plda/pcie-microchip-host.c b/drivers/pci/controller/plda/pcie-microchip-host.c
-index cb09a8137..a34ec6aad 100644
+index cb09a81..a34ec6a 100644
 --- a/drivers/pci/controller/plda/pcie-microchip-host.c
 +++ b/drivers/pci/controller/plda/pcie-microchip-host.c
 @@ -19,6 +19,7 @@
@@ -171,7 +170,7 @@ index cb09a8137..a34ec6aad 100644
  	[EVENT_PCIE_ ## x] = { __stringify(x), s }
 diff --git a/drivers/pci/controller/plda/pcie-plda.h b/drivers/pci/controller/plda/pcie-plda.h
 new file mode 100644
-index 000000000..727fc5431
+index 0000000..727fc54
 --- /dev/null
 +++ b/drivers/pci/controller/plda/pcie-plda.h
 @@ -0,0 +1,102 @@

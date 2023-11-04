@@ -1,7 +1,7 @@
-From 773e729ad696721dc378292705b16690bbb60edc Mon Sep 17 00:00:00 2001
+From 8743d02ff36ee23c1fb7235ab98849f3132861b0 Mon Sep 17 00:00:00 2001
 From: Minda Chen <minda.chen@starfivetech.com>
-Date: Fri, 20 Oct 2023 18:43:41 +0800
-Subject: [PATCH 20/21] riscv: dts: starfive: add PCIe dts configuration for
+Date: Tue, 31 Oct 2023 19:54:30 +0800
+Subject: [PATCH 20/20] riscv: dts: starfive: add PCIe dts configuration for
  JH7110
 
 Add PCIe dts configuraion for JH7110 SoC platform.
@@ -14,7 +14,7 @@ Reviewed-by: Hal Feng <hal.feng@starfivetech.com>
  2 files changed, 150 insertions(+)
 
 diff --git a/arch/riscv/boot/dts/starfive/jh7110-starfive-visionfive-2.dtsi b/arch/riscv/boot/dts/starfive/jh7110-starfive-visionfive-2.dtsi
-index 12ebe9792..2e7bec59c 100644
+index 2c02358..2124539 100644
 --- a/arch/riscv/boot/dts/starfive/jh7110-starfive-visionfive-2.dtsi
 +++ b/arch/riscv/boot/dts/starfive/jh7110-starfive-visionfive-2.dtsi
 @@ -232,6 +232,22 @@ &mmc1 {
@@ -96,7 +96,7 @@ index 12ebe9792..2e7bec59c 100644
  		mosi-pins {
  			pinmux = <GPIOMUX(52, GPOUT_SYS_SPI0_TXD,
 diff --git a/arch/riscv/boot/dts/starfive/jh7110.dtsi b/arch/riscv/boot/dts/starfive/jh7110.dtsi
-index e85464c32..1a1e97287 100644
+index e85464c..1a1e972 100644
 --- a/arch/riscv/boot/dts/starfive/jh7110.dtsi
 +++ b/arch/riscv/boot/dts/starfive/jh7110.dtsi
 @@ -1045,5 +1045,91 @@ voutcrg: clock-controller@295c0000 {

@@ -1,15 +1,14 @@
-From 0aa9f7505a57fd848aecf0bbbe1c49705272c942 Mon Sep 17 00:00:00 2001
+From 7a1ae42dedfed2c107141f8ce8eb5fe1f3712475 Mon Sep 17 00:00:00 2001
 From: Minda Chen <minda.chen@starfivetech.com>
-Date: Fri, 20 Oct 2023 18:43:25 +0800
-Subject: [PATCH 04/21] PCI: microchip: Add bridge_addr field to struct mc_pcie
+Date: Tue, 31 Oct 2023 19:54:14 +0800
+Subject: [PATCH 04/20] PCI: microchip: Add bridge_addr field to struct mc_pcie
 
-For bridge address base is common PLDA field, Add this
-to struct mc_pcie first.
+For bridge address base is common PLDA field, Add this to struct
+mc_pcie first.
 
-INTx and MSI codes interrupts codes will get the bridge base
-address from port->bridge_addr. For these codes will be
-changed to common codes. axi_base_addr is Microchip its own
-data.
+INTx and MSI codes interrupts codes will get the bridge base address
+from port->bridge_addr. These codes will be changed to common codes.
+axi_base_addr is Microchip its own data.
 
 Signed-off-by: Minda Chen <minda.chen@starfivetech.com>
 Reviewed-by: Conor Dooley <conor.dooley@microchip.com>
@@ -18,7 +17,7 @@ Reviewed-by: Conor Dooley <conor.dooley@microchip.com>
  1 file changed, 9 insertions(+), 14 deletions(-)
 
 diff --git a/drivers/pci/controller/plda/pcie-microchip-host.c b/drivers/pci/controller/plda/pcie-microchip-host.c
-index a34ec6aad..60870ee1f 100644
+index a34ec6a..60870ee 100644
 --- a/drivers/pci/controller/plda/pcie-microchip-host.c
 +++ b/drivers/pci/controller/plda/pcie-microchip-host.c
 @@ -195,6 +195,7 @@ struct mc_pcie {

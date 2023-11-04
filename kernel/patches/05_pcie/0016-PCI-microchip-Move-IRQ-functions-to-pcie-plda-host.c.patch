@@ -1,28 +1,26 @@
-From 4f699459f98d2b24ca40b7a60a301ab6294e1dce Mon Sep 17 00:00:00 2001
+From 6b694930cb59ea66b567c8d08c5082e0fe6abd33 Mon Sep 17 00:00:00 2001
 From: Minda Chen <minda.chen@starfivetech.com>
-Date: Fri, 20 Oct 2023 18:43:37 +0800
-Subject: [PATCH 16/21] PCI: microchip: Move IRQ functions to pcie-plda-host.c
+Date: Tue, 31 Oct 2023 19:54:26 +0800
+Subject: [PATCH 16/20] PCI: microchip: Move IRQ functions to pcie-plda-host.c
 
-Move IRQ related functions to pcie-plda-host.c
-for re-use these codes. Now Refactoring codes
-complete.
+Move IRQ related functions to pcie-plda-host.c for re-use these codes.
+Now Refactoring codes complete.
 
-Including MSI, INTx, event interrupts and IRQ
-init functions.
+Including MSI, INTx, event interrupts and IRQ init functions.
 
 Signed-off-by: Minda Chen <minda.chen@starfivetech.com>
 Acked-by: Conor Dooley <conor.dooley@microchip.com>
 ---
- .../pci/controller/plda/pcie-microchip-host.c | 366 -----------------
- drivers/pci/controller/plda/pcie-plda-host.c  | 367 ++++++++++++++++++
+ .../pci/controller/plda/pcie-microchip-host.c | 372 -----------------
+ drivers/pci/controller/plda/pcie-plda-host.c  | 373 ++++++++++++++++++
  drivers/pci/controller/plda/pcie-plda.h       |   3 +
- 3 files changed, 370 insertions(+), 366 deletions(-)
+ 3 files changed, 376 insertions(+), 372 deletions(-)
 
 diff --git a/drivers/pci/controller/plda/pcie-microchip-host.c b/drivers/pci/controller/plda/pcie-microchip-host.c
-index 4765a596a..6995461da 100644
+index e6dcc57..6995461 100644
 --- a/drivers/pci/controller/plda/pcie-microchip-host.c
 +++ b/drivers/pci/controller/plda/pcie-microchip-host.c
-@@ -318,240 +318,6 @@ static void mc_pcie_enable_msi(struct mc_pcie *port, void __iomem *ecam)
+@@ -318,245 +318,6 @@ static void mc_pcie_enable_msi(struct mc_pcie *port, void __iomem *ecam)
  		       ecam + MC_MSI_CAP_CTRL_OFFSET + PCI_MSI_ADDRESS_HI);
  }
  
@@ -41,7 +39,8 @@ index 4765a596a..6995461da 100644
 -
 -	status = readl_relaxed(bridge_base_addr + ISTATUS_LOCAL);
 -	if (status & PM_MSI_INT_MSI_MASK) {
--		writel_relaxed(status & PM_MSI_INT_MSI_MASK, bridge_base_addr + ISTATUS_LOCAL);
+-		writel_relaxed(status & PM_MSI_INT_MSI_MASK,
+-			       bridge_base_addr + ISTATUS_LOCAL);
 -		status = readl_relaxed(bridge_base_addr + ISTATUS_MSI);
 -		for_each_set_bit(bit, &status, msi->num_vectors) {
 -			ret = generic_handle_domain_irq(msi->dev_domain, bit);
@@ -89,8 +88,10 @@ index 4765a596a..6995461da 100644
 -	.irq_set_affinity = plda_msi_set_affinity,
 -};
 -
--static int plda_irq_msi_domain_alloc(struct irq_domain *domain, unsigned int virq,
--				     unsigned int nr_irqs, void *args)
+-static int plda_irq_msi_domain_alloc(struct irq_domain *domain,
+-				     unsigned int virq,
+-				     unsigned int nr_irqs,
+-				     void *args)
 -{
 -	struct plda_pcie_rp *port = domain->host_data;
 -	struct plda_msi *msi = &port->msi;
@@ -113,7 +114,8 @@ index 4765a596a..6995461da 100644
 -	return 0;
 -}
 -
--static void plda_irq_msi_domain_free(struct irq_domain *domain, unsigned int virq,
+-static void plda_irq_msi_domain_free(struct irq_domain *domain,
+-				     unsigned int virq,
 -				     unsigned int nr_irqs)
 -{
 -	struct irq_data *d = irq_domain_get_irq_data(domain, virq);
@@ -163,7 +165,8 @@ index 4765a596a..6995461da 100644
 -		return -ENOMEM;
 -	}
 -
--	msi->msi_domain = pci_msi_create_irq_domain(fwnode, &plda_msi_domain_info,
+-	msi->msi_domain = pci_msi_create_irq_domain(fwnode,
+-						    &plda_msi_domain_info,
 -						    msi->dev_domain);
 -	if (!msi->msi_domain) {
 -		dev_err(dev, "failed to create MSI domain\n");
@@ -263,7 +266,7 @@ index 4765a596a..6995461da 100644
  static inline u32 reg_to_event(u32 reg, struct event_map field)
  {
  	return (reg & field.reg_mask) ? BIT(field.event_bit) : 0;
-@@ -638,28 +404,6 @@ static irqreturn_t mc_event_handler(int irq, void *dev_id)
+@@ -643,28 +404,6 @@ static irqreturn_t mc_event_handler(int irq, void *dev_id)
  	return IRQ_HANDLED;
  }
  
@@ -292,7 +295,7 @@ index 4765a596a..6995461da 100644
  static void mc_ack_event_irq(struct irq_data *data)
  {
  	struct plda_pcie_rp *port = irq_data_get_irq_chip_data(data);
-@@ -823,47 +567,6 @@ static const struct plda_event mc_event = {
+@@ -828,47 +567,6 @@ static const struct plda_event mc_event = {
  	.msi_event         = EVENT_LOCAL_PM_MSI_INT_MSI,
  };
  
@@ -310,9 +313,9 @@ index 4765a596a..6995461da 100644
 -		return -EINVAL;
 -	}
 -
--	port->event_domain = irq_domain_add_linear(pcie_intc_node, port->num_events,
--						   ops, port);
--
+-	port->event_domain = irq_domain_add_linear(pcie_intc_node,
+-						   port->num_events,
+-						   &mc_event_domain_ops, port);
 -	if (!port->event_domain) {
 -		dev_err(dev, "failed to get event domain\n");
 -		of_node_put(pcie_intc_node);
@@ -340,7 +343,7 @@ index 4765a596a..6995461da 100644
  static inline void mc_clear_secs(struct mc_pcie *port)
  {
  	void __iomem *ctrl_base_addr = port->axi_base_addr + MC_PCIE_CTRL_ADDR;
-@@ -924,75 +627,6 @@ static void mc_disable_interrupts(struct mc_pcie *port)
+@@ -929,76 +627,6 @@ static void mc_disable_interrupts(struct mc_pcie *port)
  	writel_relaxed(GENMASK(31, 0), bridge_base_addr + ISTATUS_HOST);
  }
  
@@ -380,7 +383,8 @@ index 4765a596a..6995461da 100644
 -		if (event->request_event_irq)
 -			ret = event->request_event_irq(port, event_irq, i);
 -		else
--			ret = devm_request_irq(dev, event_irq, plda_event_handler,
+-			ret = devm_request_irq(dev, event_irq,
+-					       plda_event_handler,
 -					       0, NULL, port);
 -
 -		if (ret) {
@@ -417,10 +421,10 @@ index 4765a596a..6995461da 100644
  {
  	struct device *dev = cfg->parent;
 diff --git a/drivers/pci/controller/plda/pcie-plda-host.c b/drivers/pci/controller/plda/pcie-plda-host.c
-index 191311818..4a4a2b5ef 100644
+index 1913118..e155d1d 100644
 --- a/drivers/pci/controller/plda/pcie-plda-host.c
 +++ b/drivers/pci/controller/plda/pcie-plda-host.c
-@@ -18,6 +18,373 @@
+@@ -18,6 +18,379 @@
  
  #include "pcie-plda.h"
  
@@ -439,7 +443,8 @@ index 191311818..4a4a2b5ef 100644
 +
 +	status = readl_relaxed(bridge_base_addr + ISTATUS_LOCAL);
 +	if (status & PM_MSI_INT_MSI_MASK) {
-+		writel_relaxed(status & PM_MSI_INT_MSI_MASK, bridge_base_addr + ISTATUS_LOCAL);
++		writel_relaxed(status & PM_MSI_INT_MSI_MASK,
++			       bridge_base_addr + ISTATUS_LOCAL);
 +		status = readl_relaxed(bridge_base_addr + ISTATUS_MSI);
 +		for_each_set_bit(bit, &status, msi->num_vectors) {
 +			ret = generic_handle_domain_irq(msi->dev_domain, bit);
@@ -487,8 +492,10 @@ index 191311818..4a4a2b5ef 100644
 +	.irq_set_affinity = plda_msi_set_affinity,
 +};
 +
-+static int plda_irq_msi_domain_alloc(struct irq_domain *domain, unsigned int virq,
-+				     unsigned int nr_irqs, void *args)
++static int plda_irq_msi_domain_alloc(struct irq_domain *domain,
++				     unsigned int virq,
++				     unsigned int nr_irqs,
++				     void *args)
 +{
 +	struct plda_pcie_rp *port = domain->host_data;
 +	struct plda_msi *msi = &port->msi;
@@ -511,7 +518,8 @@ index 191311818..4a4a2b5ef 100644
 +	return 0;
 +}
 +
-+static void plda_irq_msi_domain_free(struct irq_domain *domain, unsigned int virq,
++static void plda_irq_msi_domain_free(struct irq_domain *domain,
++				     unsigned int virq,
 +				     unsigned int nr_irqs)
 +{
 +	struct irq_data *d = irq_domain_get_irq_data(domain, virq);
@@ -561,7 +569,8 @@ index 191311818..4a4a2b5ef 100644
 +		return -ENOMEM;
 +	}
 +
-+	msi->msi_domain = pci_msi_create_irq_domain(fwnode, &plda_msi_domain_info,
++	msi->msi_domain = pci_msi_create_irq_domain(fwnode,
++						    &plda_msi_domain_info,
 +						    msi->dev_domain);
 +	if (!msi->msi_domain) {
 +		dev_err(dev, "failed to create MSI domain\n");
@@ -694,9 +703,9 @@ index 191311818..4a4a2b5ef 100644
 +		return -EINVAL;
 +	}
 +
-+	port->event_domain = irq_domain_add_linear(pcie_intc_node, port->num_events,
++	port->event_domain = irq_domain_add_linear(pcie_intc_node,
++						   port->num_events,
 +						   ops, port);
-+
 +	if (!port->event_domain) {
 +		dev_err(dev, "failed to get event domain\n");
 +		of_node_put(pcie_intc_node);
@@ -757,7 +766,8 @@ index 191311818..4a4a2b5ef 100644
 +		if (event->request_event_irq)
 +			ret = event->request_event_irq(port, event_irq, i);
 +		else
-+			ret = devm_request_irq(dev, event_irq, plda_event_handler,
++			ret = devm_request_irq(dev, event_irq,
++					       plda_event_handler,
 +					       0, NULL, port);
 +
 +		if (ret) {
@@ -795,7 +805,7 @@ index 191311818..4a4a2b5ef 100644
  			    phys_addr_t axi_addr, phys_addr_t pci_addr,
  			    size_t size)
 diff --git a/drivers/pci/controller/plda/pcie-plda.h b/drivers/pci/controller/plda/pcie-plda.h
-index 820ea1685..ce7787aef 100644
+index 820ea16..ce7787a 100644
 --- a/drivers/pci/controller/plda/pcie-plda.h
 +++ b/drivers/pci/controller/plda/pcie-plda.h
 @@ -137,6 +137,9 @@ struct plda_event {

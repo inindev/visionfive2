@@ -1,18 +1,18 @@
-From b84f7ec772d411f439d10d0f962a17ef17478062 Mon Sep 17 00:00:00 2001
+From 3b1a5f60d4363a0ab4f07361b4b401621602ba07 Mon Sep 17 00:00:00 2001
 From: Minda Chen <minda.chen@starfivetech.com>
-Date: Fri, 20 Oct 2023 18:43:22 +0800
-Subject: [PATCH 01/21] dt-bindings: PCI: Add PLDA XpressRICH PCIe host common
+Date: Tue, 31 Oct 2023 19:54:11 +0800
+Subject: [PATCH 01/20] dt-bindings: PCI: Add PLDA XpressRICH PCIe host common
  properties
 
 Add PLDA XpressRICH PCIe host common properties dt-binding doc.
-Microchip PolarFire PCIe host using PLDA IP.
-Move common properties from Microchip PolarFire PCIe host
-to PLDA files.
+PolarFire PCIe host using PLDA IP. Move common properties from Micro-
+chip PolarFire PCIe host to PLDA files.
 
 Signed-off-by: Minda Chen <minda.chen@starfivetech.com>
 Reviewed-by: Hal Feng <hal.feng@starfivetech.com>
 Reviewed-by: Conor Dooley <conor.dooley@microchip.com>
 Reviewed-by: Rob Herring <robh@kernel.org>
+Tested-by: John Clark <inindev@gmail.com>
 ---
  .../bindings/pci/microchip,pcie-host.yaml     | 55 +-------------
  .../pci/plda,xpressrich3-axi-common.yaml      | 75 +++++++++++++++++++
@@ -20,7 +20,7 @@ Reviewed-by: Rob Herring <robh@kernel.org>
  create mode 100644 Documentation/devicetree/bindings/pci/plda,xpressrich3-axi-common.yaml
 
 diff --git a/Documentation/devicetree/bindings/pci/microchip,pcie-host.yaml b/Documentation/devicetree/bindings/pci/microchip,pcie-host.yaml
-index f7a3c2636..7c2d51221 100644
+index f7a3c26..7c2d512 100644
 --- a/Documentation/devicetree/bindings/pci/microchip,pcie-host.yaml
 +++ b/Documentation/devicetree/bindings/pci/microchip,pcie-host.yaml
 @@ -10,21 +10,13 @@ maintainers:
@@ -107,7 +107,7 @@ index f7a3c2636..7c2d51221 100644
  examples:
 diff --git a/Documentation/devicetree/bindings/pci/plda,xpressrich3-axi-common.yaml b/Documentation/devicetree/bindings/pci/plda,xpressrich3-axi-common.yaml
 new file mode 100644
-index 000000000..31bb17b11
+index 0000000..31bb17b
 --- /dev/null
 +++ b/Documentation/devicetree/bindings/pci/plda,xpressrich3-axi-common.yaml
 @@ -0,0 +1,75 @@

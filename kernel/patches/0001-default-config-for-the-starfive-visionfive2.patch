@@ -1,7 +1,7 @@
 From 6b3792ad664c746e2a02fdad0565ed357a64dcb9 Mon Sep 17 00:00:00 2001
 From: John Clark <inindev@gmail.com>
 Date: Mon, 23 Oct 2023 01:07:41 +0000
-Subject: [PATCH 21/21] default config for the starfive visionfive2
+Subject: [PATCH] default config for the starfive visionfive2
 
 Signed-off-by: John Clark <inindev@gmail.com>
 ---

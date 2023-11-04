@@ -1,20 +1,16 @@
-From 104ca3175a7d4ff7a23aa92b7d66dd9041f9335b Mon Sep 17 00:00:00 2001
+From fcc82b544d7dcffebc72de8bce5e707cdf632643 Mon Sep 17 00:00:00 2001
 From: Minda Chen <minda.chen@starfivetech.com>
-Date: Fri, 20 Oct 2023 18:43:35 +0800
-Subject: [PATCH 14/21] PCI: microchip: Add get_events() callback function
+Date: Tue, 31 Oct 2023 19:54:24 +0800
+Subject: [PATCH 14/20] PCI: microchip: Add get_events() callback function
 
-PolarFire implements their own PCIe interrupts,
-which added to global PCIe field for PLDA lack of
-MSI controller, the interrupts to event num mapping
-is different to PLDA local interrupts. So add
-get_events() function pointer.
+PolarFire implements its own PCIe interrupts, additional to the regular
+PCIe interrupts, due to the lack of an MSI controller, so the interrupt
+to event number mapping is different to the PLDA local interrupts,
+necessitating a custom get_events() implementation.
 
-Also add struct plda_event_ops function pointer structure
-to struct plda_pcie_rp.
-
-plda_handle_events() will call the get_events() callback
-function pointer directly. For the robustness of codes,
-add checking in plda_init_interrupts().
+plda_handle_events() will call the get_events() callback function
+pointer directly. For the robustness of codes, add checking in plda_
+init_interrupts().
 
 Signed-off-by: Minda Chen <minda.chen@starfivetech.com>
 Acked-by: Conor Dooley <conor.dooley@microchip.com>
@@ -24,10 +20,10 @@ Acked-by: Conor Dooley <conor.dooley@microchip.com>
  2 files changed, 21 insertions(+), 1 deletion(-)
 
 diff --git a/drivers/pci/controller/plda/pcie-microchip-host.c b/drivers/pci/controller/plda/pcie-microchip-host.c
-index e57827bdb..5a8c134bf 100644
+index 2c03b03..f5e7da2 100644
 --- a/drivers/pci/controller/plda/pcie-microchip-host.c
 +++ b/drivers/pci/controller/plda/pcie-microchip-host.c
-@@ -652,7 +652,7 @@ static void plda_handle_event(struct irq_desc *desc)
+@@ -657,7 +657,7 @@ static void plda_handle_event(struct irq_desc *desc)
  
  	chained_irq_enter(chip, desc);
  
@@ -36,7 +32,7 @@ index e57827bdb..5a8c134bf 100644
  
  	for_each_set_bit(bit, &events, port->num_events)
  		generic_handle_domain_irq(port->event_domain, bit);
-@@ -811,7 +811,12 @@ static int mc_request_event_irq(struct plda_pcie_rp *plda, int event_irq,
+@@ -816,7 +816,12 @@ static int mc_request_event_irq(struct plda_pcie_rp *plda, int event_irq,
  				0, event_cause[event].sym, plda);
  }
  
@@ -49,7 +45,7 @@ index e57827bdb..5a8c134bf 100644
  	.request_event_irq = mc_request_event_irq,
  	.intx_event        = EVENT_LOCAL_PM_MSI_INT_INTX,
  	.msi_event         = EVENT_LOCAL_PM_MSI_INT_MSI,
-@@ -925,6 +930,11 @@ static int plda_init_interrupts(struct platform_device *pdev,
+@@ -931,6 +936,11 @@ static int plda_init_interrupts(struct platform_device *pdev,
  	int i, intx_irq, msi_irq, event_irq;
  	int ret;
  
@@ -61,7 +57,7 @@ index e57827bdb..5a8c134bf 100644
  	ret = plda_pcie_init_irq_domains(port);
  	if (ret) {
  		dev_err(dev, "failed creating IRQ domains\n");
-@@ -935,6 +945,8 @@ static int plda_init_interrupts(struct platform_device *pdev,
+@@ -941,6 +951,8 @@ static int plda_init_interrupts(struct platform_device *pdev,
  	if (irq < 0)
  		return -ENODEV;
  
@@ -71,7 +67,7 @@ index e57827bdb..5a8c134bf 100644
  		event_irq = irq_create_mapping(port->event_domain, i);
  		if (!event_irq) {
 diff --git a/drivers/pci/controller/plda/pcie-plda.h b/drivers/pci/controller/plda/pcie-plda.h
-index fba7343f9..df1729095 100644
+index fba7343..df17290 100644
 --- a/drivers/pci/controller/plda/pcie-plda.h
 +++ b/drivers/pci/controller/plda/pcie-plda.h
 @@ -102,6 +102,12 @@

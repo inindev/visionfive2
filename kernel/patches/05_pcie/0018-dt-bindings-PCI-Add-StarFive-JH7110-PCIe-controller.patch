@@ -1,10 +1,10 @@
-From e37df38f7bda072e76e56f4d76202459e7f91c0f Mon Sep 17 00:00:00 2001
+From ced3870006230759451a34b40bf4ecff71351a98 Mon Sep 17 00:00:00 2001
 From: Minda Chen <minda.chen@starfivetech.com>
-Date: Fri, 20 Oct 2023 18:43:39 +0800
-Subject: [PATCH 18/21] dt-bindings: PCI: Add StarFive JH7110 PCIe controller
+Date: Tue, 31 Oct 2023 19:54:28 +0800
+Subject: [PATCH 18/20] dt-bindings: PCI: Add StarFive JH7110 PCIe controller
 
-Add StarFive JH7110 SoC PCIe controller dt-bindings.
-JH7110 using PLDA XpressRICH PCIe host controller IP.
+Add StarFive JH7110 SoC PCIe controller dt-bindings. JH7110 using PLDA
+XpressRICH PCIe host controller IP.
 
 Signed-off-by: Minda Chen <minda.chen@starfivetech.com>
 Reviewed-by: Hal Feng <hal.feng@starfivetech.com>
@@ -17,7 +17,7 @@ Reviewed-by: Rob Herring <robh@kernel.org>
 
 diff --git a/Documentation/devicetree/bindings/pci/starfive,jh7110-pcie.yaml b/Documentation/devicetree/bindings/pci/starfive,jh7110-pcie.yaml
 new file mode 100644
-index 000000000..67151aaa3
+index 0000000..67151aa
 --- /dev/null
 +++ b/Documentation/devicetree/bindings/pci/starfive,jh7110-pcie.yaml
 @@ -0,0 +1,120 @@
