@@ -15,8 +15,8 @@ config_fixups() {
 }
 
 main() {
-    local linux='https://git.kernel.org/torvalds/t/linux-6.6.tar.gz'
-    local lxsha='9a72c005a62f109f96ee00552502d16c4f06c248e6baba1629506627396ac0a7'
+    local linux='https://cdn.kernel.org/pub/linux/kernel/v6.x/linux-6.6.tar.xz'
+    local lxsha='d926a06c63dd8ac7df3f86ee1ffc2ce2a3b81a2d168484e76b5b389aba8e56d0'
 
     local lf="$(basename "$linux")"
     local lv="$(echo "$lf" | sed -nE 's/linux-(.*)\.tar\..z/\1/p')"
@@ -59,7 +59,7 @@ main() {
     if [ ! -d "$lpath" ]; then
         tar -C "kernel-$lv" -xavf "kernel-$lv/$lf"
 
-        local patch patches="$(find patches -maxdepth 1 -name '*.patch' 2>/dev/null | sort)"
+        local patch patches="$(find patches -name '*.patch' 2>/dev/null | sort)"
         for patch in $patches; do
             patch -p1 -d "$lpath" -i "../../$patch"
         done
