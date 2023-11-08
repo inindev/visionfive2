@@ -1,4 +1,4 @@
-From 20be7d6ebdedc16abc810d21b917273b061d733b Mon Sep 17 00:00:00 2001
+From a302d3d2d6dcd86bcc098e0360c97e3749eb3f25 Mon Sep 17 00:00:00 2001
 From: Minda Chen <minda.chen@starfivetech.com>
 Date: Tue, 31 Oct 2023 19:54:13 +0800
 Subject: [PATCH 03/20] PCI: microchip: Move PLDA IP register macros to
@@ -17,10 +17,10 @@ Reviewed-by: Conor Dooley <conor.dooley@microchip.com>
  create mode 100644 drivers/pci/controller/plda/pcie-plda.h
 
 diff --git a/MAINTAINERS b/MAINTAINERS
-index 5e1b58c9d..de9e09908 100644
+index 12f918e3b..1486cbc6b 100644
 --- a/MAINTAINERS
 +++ b/MAINTAINERS
-@@ -16431,6 +16431,14 @@ S:	Maintained
+@@ -16417,6 +16417,14 @@ S:	Maintained
  F:	Documentation/devicetree/bindings/pci/layerscape-pcie-gen4.txt
  F:	drivers/pci/controller/mobiveil/pcie-layerscape-gen4.c
  

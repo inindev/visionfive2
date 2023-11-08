@@ -1,4 +1,4 @@
-From bb7f3ac5b73d2b243b87417ec633f103653585a6 Mon Sep 17 00:00:00 2001
+From 00706316ff61788859e8b7fdb43815f6f0503323 Mon Sep 17 00:00:00 2001
 From: Minda Chen <minda.chen@starfivetech.com>
 Date: Tue, 31 Oct 2023 19:54:16 +0800
 Subject: [PATCH 06/20] PCI: microchip: Move PCIe host data structure to

@@ -1,4 +1,4 @@
-From b1514b4eb98b43ee17c6d1a87e27f100ba4126d6 Mon Sep 17 00:00:00 2001
+From dee14767a8ef0984678d7986420d317d19387b99 Mon Sep 17 00:00:00 2001
 From: Minda Chen <minda.chen@starfivetech.com>
 Date: Tue, 31 Oct 2023 19:54:25 +0800
 Subject: [PATCH 15/20] PCI: microchip: Add event IRQ domain ops to struct

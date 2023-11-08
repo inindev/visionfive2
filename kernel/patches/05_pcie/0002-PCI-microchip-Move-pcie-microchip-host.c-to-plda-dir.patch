@@ -1,4 +1,4 @@
-From ada1702e9546f556ffa4e3bc264f9d3219b3256a Mon Sep 17 00:00:00 2001
+From 2d3a272804708e7abdea0fa4ef2ffa1e7073dcae Mon Sep 17 00:00:00 2001
 From: Minda Chen <minda.chen@starfivetech.com>
 Date: Tue, 31 Oct 2023 19:54:12 +0800
 Subject: [PATCH 02/20] PCI: microchip: Move pcie-microchip-host.c to plda
@@ -22,10 +22,10 @@ Reviewed-by: Conor Dooley <conor.dooley@microchip.com>
  rename drivers/pci/controller/{ => plda}/pcie-microchip-host.c (99%)
 
 diff --git a/MAINTAINERS b/MAINTAINERS
-index 0b59d9e60..5e1b58c9d 100644
+index dd5de540e..12f918e3b 100644
 --- a/MAINTAINERS
 +++ b/MAINTAINERS
-@@ -16662,7 +16662,7 @@ M:	Daire McNamara <daire.mcnamara@microchip.com>
+@@ -16648,7 +16648,7 @@ M:	Daire McNamara <daire.mcnamara@microchip.com>
  L:	linux-pci@vger.kernel.org
  S:	Supported
  F:	Documentation/devicetree/bindings/pci/microchip*
@@ -34,7 +34,7 @@ index 0b59d9e60..5e1b58c9d 100644
  
  PCIE DRIVER FOR QUALCOMM MSM
  M:	Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
-@@ -18458,7 +18458,7 @@ F:	drivers/char/hw_random/mpfs-rng.c
+@@ -18444,7 +18444,7 @@ F:	drivers/char/hw_random/mpfs-rng.c
  F:	drivers/clk/microchip/clk-mpfs*.c
  F:	drivers/i2c/busses/i2c-microchip-corei2c.c
  F:	drivers/mailbox/mailbox-mpfs.c

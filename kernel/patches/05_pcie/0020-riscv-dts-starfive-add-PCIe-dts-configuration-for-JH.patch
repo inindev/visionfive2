@@ -1,4 +1,4 @@
-From 075be28040a6a768149d00f0a0751a702ecd2685 Mon Sep 17 00:00:00 2001
+From f337d71c9e670859a7a994ff7604bea9ce2e8d13 Mon Sep 17 00:00:00 2001
 From: Minda Chen <minda.chen@starfivetech.com>
 Date: Tue, 31 Oct 2023 19:54:30 +0800
 Subject: [PATCH 20/20] riscv: dts: starfive: add PCIe dts configuration for
@@ -14,10 +14,10 @@ Reviewed-by: Hal Feng <hal.feng@starfivetech.com>
  2 files changed, 150 insertions(+)
 
 diff --git a/arch/riscv/boot/dts/starfive/jh7110-starfive-visionfive-2.dtsi b/arch/riscv/boot/dts/starfive/jh7110-starfive-visionfive-2.dtsi
-index 9edb08b7d..97f1aed51 100644
+index 2c02358ab..2124539f4 100644
 --- a/arch/riscv/boot/dts/starfive/jh7110-starfive-visionfive-2.dtsi
 +++ b/arch/riscv/boot/dts/starfive/jh7110-starfive-visionfive-2.dtsi
-@@ -251,6 +251,22 @@ &mmc1 {
+@@ -232,6 +232,22 @@ &mmc1 {
  	status = "okay";
  };
  
@@ -40,7 +40,7 @@ index 9edb08b7d..97f1aed51 100644
  &qspi {
  	#address-cells = <1>;
  	#size-cells = <0>;
-@@ -478,6 +494,54 @@ GPOEN_SYS_PWM0_CHANNEL1,
+@@ -402,6 +418,54 @@ GPOEN_SYS_SDIO1_DATA3,
  		};
  	};
  
@@ -96,12 +96,12 @@ index 9edb08b7d..97f1aed51 100644
  		mosi-pins {
  			pinmux = <GPIOMUX(52, GPOUT_SYS_SPI0_TXD,
 diff --git a/arch/riscv/boot/dts/starfive/jh7110.dtsi b/arch/riscv/boot/dts/starfive/jh7110.dtsi
-index f655a51a2..122b34054 100644
+index e85464c32..1a1e97287 100644
 --- a/arch/riscv/boot/dts/starfive/jh7110.dtsi
 +++ b/arch/riscv/boot/dts/starfive/jh7110.dtsi
-@@ -1115,5 +1115,91 @@ hdmi: hdmi@29590000 {
- 			resets = <&voutcrg JH7110_VOUTRST_HDMI_TX_HDMI>;
- 			#sound-dai-cells = <0>;
+@@ -1045,5 +1045,91 @@ voutcrg: clock-controller@295c0000 {
+ 			#reset-cells = <1>;
+ 			power-domains = <&pwrc JH7110_PD_VOUT>;
  		};
 +
 +		pcie0: pcie@940000000 {

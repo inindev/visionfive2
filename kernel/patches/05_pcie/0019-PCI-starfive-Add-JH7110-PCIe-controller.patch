@@ -1,4 +1,4 @@
-From ffbeaba04601a7826d55abafc26c3726e3a99a3c Mon Sep 17 00:00:00 2001
+From c36e19cef4a7729b5dc131d138f54551f9f6fae2 Mon Sep 17 00:00:00 2001
 From: Minda Chen <minda.chen@starfivetech.com>
 Date: Tue, 31 Oct 2023 19:54:29 +0800
 Subject: [PATCH 19/20] PCI: starfive: Add JH7110 PCIe controller
@@ -20,10 +20,10 @@ Reviewed-by: Mason Huo <mason.huo@starfivetech.com>
  create mode 100644 drivers/pci/controller/plda/pcie-starfive.c
 
 diff --git a/MAINTAINERS b/MAINTAINERS
-index de9e09908..17b9fe43e 100644
+index 1486cbc6b..8a09a7216 100644
 --- a/MAINTAINERS
 +++ b/MAINTAINERS
-@@ -16694,6 +16694,13 @@ S:	Maintained
+@@ -16680,6 +16680,13 @@ S:	Maintained
  F:	Documentation/devicetree/bindings/pci/socionext,uniphier-pcie*
  F:	drivers/pci/controller/dwc/pcie-uniphier*
  
