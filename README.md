@@ -129,8 +129,8 @@ sudo flash_erase /dev/mtd3 0 0
 
 **4. write u-boot to spi flash**
 ```
-wget https://github.com/inindev/visionfive2/releases/download/v23.10-6.6-rc7/u-boot-spl.bin.normal.out
-wget https://github.com/inindev/visionfive2/releases/download/v23.10-6.6-rc7/u-boot.itb
+wget https://github.com/inindev/visionfive2/releases/download/v23.10-6.6.1/u-boot-spl.bin.normal.out
+wget https://github.com/inindev/visionfive2/releases/download/v23.10-6.6.1/u-boot.itb
 sudo flashcp -v u-boot-spl.bin.normal.out /dev/mtd0
 sudo flashcp -v u-boot.itb /dev/mtd2
 ```
