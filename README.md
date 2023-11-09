@@ -5,7 +5,7 @@ This Ubuntu riscv64 Linux image is built directly from official ports packages u
 
 Updaates are supplied from [ubuntu-ports](http://ports.ubuntu.com/ubuntu-ports/dists/mantic/main/binary-riscv64/) repos using the built-in **apt** package manager, see: https://github.com/inindev/visionfive2/blob/main/ubuntu/make_ubuntu_img.sh#L329-L336
 
-Note: There are two kernels available in the ```/boot``` directory. The 6.5 kernel is supplied by ubuntu and does not currently support nvme. The 6.6 kernel in this bundle is from kernel.org and will not get updates from ubuntu.
+Note: There are two kernels available in the ```/boot``` directory. The 6.5 kernel is supplied by ubuntu and does not currently support nvme. The 6.6 kernel in this bundle is built from kernel.org and will not get updates from ubuntu.
 
 <br/>
 
@@ -97,19 +97,21 @@ sudo nano /etc/hosts
 <br/>
 
 ---
-installing on m.2 ssd /dev/nvme0n1 media
+## installing on m.2 nvme media
 
 **1. boot from removable mmc**
 
 [Follow the instructions](https://github.com/inindev/visionfive2#ubuntu-mantic-setup) for creating bootable mmc media.
 
-**2. download and copy the image file on to the ssd media**
-
+**2. download and copy the image file on to the nvme media**
+```
 wget https://github.com/inindev/visionfive2/releases/download/v23.10-6.6.1/visionfive2_mantic-v23.10-6.6.1.img.xz
-sudo sh -c 'xzcat visionfive2_mantic-v23.10-6.6.1.img.xz > /dev/nvme0n1 && sync'
+sudo su
+xzcat visionfive2_mantic-v23.10-6.6.1.img.xz > /dev/nvme0n1
+sync
+```
 
-**3. the bootloader partitions are not used on nvme media and canbe removed**
-
+**3. the u-boot partitions are not used on nvme media and can be removed**
 ```
 sfdisk --delete /dev/nvme0n1 1
 sfdisk --delete /dev/nvme0n1 2
