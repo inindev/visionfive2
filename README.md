@@ -16,7 +16,7 @@ If you want to run out-of-the-box Ubuntu Linux on your StarFive VisionFive 2 ris
 
 **1. download image**
 ```
-wget https://github.com/inindev/visionfive2/releases/download/v23.10.0/visionfive2_mantic-v23.10.img.xz
+wget https://github.com/inindev/visionfive2/releases/download/v23.10-6.6.1/visionfive2_mantic-v23.10-6.6.1.img.xz
 ```
 
 <br/>
@@ -40,7 +40,9 @@ brw-rw---- 1 root disk 8, 0 Apr 10 15:56 /dev/sda
 
 **3. in the case above, substitute 'a' for 'X' in the command below (for /dev/sda)**
 ```
-sudo sh -c 'xzcat visionfive2_mantic-v23.10.img.xz > /dev/sdX && sync'
+sudo su
+xzcat visionfive2_mantic-v23.10-6.6.1.img.xz > /dev/sdX
+sync
 ```
 
 #### when the micro sd has finished imaging, eject and use it to boot the visionfive2 to finish setup
