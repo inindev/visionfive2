@@ -97,7 +97,9 @@ sudo nano /etc/hosts
 <br/>
 
 ---
-## installing on m.2 nvme media
+### installing on m.2 nvme media
+
+<br/>
 
 **1. boot from removable mmc**
 
@@ -123,7 +125,9 @@ sfdisk -r /dev/nvme0n1
 <br/>
 
 ---
-## booting from spi nor flash
+### booting from spi nor flash
+
+<br/>
 
 **1. boot from removable mmc**
 
