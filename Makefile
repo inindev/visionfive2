@@ -5,10 +5,7 @@ LDIST ?= $(shell cat "ubuntu/make_ubuntu_img.sh" | sed -n 's/\s*local ubu_dist=.
 all: uboot dtb ubuntu
 	@echo "all binaries ready"
 
-ubuntu: uboot dtb ubuntu/mmc_4g.img
-	@echo "ubuntu image ready"
-
-ubuntuk: screen uboot dtb ubuntu/mmc_4g.img kernel
+ubuntu: screen uboot dtb ubuntu/mmc_4g.img kernel
 	sudo sh ubuntu/install_kernel.sh
 	@echo "ubuntu with kernel image ready"
 
@@ -33,9 +30,6 @@ package-%: screen ubuntu
 	@xz -zve8 distfiles/visionfive2_$(LDIST)-$*.img
 
 	@cd distfiles ; sha256sum * | tee sha256sums.txt
-
-packagek-%: ubuntuk package-%
-	@echo "package with kernel $* ready"
 
 clean:
 	@rm -rfv distfiles
@@ -64,4 +58,3 @@ uboot/opensbi/build/platform/generic/firmware/fw_dynamic.bin uboot/u-boot-spl.bi
 
 
 .PHONY: all ubuntu ubuntuk dtb kernel uboot all package-* packagek-* clean screen
-
