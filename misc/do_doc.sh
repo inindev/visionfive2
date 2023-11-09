@@ -48,7 +48,7 @@ render() {
 	- [fw_dynamic.bin](https://github.com/inindev/$board/releases/download/$tag/fw_dynamic.bin)
 	        \`\`\`sha256: $opensbi_sha\`\`\`
 
-	**u-boot** - signed with rockchip binaries
+	**u-boot** - signed with opensbi
 	 - [u-boot-spl.bin.normal.out](https://github.com/inindev/$board/releases/download/$tag/u-boot-spl.bin.normal.out) - uboot spl v$uboot_ver, patched loader for the $board
 	        \`\`\`sha256: $uboot_spl_sha\`\`\`
 	 - [u-boot.itb](https://github.com/inindev/$board/releases/download/$tag/u-boot.itb) - uboot v$uboot_ver, patched loader for the $board
