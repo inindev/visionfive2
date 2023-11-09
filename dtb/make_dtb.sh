@@ -9,8 +9,8 @@ set -e
 #   5: invalid file hash
 
 main() {
-    local linux='https://cdn.kernel.org/pub/linux/kernel/v6.x/linux-6.6.tar.xz'
-    local lxsha='d926a06c63dd8ac7df3f86ee1ffc2ce2a3b81a2d168484e76b5b389aba8e56d0'
+    local linux='https://cdn.kernel.org/pub/linux/kernel/v6.x/linux-6.6.1.tar.xz'
+    local lxsha='da1ed7d47c97ed72c9354091628740aa3c40a3c9cd7382871f3cedbd60588234'
 
     local lf="$(basename "$linux")"
     local lv="$(echo "$lf" | sed -nE 's/linux-(.*)\.tar\..z/\1/p')"
@@ -46,7 +46,7 @@ main() {
         tar xavf "$lf" "linux-$lv/include/dt-bindings" "$sfpath"
 
         print_hdr 'applying patches'
-        local patch patches="$(find patches -maxdepth 1 -name '*.patch' 2>/dev/null | sort)"
+        local patch patches="$(find patches -name '*.patch' 2>/dev/null | sort)"
         for patch in $patches; do
             patch -p1 -d "linux-$lv" -i "../$patch"
         done
@@ -62,15 +62,13 @@ main() {
     fi
 
     # build
-    local dt dts='jh7110-starfive-visionfive-2-v1.3b'
+    local dt='jh7110-starfive-visionfive-2-v1.3b'
     print_hdr "building device tree ${dt}.dtb"
     local fldtc='-Wno-interrupt_provider -Wno-unique_unit_address -Wno-unit_address_vs_reg -Wno-avoid_unnecessary_addr_size -Wno-alias_paths -Wno-graph_child_address -Wno-simple_bus_reg'
-    for dt in $dts; do
-        gcc -I "linux-$lv/include" -E -nostdinc -undef -D__DTS__ -x assembler-with-cpp -o "${dt}-top.dts" "$sfpath/${dt}.dts"
-        dtc -I dts -O dtb -b 0 ${fldtc} -o "${dt}.dtb" "${dt}-top.dts"
-        is_param 'cp' "$@" && cp_to_ubuntu "${dt}.dtb"
-        echo "\n${cya}device tree ready: ${dt}.dtb${rst}\n"
-    done
+    gcc -I "linux-$lv/include" -E -nostdinc -undef -D__DTS__ -x assembler-with-cpp -o "${dt}-top.dts" "$sfpath/${dt}.dts"
+    dtc -I dts -O dtb -b 0 ${fldtc} -o "${dt}.dtb" "${dt}-top.dts"
+    is_param 'cp' "$@" && cp_to_ubuntu "${dt}.dtb"
+    echo "\n${cya}device tree ready: ${dt}.dtb${rst}\n"
 }
 
 cp_to_ubuntu() {

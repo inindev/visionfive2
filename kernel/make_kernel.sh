@@ -11,12 +11,12 @@ set -e
 config_fixups() {
     local lpath="$1"
 
-#    [ -e "$lpath/.version" ] || echo 1002 > "$lpath/.version"
+    [ -e "$lpath/.version" ] || echo 2000 > "$lpath/.version"
 }
 
 main() {
-    local linux='https://cdn.kernel.org/pub/linux/kernel/v6.x/linux-6.6.tar.xz'
-    local lxsha='d926a06c63dd8ac7df3f86ee1ffc2ce2a3b81a2d168484e76b5b389aba8e56d0'
+    local linux='https://cdn.kernel.org/pub/linux/kernel/v6.x/linux-6.6.1.tar.xz'
+    local lxsha='da1ed7d47c97ed72c9354091628740aa3c40a3c9cd7382871f3cedbd60588234'
 
     local lf="$(basename "$linux")"
     local lv="$(echo "$lf" | sed -nE 's/linux-(.*)\.tar\..z/\1/p')"
