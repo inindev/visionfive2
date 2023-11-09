@@ -1,11 +1,11 @@
 # visionfive2
-#### *Stock Ubuntu riscv64 Linux for the StarFive VisionFive 2*
+#### *Ubuntu riscv64 Linux for the StarFive VisionFive 2*
 
-This stock Ubuntu riscv64 Linux image is built directly from official ports packages using the Debian [debootstrap](https://packages.ubuntu.com/mantic/debootstrap) utility.
+This Ubuntu riscv64 Linux image is built directly from official ports packages using the Debian [debootstrap](https://packages.ubuntu.com/mantic/debootstrap) utility, see: https://github.com/inindev/visionfive2/blob/main/ubuntu/make_ubuntu_img.sh#L120
 
-Being an unmodified [ubuntu-ports](http://ports.ubuntu.com/ubuntu-ports/dists/mantic/main/binary-riscv64/) build, patches are directory available from the Ubuntu repos using the stock **apt** package manager.
+Updaates are supplied from [ubuntu-ports](http://ports.ubuntu.com/ubuntu-ports/dists/mantic/main/binary-riscv64/) repos using the built-in **apt** package manager, see: https://github.com/inindev/visionfive2/blob/main/ubuntu/make_ubuntu_img.sh#L329-L336
 
-If you want to run out-of-the-box Ubuntu Linux on your StarFive VisionFive 2 riscv64 device, this is the way to do it.
+Note: There are two kernels available in the ```/boot``` directory. The 6.5 kernel is supplied by ubuntu and does not currently support nvme. The 6.6 kernel in this bundle is from kernel.org and will not get updates from ubuntu.
 
 <br/>
 
@@ -97,6 +97,30 @@ sudo nano /etc/hosts
 <br/>
 
 ---
+installing on m.2 ssd /dev/nvme0n1 media
+
+**1. boot from removable mmc**
+
+[Follow the instructions](https://github.com/inindev/visionfive2#ubuntu-mantic-setup) for creating bootable mmc media.
+
+**2. download and copy the image file on to the ssd media**
+
+wget https://github.com/inindev/visionfive2/releases/download/v23.10-6.6.1/visionfive2_mantic-v23.10-6.6.1.img.xz
+sudo sh -c 'xzcat visionfive2_mantic-v23.10-6.6.1.img.xz > /dev/nvme0n1 && sync'
+
+**3. the bootloader partitions are not used on nvme media and canbe removed**
+
+```
+sfdisk --delete /dev/nvme0n1 1
+sfdisk --delete /dev/nvme0n1 2
+sfdisk -r /dev/nvme0n1
+```
+
+**4. remove mmc media and reboot**
+
+<br/>
+
+---
 ## booting from spi nor flash
 
 **1. boot from removable mmc**
@@ -141,7 +165,7 @@ Once the spi flash has been written, the boot sequence should prefer removable m
 
 Note: Configure the [boot switch setting](https://github.com/inindev/visionfive2/blob/main/misc/vf2_spi.jpg) needed to select spi boot.
 
-<br />
+<br/>
 
 ---
 
