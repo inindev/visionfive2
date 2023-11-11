@@ -106,11 +106,12 @@ main() {
     mount -o bind "$cache/var/cache" "$mountpt/var/cache"
     mount -o bind "$cache/var/lib/apt/lists" "$mountpt/var/lib/apt/lists"
 
-    local pkgs='ubuntu-minimal, initramfs-tools'
-    pkgs="$pkgs, bc, binutils, fdisk"
+    local umin='adduser, apt, apt-utils, console-setup, debconf, debconf-i18n, dhcpcd-base, e2fsprogs, eject, init, iproute2, iputils-ping, kbd, kmod, less, locales, lsb-release, mawk, mount, netbase, netcat-openbsd, netplan.io, passwd, procps, python3, rsyslog, sensible-utils, sudo, tzdata, ubuntu-keyring, udev, usrmerge, vim-tiny, whiptail'
+    local pkgs="$umin, initramfs-tools"
+    pkgs="$pkgs, apparmor, bc, binutils, fdisk"
     pkgs="$pkgs, dbus, dhcpcd, libpam-systemd, openssh-server, systemd-timesyncd"
     pkgs="$pkgs, $extra_pkgs"
-    debootstrap --arch riscv64 --components=main,universe --include "$pkgs" --exclude 'isc-dhcp-client, ubuntu-advantage-tools' "$ubu_dist" "$mountpt" 'http://ports.ubuntu.com/ubuntu-ports'
+    debootstrap --arch riscv64 --components=main,universe --include "$pkgs" --exclude 'networkd-dispatcher, ubuntu-advantage-tools, ubuntu-minimal' "$ubu_dist" "$mountpt" 'http://ports.ubuntu.com/ubuntu-ports'
 
     umount "$mountpt/var/cache"
     umount "$mountpt/var/lib/apt/lists"
