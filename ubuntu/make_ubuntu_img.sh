@@ -61,14 +61,10 @@ main() {
     local cache="cache.$ubu_dist"
 
     # u-boot
-    local uboot_spl=$(download "$cache" 'https://github.com/inindev/visionfive2/releases/download/v23.10.0/u-boot-spl.bin.normal.out')
+    local uboot_spl=$(download "$cache" 'https://github.com/inindev/visionfive2/releases/download/v23.10-6.6.1/u-boot-spl.bin.normal.out')
     [ -f "$uboot_spl" ] || { echo "unable to fetch $uboot_spl"; exit 4; }
-    local uboot_itb=$(download "$cache" 'https://github.com/inindev/visionfive2/releases/download/v23.10.0/u-boot.itb')
+    local uboot_itb=$(download "$cache" 'https://github.com/inindev/visionfive2/releases/download/v23.10-6.6.1/u-boot.itb')
     [ -f "$uboot_itb" ] || { echo "unable to fetch: $uboot_itb"; exit 4; }
-
-    # dtb
-    local dtb=$(download "$cache" 'https://github.com/inindev/visionfive2/releases/download/v23.10.0/jh7110-starfive-visionfive-2-v1.3b.dtb')
-    [ -f "$dtb" ] || { echo "unable to fetch $dtb"; exit 4; }
 
     # setup media
     if [ ! -b "$media" ]; then
@@ -101,9 +97,6 @@ main() {
     ln -svf '../../../boot/mk_extlinux' "$mountpt/etc/kernel/postinst.d/update_extlinux"
     ln -svf '../../../boot/mk_extlinux' "$mountpt/etc/kernel/postrm.d/update_extlinux"
 
-    # install device tree
-    install -vm 644 "$dtb" "$mountpt/boot"
-
     # install ubuntu linux from packages (debootstrap)
     print_hdr 'installing root filesystem from ubuntu.com'
 
@@ -113,11 +106,11 @@ main() {
     mount -o bind "$cache/var/cache" "$mountpt/var/cache"
     mount -o bind "$cache/var/lib/apt/lists" "$mountpt/var/lib/apt/lists"
 
-    local pkgs='ubuntu-minimal, linux-image-starfive, initramfs-tools'
+    local pkgs='ubuntu-minimal, initramfs-tools'
     pkgs="$pkgs, bc, binutils, fdisk"
     pkgs="$pkgs, dbus, dhcpcd, libpam-systemd, openssh-server, systemd-timesyncd"
     pkgs="$pkgs, $extra_pkgs"
-    debootstrap --arch riscv64 --components=main,universe --include "$pkgs" --exclude 'isc-dhcp-client' "$ubu_dist" "$mountpt" 'http://ports.ubuntu.com/ubuntu-ports'
+    debootstrap --arch riscv64 --components=main,universe --include "$pkgs" --exclude 'isc-dhcp-client, ubuntu-advantage-tools' "$ubu_dist" "$mountpt" 'http://ports.ubuntu.com/ubuntu-ports'
 
     umount "$mountpt/var/cache"
     umount "$mountpt/var/lib/apt/lists"
