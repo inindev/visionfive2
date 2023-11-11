@@ -115,7 +115,7 @@ main() {
 
     local pkgs='ubuntu-minimal, linux-image-starfive, initramfs-tools'
     pkgs="$pkgs, bc, binutils, fdisk"
-    pkgs="$pkgs, dbus, dhcpcd, libpam-systemd, openssh-server, systemd-timesyncd, wpasupplicant"
+    pkgs="$pkgs, dbus, dhcpcd, libpam-systemd, openssh-server, systemd-timesyncd"
     pkgs="$pkgs, $extra_pkgs"
     debootstrap --arch riscv64 --components=main,universe --include "$pkgs" --exclude 'isc-dhcp-client' "$ubu_dist" "$mountpt" 'http://ports.ubuntu.com/ubuntu-ports'
 
@@ -125,11 +125,6 @@ main() {
     # apt sources & default locale
     echo "$(file_apt_sources $ubu_dist)\n" > "$mountpt/etc/apt/sources.list"
     echo "$(file_locale_cfg)\n" > "$mountpt/etc/default/locale"
-
-    # wpa supplicant
-#    rm -rfv "$mountpt/etc/systemd/system/multi-user.target.wants/wpa_supplicant.service"
-#    echo "$(file_wpa_supplicant_conf)\n" > "$mountpt/etc/wpa_supplicant/wpa_supplicant.conf"
-#    cp -v "$mountpt/usr/share/dhcpcd/hooks/10-wpa_supplicant" "$mountpt/usr/lib/dhcpcd/dhcpcd-hooks"
 
     # hostname
     echo $hostname > "$mountpt/etc/hostname"
