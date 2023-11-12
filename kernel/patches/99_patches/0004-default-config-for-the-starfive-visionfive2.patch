@@ -1,20 +1,20 @@
-From bc34fd47cd2693a567320ba27713cc6033195cde Mon Sep 17 00:00:00 2001
+From 232372c4a93544880211896cb8ca0cc9e8f72217 Mon Sep 17 00:00:00 2001
 From: John Clark <inindev@gmail.com>
 Date: Sat, 11 Nov 2023 02:08:58 +0000
 Subject: [PATCH 4/4] default config for the starfive visionfive2
 
 Signed-off-by: John Clark <inindev@gmail.com>
 ---
- .../configs/starfive_visionfive2_defconfig    | 286 ++++++++++++++++++
- 1 file changed, 286 insertions(+)
+ .../configs/starfive_visionfive2_defconfig    | 287 ++++++++++++++++++
+ 1 file changed, 287 insertions(+)
  create mode 100644 arch/riscv/configs/starfive_visionfive2_defconfig
 
 diff --git a/arch/riscv/configs/starfive_visionfive2_defconfig b/arch/riscv/configs/starfive_visionfive2_defconfig
 new file mode 100644
-index 000000000..be8c6169e
+index 000000000..8e450b2f5
 --- /dev/null
 +++ b/arch/riscv/configs/starfive_visionfive2_defconfig
-@@ -0,0 +1,286 @@
+@@ -0,0 +1,287 @@
 +CONFIG_WERROR=y
 +CONFIG_SYSVIPC=y
 +CONFIG_POSIX_MQUEUE=y
@@ -256,6 +256,7 @@ index 000000000..be8c6169e
 +CONFIG_PHY_STARFIVE_JH7110_PCIE=y
 +CONFIG_PHY_STARFIVE_JH7110_USB=y
 +CONFIG_EXT4_FS=y
++CONFIG_EXT4_FS_POSIX_ACL=y
 +CONFIG_BTRFS_FS=y
 +CONFIG_BTRFS_FS_POSIX_ACL=y
 +# CONFIG_DNOTIFY is not set
