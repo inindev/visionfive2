@@ -1,0 +1,30 @@
+From 01bf6b6fe6586249a6d0ae0cae64d46988df5c3f Mon Sep 17 00:00:00 2001
+From: Xingyu Wu <xingyu.wu@starfivetech.com>
+Date: Mon, 21 Aug 2023 22:41:48 +0800
+Subject: [PATCH 02/12] ASoC: dwc: Use ops to get platform data
+
+Use of_device_get_match_data() to get platform data.
+
+Signed-off-by: Xingyu Wu <xingyu.wu@starfivetech.com>
+Link: https://lore.kernel.org/r/20230821144151.207339-3-xingyu.wu@starfivetech.com
+Signed-off-by: Mark Brown <broonie@kernel.org>
+---
+ sound/soc/dwc/dwc-i2s.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/sound/soc/dwc/dwc-i2s.c b/sound/soc/dwc/dwc-i2s.c
+index 9ea4be56d..22c004179 100644
+--- a/sound/soc/dwc/dwc-i2s.c
++++ b/sound/soc/dwc/dwc-i2s.c
+@@ -917,7 +917,7 @@ static int jh7110_i2stx0_clk_cfg(struct i2s_clk_config_data *config)
+ 
+ static int dw_i2s_probe(struct platform_device *pdev)
+ {
+-	const struct i2s_platform_data *pdata = pdev->dev.platform_data;
++	const struct i2s_platform_data *pdata = of_device_get_match_data(&pdev->dev);
+ 	struct dw_i2s_dev *dev;
+ 	struct resource *res;
+ 	int ret, irq;
+-- 
+2.40.1
+
