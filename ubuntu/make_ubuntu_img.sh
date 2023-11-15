@@ -106,12 +106,21 @@ main() {
     mount -o bind "$cache/var/cache" "$mountpt/var/cache"
     mount -o bind "$cache/var/lib/apt/lists" "$mountpt/var/lib/apt/lists"
 
-    local umin='adduser, apt, apt-utils, console-setup, debconf, debconf-i18n, dhcpcd-base, e2fsprogs, eject, init, iproute2, iputils-ping, kbd, kmod, less, locales, lsb-release, mawk, mount, netbase, netcat-openbsd, netplan.io, passwd, procps, python3, rsyslog, sensible-utils, sudo, tzdata, ubuntu-keyring, udev, usrmerge, vim-tiny, whiptail'
-    local pkgs="$umin, initramfs-tools"
-    pkgs="$pkgs, apparmor, bc, binutils, fdisk"
-    pkgs="$pkgs, dbus, dhcpcd, libpam-systemd, openssh-server, systemd-timesyncd"
-    pkgs="$pkgs, $extra_pkgs"
-    debootstrap --arch riscv64 --components=main,universe --include "$pkgs" --exclude 'networkd-dispatcher, ubuntu-advantage-tools, ubuntu-minimal' "$ubu_dist" "$mountpt" 'http://ports.ubuntu.com/ubuntu-ports'
+    local pkgs='initramfs-tools'
+    pkgs="$pkgs, adduser, apt-utils, apt, apparmor, bc, base-files, base-passwd, bash, bc, binutils"
+    pkgs="$pkgs, bsdutils, ca-certificates, coreutils, cpio, cron, cron-daemon-common, curl, dash, dbus"
+    pkgs="$pkgs, dbus-bin, dbus-daemon, dbus-session-bus-common, dbus-system-bus-common, debconf"
+    pkgs="$pkgs, debconf-i18n, debianutils, dhcpcd-base, dhcpcd, diffutils, dmidecode, dmsetup, dpkg"
+    pkgs="$pkgs, e2fsprogs, fdisk, findutils, gcc-12-base, gpgv, grep, gzip, hostname, ifupdown"
+    pkgs="$pkgs, init-system-helpers, init, initramfs-tools-core, initramfs-tools, iproute2, iputils-ping"
+    pkgs="$pkgs, klibc-utils, kmod, less, libpam-systemd, login, logrotate, logsave, lsb-base, mawk, mount"
+    pkgs="$pkgs, ncurses-base, ncurses-bin, netbase, nftables, openssh-client, openssh-server"
+    pkgs="$pkgs, openssh-sftp-server, openssl, passwd, pci.ids, pciutils, perl-base, procps, readline-common"
+    pkgs="$pkgs, runit-helper, sed, sensible-utils, sudo, systemd-sysv, systemd-timesyncd, systemd"
+    pkgs="$pkgs, sysvinit-utils, tar, tasksel-data, tasksel, tzdata, ubuntu-keyring, ucf, udev, unzip"
+    pkgs="$pkgs, usr-is-merged, util-linux-extra, util-linux, vim-common, vim-tiny, wget, whiptail, xxd"
+    pkgs="$pkgs, xz-utils, zip, zlib1g, zstd"
+    debootstrap --arch riscv64 --components=main,universe --include "$pkgs, $extra_pkgs" --exclude 'networkd-dispatcher, ubuntu-advantage-tools, ubuntu-minimal' "$ubu_dist" "$mountpt" 'http://ports.ubuntu.com/ubuntu-ports'
 
     umount "$mountpt/var/cache"
     umount "$mountpt/var/lib/apt/lists"
@@ -122,6 +131,12 @@ main() {
 
     # set watchdog timeout to 300s
     sed -i '/RebootWatchdogSec/s/.*/RebootWatchdogSec=5min/' "$mountpt/etc/systemd/system.conf"
+
+    # the serial getty is locking-up on reboot
+    # emperical testing shows that if it is shutdown
+    # very early, then reboots become reliable
+    cp "$mountpt/usr/lib/systemd/system/serial-getty\@.service" "$mountpt/usr/lib/systemd/system/serial-getty\@.service_bak"
+    sed -i '/After=rc-local.service/s/$/ graphical.target/' "$mountpt/usr/lib/systemd/system/serial-getty\@.service"
 
     # hostname
     echo $hostname > "$mountpt/etc/hostname"
