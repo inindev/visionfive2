@@ -135,8 +135,8 @@ main() {
     # the serial getty is locking-up on reboot
     # emperical testing shows that if it is shutdown
     # very early, then reboots become reliable
-    cp "$mountpt/usr/lib/systemd/system/serial-getty\@.service" "$mountpt/usr/lib/systemd/system/serial-getty\@.service_bak"
-    sed -i '/After=rc-local.service/s/$/ graphical.target/' "$mountpt/usr/lib/systemd/system/serial-getty\@.service"
+    cp "$mountpt/usr/lib/systemd/system/serial-getty@.service" "$mountpt/usr/lib/systemd/system/serial-getty@.service_bak"
+    sed -i '/After=rc-local.service/s/$/ graphical.target/' "$mountpt/usr/lib/systemd/system/serial-getty@.service"
 
     # hostname
     echo $hostname > "$mountpt/etc/hostname"
@@ -157,7 +157,7 @@ main() {
     rm -fv "$mountpt/etc/ssh/ssh_host_"*
 
     # generate machine id on first boot
-    rm -fv "$mountpt/etc/machine-id"
+    echo -n > "$mountpt/etc/machine-id"
 
     # reduce entropy on non-block media
     [ -b "$media" ] || fstrim -v "$mountpt"
