@@ -132,12 +132,6 @@ main() {
     # set watchdog timeout to 300s
     sed -i '/RebootWatchdogSec/s/.*/RebootWatchdogSec=5min/' "$mountpt/etc/systemd/system.conf"
 
-    # the serial getty is locking-up on reboot
-    # emperical testing shows that if it is shutdown
-    # very early, then reboots become reliable
-    cp "$mountpt/usr/lib/systemd/system/serial-getty@.service" "$mountpt/usr/lib/systemd/system/serial-getty@.service_bak"
-    sed -i '/After=rc-local.service/s/$/ graphical.target/' "$mountpt/usr/lib/systemd/system/serial-getty@.service"
-
     # hostname
     echo $hostname > "$mountpt/etc/hostname"
     sed -i "s/127.0.0.1\tlocalhost/127.0.0.1\tlocalhost\n127.0.1.1\t$hostname/" "$mountpt/etc/hosts"
