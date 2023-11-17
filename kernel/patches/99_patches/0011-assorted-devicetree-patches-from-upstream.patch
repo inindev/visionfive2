@@ -1,4 +1,4 @@
-From 0f0c2e44ee9047b534973da41d221ac9c516bd81 Mon Sep 17 00:00:00 2001
+From 13f391bbd2a5e5e09daafcade2091a83a5e61696 Mon Sep 17 00:00:00 2001
 From: John Clark <inindev@gmail.com>
 Date: Mon, 13 Nov 2023 11:43:08 +0000
 Subject: [PATCH 11/12] assorted devicetree patches from upstream
@@ -6,8 +6,8 @@ Subject: [PATCH 11/12] assorted devicetree patches from upstream
 Signed-off-by: John Clark <inindev@gmail.com>
 ---
  .../jh7110-starfive-visionfive-2.dtsi         | 52 +++++++++----------
- arch/riscv/boot/dts/starfive/jh7110.dtsi      | 20 +++----
- 2 files changed, 37 insertions(+), 35 deletions(-)
+ arch/riscv/boot/dts/starfive/jh7110.dtsi      | 18 ++++---
+ 2 files changed, 36 insertions(+), 34 deletions(-)
 
 diff --git a/arch/riscv/boot/dts/starfive/jh7110-starfive-visionfive-2.dtsi b/arch/riscv/boot/dts/starfive/jh7110-starfive-visionfive-2.dtsi
 index 0b2a114ef..468adb669 100644
@@ -112,7 +112,7 @@ index 0b2a114ef..468adb669 100644
  		mosi-pins {
  			pinmux = <GPIOMUX(52, GPOUT_SYS_SPI0_TXD,
 diff --git a/arch/riscv/boot/dts/starfive/jh7110.dtsi b/arch/riscv/boot/dts/starfive/jh7110.dtsi
-index a4e056c62..76d1a0936 100644
+index 6fb292287..e73fd0154 100644
 --- a/arch/riscv/boot/dts/starfive/jh7110.dtsi
 +++ b/arch/riscv/boot/dts/starfive/jh7110.dtsi
 @@ -203,6 +203,13 @@ opp-1500000000 {
@@ -143,17 +143,15 @@ index a4e056c62..76d1a0936 100644
  	tdm_ext: tdm-ext-clock {
  		compatible = "fixed-clock";
  		clock-output-names = "tdm_ext";
-@@ -736,8 +736,8 @@ spi6: spi@120a0000 {
+@@ -736,7 +736,7 @@ spi6: spi@120a0000 {
  			status = "disabled";
  		};
  
 -		pwm: pwm@120d0000 {
--			compatible = "starfive,jh71x0-pwm";
 +		ptc: pwm@120d0000 {
-+			compatible = "starfive,jh7110-pwm";
+ 			compatible = "starfive,jh7110-pwm", "opencores,pwm";
  			reg = <0x0 0x120d0000 0x0 0x10000>;
  			clocks = <&syscrg JH7110_SYSCLK_PWM_APB>;
- 			resets = <&syscrg JH7110_SYSRST_PWM_APB>;
 @@ -1087,6 +1087,7 @@ pcie0: pcie@940000000 {
  			ranges = <0x82000000  0x0 0x30000000  0x0 0x30000000 0x0 0x08000000>,
  				 <0xc3000000  0x9 0x00000000  0x9 0x00000000 0x0 0x40000000>;

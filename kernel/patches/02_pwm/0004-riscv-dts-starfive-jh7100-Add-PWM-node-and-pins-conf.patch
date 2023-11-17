@@ -1,6 +1,6 @@
-From 24a73c6fc35007177c2da25c98bf94be7474f01c Mon Sep 17 00:00:00 2001
+From f1a5c931c8bc79108995d4c7ff3c5d56799ca9d2 Mon Sep 17 00:00:00 2001
 From: William Qiu <william.qiu@starfivetech.com>
-Date: Fri, 20 Oct 2023 18:37:41 +0800
+Date: Fri, 10 Nov 2023 14:20:39 +0800
 Subject: [PATCH 4/4] riscv: dts: starfive: jh7100: Add PWM node and pins
  configuration
 
@@ -57,7 +57,7 @@ index b93ce351a..11876906c 100644
  	pinctrl-names = "default";
  	pinctrl-0 = <&uart3_pins>;
 diff --git a/arch/riscv/boot/dts/starfive/jh7100.dtsi b/arch/riscv/boot/dts/starfive/jh7100.dtsi
-index 35ab54fb2..0bb9e2e5a 100644
+index 35ab54fb2..9a7192b06 100644
 --- a/arch/riscv/boot/dts/starfive/jh7100.dtsi
 +++ b/arch/riscv/boot/dts/starfive/jh7100.dtsi
 @@ -274,6 +274,15 @@ watchdog@12480000 {
@@ -65,7 +65,7 @@ index 35ab54fb2..0bb9e2e5a 100644
  		};
  
 +		pwm: pwm@12490000 {
-+			compatible = "starfive,jh71x0-pwm";
++			compatible = "starfive,jh7100-pwm", "opencores,pwm";
 +			reg = <0x0 0x12490000 0x0 0x10000>;
 +			clocks = <&clkgen JH7100_CLK_PWM_APB>;
 +			resets = <&rstgen JH7100_RSTN_PWM_APB>;

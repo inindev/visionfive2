@@ -1,6 +1,6 @@
-From a42bf585b4c589afcca20c27aab78341447028e2 Mon Sep 17 00:00:00 2001
+From c958e0ab2f3cc92003fa57dd91ee8720c98bda01 Mon Sep 17 00:00:00 2001
 From: William Qiu <william.qiu@starfivetech.com>
-Date: Fri, 20 Oct 2023 18:37:40 +0800
+Date: Fri, 10 Nov 2023 14:20:38 +0800
 Subject: [PATCH 3/4] riscv: dts: starfive: jh7110: Add PWM node and pins
  configuration
 
@@ -55,7 +55,7 @@ index 2c02358ab..823f298c3 100644
  		mosi-pins {
  			pinmux = <GPIOMUX(52, GPOUT_SYS_SPI0_TXD,
 diff --git a/arch/riscv/boot/dts/starfive/jh7110.dtsi b/arch/riscv/boot/dts/starfive/jh7110.dtsi
-index 76062130d..a37d0415a 100644
+index 76062130d..77ebb722b 100644
 --- a/arch/riscv/boot/dts/starfive/jh7110.dtsi
 +++ b/arch/riscv/boot/dts/starfive/jh7110.dtsi
 @@ -736,6 +736,15 @@ spi6: spi@120a0000 {
@@ -63,7 +63,7 @@ index 76062130d..a37d0415a 100644
  		};
  
 +		pwm: pwm@120d0000 {
-+			compatible = "starfive,jh71x0-pwm";
++			compatible = "starfive,jh7110-pwm", "opencores,pwm";
 +			reg = <0x0 0x120d0000 0x0 0x10000>;
 +			clocks = <&syscrg JH7110_SYSCLK_PWM_APB>;
 +			resets = <&syscrg JH7110_SYSRST_PWM_APB>;

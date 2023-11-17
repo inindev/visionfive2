@@ -1,6 +1,6 @@
-From c1cea8c93d44458620a38ed87db1ad5678fb9a3d Mon Sep 17 00:00:00 2001
+From e7561bfd5babd4c3e9789faf919d145d497b6a4b Mon Sep 17 00:00:00 2001
 From: William Qiu <william.qiu@starfivetech.com>
-Date: Fri, 20 Oct 2023 18:37:39 +0800
+Date: Fri, 10 Nov 2023 14:20:37 +0800
 Subject: [PATCH 2/4] pwm: opencores: Add PWM driver support
 
 Add Pulse Width Modulation driver support for OpenCores.
@@ -10,10 +10,10 @@ Signed-off-by: Hal Feng <hal.feng@starfivetech.com>
 Signed-off-by: William Qiu <william.qiu@starfivetech.com>
 ---
  MAINTAINERS              |   7 ++
- drivers/pwm/Kconfig      |  11 +++
+ drivers/pwm/Kconfig      |  12 ++
  drivers/pwm/Makefile     |   1 +
- drivers/pwm/pwm-ocores.c | 208 +++++++++++++++++++++++++++++++++++++++
- 4 files changed, 227 insertions(+)
+ drivers/pwm/pwm-ocores.c | 236 +++++++++++++++++++++++++++++++++++++++
+ 4 files changed, 256 insertions(+)
  create mode 100644 drivers/pwm/pwm-ocores.c
 
 diff --git a/MAINTAINERS b/MAINTAINERS
@@ -35,17 +35,18 @@ index 22a8face0..07dc4461d 100644
  M:	Jonas Bonn <jonas@southpole.se>
  M:	Stefan Kristiansson <stefan.kristiansson@saunalahti.fi>
 diff --git a/drivers/pwm/Kconfig b/drivers/pwm/Kconfig
-index 8ebcddf91..cbfbf227d 100644
+index 8ebcddf91..a9db2d7ab 100644
 --- a/drivers/pwm/Kconfig
 +++ b/drivers/pwm/Kconfig
-@@ -434,6 +434,17 @@ config PWM_NTXEC
+@@ -434,6 +434,18 @@ config PWM_NTXEC
  	  controller found in certain e-book readers designed by the original
  	  design manufacturer Netronix.
  
 +config PWM_OCORES
-+	tristate "Opencores PWM support"
++	tristate "OpenCores PWM support"
 +	depends on HAS_IOMEM && OF
 +	depends on COMMON_CLK && RESET_CONTROLLER
++	depends on ARCH_STARFIVE || COMPILE_TEST
 +	help
 +	  If you say yes to this option, support will be included for the
 +	  OpenCores PWM. For details see https://opencores.org/projects/ptc.
@@ -70,10 +71,10 @@ index c822389c2..542b98202 100644
  obj-$(CONFIG_PWM_PXA)		+= pwm-pxa.o
 diff --git a/drivers/pwm/pwm-ocores.c b/drivers/pwm/pwm-ocores.c
 new file mode 100644
-index 000000000..88ff27fd9
+index 000000000..4b98a152d
 --- /dev/null
 +++ b/drivers/pwm/pwm-ocores.c
-@@ -0,0 +1,208 @@
+@@ -0,0 +1,236 @@
 +// SPDX-License-Identifier: GPL-2.0
 +/*
 + * OpenCores PWM Driver
@@ -81,6 +82,11 @@ index 000000000..88ff27fd9
 + * https://opencores.org/projects/ptc
 + *
 + * Copyright (C) 2018-2023 StarFive Technology Co., Ltd.
++ *
++ * Limitations:
++ * - The hardware only do inverted polarity.
++ * - The hardware minimum period / duty_cycle is (1 / pwm_apb clock frequency) ns.
++ * - The hardware maximum period / duty_cycle is (U32_MAX / pwm_apb clock frequency) ns.
 + */
 +
 +#include <linux/clk.h>
@@ -93,21 +99,16 @@ index 000000000..88ff27fd9
 +#include <linux/reset.h>
 +#include <linux/slab.h>
 +
-+#define REG_OCPWM_CNTR(base)	((base))
-+#define REG_OCPWM_HRC(base)	((base) + 0x4)
-+#define REG_OCPWM_LRC(base)	((base) + 0x8)
-+#define REG_OCPWM_CTRL(base)	((base) + 0xC)
-+
 +/* OCPWM_CTRL register bits*/
-+#define OCPWM_EN      BIT(0)
-+#define OCPWM_ECLK    BIT(1)
-+#define OCPWM_NEC     BIT(2)
-+#define OCPWM_OE      BIT(3)
-+#define OCPWM_SIGNLE  BIT(4)
-+#define OCPWM_INTE    BIT(5)
-+#define OCPWM_INT     BIT(6)
-+#define OCPWM_CNTRRST BIT(7)
-+#define OCPWM_CAPTE   BIT(8)
++#define REG_OCPWM_EN      BIT(0)
++#define REG_OCPWM_ECLK    BIT(1)
++#define REG_OCPWM_NEC     BIT(2)
++#define REG_OCPWM_OE      BIT(3)
++#define REG_OCPWM_SIGNLE  BIT(4)
++#define REG_OCPWM_INTE    BIT(5)
++#define REG_OCPWM_INT     BIT(6)
++#define REG_OCPWM_CNTRRST BIT(7)
++#define REG_OCPWM_CAPTE   BIT(8)
 +
 +struct ocores_pwm_device {
 +	struct pwm_chip chip;
@@ -122,66 +123,90 @@ index 000000000..88ff27fd9
 +	void __iomem *(*get_ch_base)(void __iomem *base, unsigned int channel);
 +};
 +
-+static inline struct ocores_pwm_device *
-+chip_to_ocores(struct pwm_chip *chip)
++static inline u32 ocores_readl(struct ocores_pwm_device *ddata,
++			       unsigned int channel,
++			       unsigned int offset)
++{
++	void __iomem *base = ddata->data->get_ch_base ?
++			     ddata->data->get_ch_base(ddata->regs, channel) : ddata->regs;
 +
++	return readl(base + offset);
++}
++
++static inline void ocores_writel(struct ocores_pwm_device *ddata,
++				 unsigned int channel,
++				 unsigned int offset, u32 val)
++{
++	void __iomem *base = ddata->data->get_ch_base ?
++			     ddata->data->get_ch_base(ddata->regs, channel) : ddata->regs;
++
++	writel(val, base + offset);
++}
++
++static inline struct ocores_pwm_device *chip_to_ocores(struct pwm_chip *chip)
 +{
 +	return container_of(chip, struct ocores_pwm_device, chip);
 +}
 +
-+void __iomem *starfive_jh71x0_get_ch_base(void __iomem *base,
-+					  unsigned int channel)
++static void __iomem *starfive_jh71x0_get_ch_base(void __iomem *base,
++						 unsigned int channel)
 +{
-+	return base + (channel > 3 ? channel % 4 * 0x10 + (1 << 15) : channel * 0x10);
++	unsigned int offset = (channel > 3 ? 1 << 15 : 0) + (channel & 3) * 0x10;
++
++	return base + offset;
 +}
 +
 +static int ocores_pwm_get_state(struct pwm_chip *chip,
-+				struct pwm_device *dev,
++				struct pwm_device *pwm,
 +				struct pwm_state *state)
 +{
-+	struct ocores_pwm_device *pwm = chip_to_ocores(chip);
-+	void __iomem *base = pwm->data->get_ch_base ?
-+			     pwm->data->get_ch_base(pwm->regs, dev->hwpwm) : pwm->regs;
++	struct ocores_pwm_device *ddata = chip_to_ocores(chip);
 +	u32 period_data, duty_data, ctrl_data;
 +
-+	period_data = readl(REG_OCPWM_LRC(base));
-+	duty_data = readl(REG_OCPWM_HRC(base));
-+	ctrl_data = readl(REG_OCPWM_CTRL(base));
++	period_data = ocores_readl(ddata, pwm->hwpwm, 0x8);
++	duty_data = ocores_readl(ddata, pwm->hwpwm, 0x4);
++	ctrl_data = ocores_readl(ddata, pwm->hwpwm, 0xC);
 +
-+	state->period = DIV_ROUND_CLOSEST_ULL((u64)period_data * NSEC_PER_SEC, pwm->clk_rate);
-+	state->duty_cycle = DIV_ROUND_CLOSEST_ULL((u64)duty_data * NSEC_PER_SEC, pwm->clk_rate);
++	state->period = DIV_ROUND_UP_ULL((u64)period_data * NSEC_PER_SEC, ddata->clk_rate);
++	state->duty_cycle = DIV_ROUND_UP_ULL((u64)duty_data * NSEC_PER_SEC, ddata->clk_rate);
 +	state->polarity = PWM_POLARITY_INVERSED;
-+	state->enabled = (ctrl_data & OCPWM_EN) ? true : false;
++	state->enabled = (ctrl_data & REG_OCPWM_EN) ? true : false;
 +
 +	return 0;
 +}
 +
 +static int ocores_pwm_apply(struct pwm_chip *chip,
-+			    struct pwm_device *dev,
++			    struct pwm_device *pwm,
 +			    const struct pwm_state *state)
 +{
-+	struct ocores_pwm_device *pwm = chip_to_ocores(chip);
-+	void __iomem *base = pwm->data->get_ch_base ?
-+			     pwm->data->get_ch_base(pwm->regs, dev->hwpwm) : pwm->regs;
-+	u32 period_data, duty_data, ctrl_data = 0;
++	struct ocores_pwm_device *ddata = chip_to_ocores(chip);
++	u32 ctrl_data = 0;
++	u64 period_data, duty_data;
 +
 +	if (state->polarity != PWM_POLARITY_INVERSED)
 +		return -EINVAL;
 +
-+	period_data = DIV_ROUND_CLOSEST_ULL(state->period * pwm->clk_rate,
-+					    NSEC_PER_SEC);
-+	duty_data = DIV_ROUND_CLOSEST_ULL(state->duty_cycle * pwm->clk_rate,
-+					  NSEC_PER_SEC);
++	ctrl_data = ocores_readl(ddata, pwm->hwpwm, 0xC);
++	ocores_writel(ddata, pwm->hwpwm, 0xC, 0);
 +
-+	writel(period_data, REG_OCPWM_LRC(base));
-+	writel(duty_data, REG_OCPWM_HRC(base));
-+	writel(0,  REG_OCPWM_CNTR(base));
-+
-+	ctrl_data = readl(REG_OCPWM_CTRL(base));
-+	if (state->enabled)
-+		writel(ctrl_data | OCPWM_EN | OCPWM_OE, REG_OCPWM_CTRL(base));
++	period_data = DIV_ROUND_DOWN_ULL(state->period * ddata->clk_rate, NSEC_PER_SEC);
++	if (period_data <= U32_MAX)
++		ocores_writel(ddata, pwm->hwpwm, 0x8, (u32)period_data);
 +	else
-+		writel(ctrl_data & ~(OCPWM_EN | OCPWM_OE), REG_OCPWM_CTRL(base));
++		return -EINVAL;
++
++	duty_data = DIV_ROUND_DOWN_ULL(state->duty_cycle * ddata->clk_rate, NSEC_PER_SEC);
++	if (duty_data <= U32_MAX)
++		ocores_writel(ddata, pwm->hwpwm, 0x4, (u32)duty_data);
++	else
++		return -EINVAL;
++
++	ocores_writel(ddata, pwm->hwpwm, 0xC, 0);
++
++	if (state->enabled) {
++		ctrl_data = ocores_readl(ddata, pwm->hwpwm, 0xC);
++		ocores_writel(ddata, pwm->hwpwm, 0xC, ctrl_data | REG_OCPWM_EN | REG_OCPWM_OE);
++	}
 +
 +	return 0;
 +}
@@ -189,16 +214,20 @@ index 000000000..88ff27fd9
 +static const struct pwm_ops ocores_pwm_ops = {
 +	.get_state	= ocores_pwm_get_state,
 +	.apply		= ocores_pwm_apply,
-+	.owner		= THIS_MODULE,
 +};
 +
-+static const struct ocores_pwm_data jh71x0_pwm_data = {
++static const struct ocores_pwm_data jh7100_pwm_data = {
++	.get_ch_base = starfive_jh71x0_get_ch_base,
++};
++
++static const struct ocores_pwm_data jh7110_pwm_data = {
 +	.get_ch_base = starfive_jh71x0_get_ch_base,
 +};
 +
 +static const struct of_device_id ocores_pwm_of_match[] = {
-+	{ .compatible = "opencores,pwm-ocores" },
-+	{ .compatible = "starfive,jh71x0-pwm", .data = &jh71x0_pwm_data},
++	{ .compatible = "opencores,pwm" },
++	{ .compatible = "starfive,jh7100-pwm", .data = &jh7100_pwm_data},
++	{ .compatible = "starfive,jh7110-pwm", .data = &jh7110_pwm_data},
 +	{ /* sentinel */ }
 +};
 +MODULE_DEVICE_TABLE(of, ocores_pwm_of_match);
@@ -207,7 +236,7 @@ index 000000000..88ff27fd9
 +{
 +	const struct of_device_id *id;
 +	struct device *dev = &pdev->dev;
-+	struct ocores_pwm_device *pwm;
++	struct ocores_pwm_device *ddata;
 +	struct pwm_chip *chip;
 +	int ret;
 +
@@ -215,62 +244,62 @@ index 000000000..88ff27fd9
 +	if (!id)
 +		return -EINVAL;
 +
-+	pwm = devm_kzalloc(dev, sizeof(*pwm), GFP_KERNEL);
-+	if (!pwm)
++	ddata = devm_kzalloc(dev, sizeof(*ddata), GFP_KERNEL);
++	if (!ddata)
 +		return -ENOMEM;
 +
-+	pwm->data = id->data;
-+	chip = &pwm->chip;
++	ddata->data = id->data;
++	chip = &ddata->chip;
 +	chip->dev = dev;
 +	chip->ops = &ocores_pwm_ops;
 +	chip->npwm = 8;
 +	chip->of_pwm_n_cells = 3;
 +
-+	pwm->regs = devm_platform_ioremap_resource(pdev, 0);
-+	if (IS_ERR(pwm->regs))
-+		return dev_err_probe(dev, PTR_ERR(pwm->regs),
++	ddata->regs = devm_platform_ioremap_resource(pdev, 0);
++	if (IS_ERR(ddata->regs))
++		return dev_err_probe(dev, PTR_ERR(ddata->regs),
 +				     "Unable to map IO resources\n");
 +
-+	pwm->clk = devm_clk_get_enabled(dev, NULL);
-+	if (IS_ERR(pwm->clk))
-+		return dev_err_probe(dev, PTR_ERR(pwm->clk),
++	ddata->clk = devm_clk_get(dev, NULL);
++	if (IS_ERR(ddata->clk))
++		return dev_err_probe(dev, PTR_ERR(ddata->clk),
 +				     "Unable to get pwm's clock\n");
 +
-+	pwm->rst = devm_reset_control_get_optional_exclusive(dev, NULL);
-+	reset_control_deassert(pwm->rst);
++	ret = clk_prepare_enable(ddata->clk);
++	if (ret)
++		return dev_err_probe(dev, ret, "Clock enable failed\n");
 +
-+	pwm->clk_rate = clk_get_rate(pwm->clk);
-+	if (pwm->clk_rate <= 0) {
-+		dev_warn(dev, "Failed to get APB clock rate\n");
-+		return -EINVAL;
-+	}
++	ddata->rst = devm_reset_control_get_optional_exclusive(dev, NULL);
++	reset_control_deassert(ddata->rst);
++
++	ddata->clk_rate = clk_get_rate(ddata->clk);
++	if (ddata->clk_rate <= 0)
++		return dev_err_probe(dev, ddata->clk_rate,
++				     "Unable to get clock's rate\n");
 +
 +	ret = devm_pwmchip_add(dev, chip);
 +	if (ret < 0) {
-+		dev_err(dev, "Cannot register PTC: %d\n", ret);
-+		clk_disable_unprepare(pwm->clk);
-+		reset_control_assert(pwm->rst);
-+		return ret;
++		dev_err_probe(dev, ret, "Could not register PWM chip\n");
++		clk_disable_unprepare(ddata->clk);
++		reset_control_assert(ddata->rst);
 +	}
 +
-+	platform_set_drvdata(pdev, pwm);
++	platform_set_drvdata(pdev, ddata);
 +
-+	return 0;
++	return ret;
 +}
 +
-+static int ocores_pwm_remove(struct platform_device *dev)
++static void ocores_pwm_remove(struct platform_device *dev)
 +{
-+	struct ocores_pwm_device *pwm = platform_get_drvdata(dev);
++	struct ocores_pwm_device *ddata = platform_get_drvdata(dev);
 +
-+	reset_control_assert(pwm->rst);
-+	clk_disable_unprepare(pwm->clk);
-+
-+	return 0;
++	reset_control_assert(ddata->rst);
++	clk_disable_unprepare(ddata->clk);
 +}
 +
 +static struct platform_driver ocores_pwm_driver = {
 +	.probe = ocores_pwm_probe,
-+	.remove = ocores_pwm_remove,
++	.remove_new = ocores_pwm_remove,
 +	.driver = {
 +		.name = "ocores-pwm",
 +		.of_match_table = ocores_pwm_of_match,
