@@ -125,6 +125,15 @@ main() {
     umount "$mountpt/var/cache"
     umount "$mountpt/var/lib/apt/lists"
 
+    # the agetty that ships with riscv mantic has a deadlock issue on reboot
+    # recompiling the binary from source produces a significantly larger file
+    #    -rwxr-xr-x 1 root root  74408 Oct  5 21:27 agetty_ori
+    #    -rwxr-xr-x 1 root root 285032 Nov 16 23:53 agetty-2.39.1
+    # this needs to be reported and further investigated, but for now
+    # the hand-compiled binary resolves the reboot deadlock issue
+    mv "$mountpt/usr/sbin/agetty" "$mountpt/usr/sbin/agetty_ori"
+    install -Dvm 755 "../misc/bin/agetty-2.39.1" "$mountpt/usr/sbin/agetty"
+
     # apt sources & default locale
     echo "$(file_apt_sources $ubu_dist)\n" > "$mountpt/etc/apt/sources.list"
     echo "$(file_locale_cfg)\n" > "$mountpt/etc/default/locale"
