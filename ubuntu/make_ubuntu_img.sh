@@ -60,6 +60,11 @@ main() {
     print_hdr 'downloading files'
     local cache="cache.$ubu_dist"
 
+    # linux firmware
+    local lfw=$(download "$cache" 'https://mirrors.edge.kernel.org/pub/linux/kernel/firmware/linux-firmware-20230515.tar.xz')
+    local lfwsha='8b1acfa16f1ee94732a6acb50d9d6c835cf53af11068bd89ed207bbe04a1e951'
+    [ "$lfwsha" = $(sha256sum "$lfw" | cut -c1-64) ] || { echo "invalid hash for $lfw"; exit 5; }
+
     # u-boot
     local uboot_spl=$(download "$cache" 'https://github.com/inindev/visionfive2/releases/download/v23.10-6.6.1/u-boot-spl.bin.normal.out')
     [ -f "$uboot_spl" ] || { echo "unable to fetch $uboot_spl"; exit 4; }
@@ -96,6 +101,12 @@ main() {
     install -Dvm 754 'files/mk_extlinux' "$mountpt/boot/mk_extlinux"
     ln -svf '../../../boot/mk_extlinux' "$mountpt/etc/kernel/postinst.d/update_extlinux"
     ln -svf '../../../boot/mk_extlinux' "$mountpt/etc/kernel/postrm.d/update_extlinux"
+
+    print_hdr "installing firmware"
+    mkdir -p "$mountpt/usr/lib/firmware"
+    local lfwn=$(basename "$lfw")
+    local lfwbn="${lfwn%%.*}"
+    tar -C "$mountpt/usr/lib/firmware" --strip-components=1 --wildcards -xavf "$lfw" "$lfwbn/rtl_bt" "$lfwbn/rtl_nic"
 
     # install ubuntu linux from packages (debootstrap)
     print_hdr 'installing root filesystem from ubuntu.com'
