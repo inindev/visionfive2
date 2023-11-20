@@ -1,20 +1,20 @@
-From f7f66d742bed5fb52903b3e074c449e54f10f8d1 Mon Sep 17 00:00:00 2001
+From e9e7a191058f8d7f3f7adc1bcbecd44b021fcb51 Mon Sep 17 00:00:00 2001
 From: John Clark <inindev@gmail.com>
 Date: Mon, 13 Nov 2023 03:50:50 +0000
 Subject: [PATCH 12/12] default config for the starfive visionfive2
 
 Signed-off-by: John Clark <inindev@gmail.com>
 ---
- .../configs/starfive_visionfive2_defconfig    | 455 ++++++++++++++++++
- 1 file changed, 455 insertions(+)
+ .../configs/starfive_visionfive2_defconfig    | 458 ++++++++++++++++++
+ 1 file changed, 458 insertions(+)
  create mode 100644 arch/riscv/configs/starfive_visionfive2_defconfig
 
 diff --git a/arch/riscv/configs/starfive_visionfive2_defconfig b/arch/riscv/configs/starfive_visionfive2_defconfig
 new file mode 100644
-index 000000000..17d2c45c0
+index 000000000..4263f760d
 --- /dev/null
 +++ b/arch/riscv/configs/starfive_visionfive2_defconfig
-@@ -0,0 +1,455 @@
+@@ -0,0 +1,458 @@
 +CONFIG_COMPILE_TEST=y
 +CONFIG_DEFAULT_HOSTNAME="StarFive"
 +CONFIG_SYSVIPC=y
@@ -359,6 +359,9 @@ index 000000000..17d2c45c0
 +CONFIG_LEDS_CLASS=y
 +CONFIG_LEDS_GPIO=y
 +CONFIG_RTC_CLASS=y
++CONFIG_RTC_DRV_DS1307=m
++CONFIG_RTC_DRV_DS1307_CENTURY=y
++CONFIG_RTC_DRV_PCF8523=m
 +CONFIG_RTC_DRV_GOLDFISH=y
 +CONFIG_DMADEVICES=y
 +CONFIG_AMBA_PL08X=y
