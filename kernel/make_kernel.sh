@@ -11,7 +11,7 @@ set -e
 config_fixups() {
     local lpath="$1"
 
-    [ -e "$lpath/.version" ] || echo 2000 > "$lpath/.version"
+    [ -e "$lpath/.version" ] || echo 3000 > "$lpath/.version"
 }
 
 main() {
