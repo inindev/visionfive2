@@ -1,7 +1,7 @@
-From 8205098f196ac842b728e318ccfaa6f1ae6da376 Mon Sep 17 00:00:00 2001
+From 8400e2e45a6dcd6d107fce958a9625d520ebc8cf Mon Sep 17 00:00:00 2001
 From: John Clark <inindev@gmail.com>
 Date: Tue, 17 Oct 2023 02:29:18 +0000
-Subject: [PATCH 2/3] board: starfive: edit scan_dev_for_boot_part to scan all
+Subject: [PATCH 2/4] board: starfive: edit scan_dev_for_boot_part to scan all
  partitions
 
 Signed-off-by: John Clark <inindev@gmail.com>

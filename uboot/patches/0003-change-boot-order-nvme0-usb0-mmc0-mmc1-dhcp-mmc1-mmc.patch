@@ -1,7 +1,7 @@
-From 9be82d74bf2b36d2977873f9149dc7a3597623a2 Mon Sep 17 00:00:00 2001
+From 119a1efad1202db4ddb8c54439b8bfd35bca39d9 Mon Sep 17 00:00:00 2001
 From: John Clark <inindev@gmail.com>
 Date: Fri, 27 Oct 2023 17:37:28 +0000
-Subject: [PATCH 3/3] change boot order: "nvme0 usb0 mmc0 mmc1 dhcp" -> "mmc1
+Subject: [PATCH 3/4] change boot order: "nvme0 usb0 mmc0 mmc1 dhcp" -> "mmc1
  mmc0 usb0 nvme0 dhcp"
 
 Signed-off-by: John Clark <inindev@gmail.com>

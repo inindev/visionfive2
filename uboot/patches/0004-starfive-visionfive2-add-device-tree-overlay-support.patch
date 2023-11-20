@@ -1,0 +1,35 @@
+From 88ef6c1c08dc1764caab79fdaa1cc91dc5ee0960 Mon Sep 17 00:00:00 2001
+From: John Clark <inindev@gmail.com>
+Date: Mon, 20 Nov 2023 02:35:31 +0000
+Subject: [PATCH 4/4] starfive: visionfive2: add device tree overlay support
+
+device tree overlay support requires fdtoverlay_addr_r to be set
+
+before
+~~~~~~
+Invalid fdtoverlay_addr_r for loading overlays
+
+after
+~~~~~
+Retrieving file: /boot/overlay/rtc-ds3231.dtbo
+
+Signed-off-by: John Clark <inindev@gmail.com>
+---
+ include/configs/starfive-visionfive2.h | 1 +
+ 1 file changed, 1 insertion(+)
+
+diff --git a/include/configs/starfive-visionfive2.h b/include/configs/starfive-visionfive2.h
+index 10593c125d..a07371a24f 100644
+--- a/include/configs/starfive-visionfive2.h
++++ b/include/configs/starfive-visionfive2.h
+@@ -40,6 +40,7 @@
+ 	"kernel_comp_addr_r=0x88000000\0" \
+ 	"kernel_comp_size=0x4000000\0" \
+ 	"fdt_addr_r=0x46000000\0" \
++	"fdtoverlay_addr_r=0x45800000\0" \
+ 	"scriptaddr=0x43900000\0" \
+ 	"pxefile_addr_r=0x45900000\0" \
+ 	"ramdisk_addr_r=0x46100000\0" \
+-- 
+2.40.1
+
