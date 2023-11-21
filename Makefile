@@ -27,6 +27,7 @@ package-%: screen ubuntu
 	@install -vm 644 uboot/opensbi/build/platform/generic/firmware/fw_dynamic.bin uboot/u-boot-spl.bin.normal.out uboot/u-boot.itb distfiles
 	@install -vm 644 dtb/jh7110-starfive-visionfive-2-v1.3b.dtb distfiles
 	@install -vm 644 kernel/linux-image-*_riscv64.deb distfiles
+	@install -vm 644 kernel/linux-headers-*_riscv64.deb distfiles
 	@install -vm 644 ubuntu/mmc_4g.img distfiles/visionfive2_$(LDIST)-$*.img
 	@xz -zve8 distfiles/visionfive2_$(LDIST)-$*.img
 

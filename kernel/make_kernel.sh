@@ -91,6 +91,7 @@ main() {
     local t2=$(date +%s)
     echo "\n${cya}kernel package ready (elapsed: $(date -d@$((t2-t1)) '+%H:%M:%S'))${mag}"
     ln -sfv "kernel-$lv/linux-image-${kver}-${lver}_${kver}-${bver}_riscv64.deb"
+    ln -sfv "kernel-$lv/linux-headers-${kver}-${lver}_${kver}-${bver}_riscv64.deb"
     echo "${rst}"
 }
 
