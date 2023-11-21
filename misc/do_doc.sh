@@ -5,6 +5,7 @@ set -e
 
 main() {
     local img_name img_sha dtb_name dtb_sha opensbi_sha uboot_spl_sha uboot_itb_sha
+    local deb_image_name deb_image_sha deb_headers_name deb_headers_sha
     parse_sha_file 'sha256sums.txt'
     #echo "img name: $img_name"
     #echo "img sha: $img_sha"
@@ -12,6 +13,10 @@ main() {
     #echo "dtb sha: $dtb_sha"
     #echo "uboot spl sha: $uboot_spl_sha"
     #echo "uboot itb sha: $uboot_itb_sha"
+    #echo "deb_image_name: $deb_image_name"
+    #echo "deb_image_sha: $deb_image_sha"
+    #echo "deb_headers_name: $deb_headers_name"
+    #echo "deb_headers_sha: $deb_headers_sha"
 
     local img board dn dv lv rc branch
     parse_img_name "$img_name"
@@ -54,25 +59,31 @@ render() {
 	 - [u-boot.itb](https://github.com/inindev/$board/releases/download/$tag/u-boot.itb) - uboot v$uboot_ver, patched loader for the $board
 	        \`\`\`sha256: $uboot_itb_sha\`\`\`
 
+	**kernel packages**
+	 - [$deb_image_name](https://github.com/inindev/$board/releases/download/$tag/$deb_image_name) - linux image package
+	        \`\`\`sha256: $deb_image_sha\`\`\`
+	 - [$deb_headers_name](https://github.com/inindev/$board/releases/download/$tag/$deb_headers_name) - linux headers package
+	        \`\`\`sha256: $deb_headers_sha\`\`\`
+
 	<br/>
 	EOF
 }
 
 parse_img_name() {
-    # rock-5b_trixie-v13-6.6-rc4.img.xz
+    # visionfive2_mantic-v23.10-6.6.2.img.xz
     local img_name="$1"
 
     # rock-5b
     board="$(echo "$img_name" | cut -f1 -d_)"
-    # trixie-v13-6.6-rc4
+    # mantic-v23.10-6.6.2
     local temp="$(echo "$img_name" | cut -f2 -d_ | sed 's/\.img\.xz//')"
-    # trixie
+    # mantic
     dn="$(echo "$temp" | cut -f1 -d-)"
-    # v13
+    # v23.10
     dv="$(echo "$temp" | cut -f2 -d-)"
-    # 6.6-rc4
+    # 6.6.2
     lv="$(echo "$temp" | cut -f3 -d-)"
-    # rc4
+    #
     rc="$(echo "$temp" | cut -f4 -d-)"
 
     branch='main'
@@ -94,6 +105,11 @@ parse_sha_file() {
     opensbi_sha="$(cat "$sha_file" | grep 'fw_dynamic\.bin$' | head -c64)"
     uboot_spl_sha="$(cat "$sha_file" | grep 'u-boot-spl\.bin\.normal\.out$' | head -c64)"
     uboot_itb_sha="$(cat "$sha_file" | grep 'u-boot\.itb$' | head -c64)"
+
+    deb_image_name="$(cat sha256sums.txt | grep -o 'linux-image-.*$')"
+    deb_image_sha="$(cat sha256sums.txt | grep 'linux-image' | head -c64)"
+    deb_headers_name="$(cat sha256sums.txt | grep -o 'linux-headers-.*$')"
+    deb_headers_sha="$(cat sha256sums.txt | grep 'linux-headers' | head -c64)"
 }
 
 main "$@"
