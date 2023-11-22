@@ -1,0 +1,20 @@
+/dts-v1/;
+/plugin/;
+
+/ {
+	compatible = "starfive,jh7110";
+
+	fragment@0 {
+		target = <&i2c0>;
+		__overlay__ {
+			#address-cells = <1>;
+			#size-cells = <0>;
+			status = "okay";
+
+			rtc: ds3231@68 {
+				compatible = "maxim,ds3231";
+				reg = <0x68>;
+			};
+		};
+	};
+};

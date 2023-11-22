@@ -1,0 +1,20 @@
+/dts-v1/;
+/plugin/;
+
+/ {
+	compatible = "starfive,jh7110";
+
+	fragment@0 {
+		target = <&i2c0>;
+		__overlay__ {
+			#address-cells = <1>;
+			#size-cells = <0>;
+			status = "okay";
+
+			rtc: pcf8523@68 {
+				compatible = "nxp,pcf8523";
+				reg = <0x68>;
+			};
+		};
+	};
+};
