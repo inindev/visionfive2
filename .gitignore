@@ -1,5 +1,6 @@
 *._*
 .DS_Store
+*.dtbo
 /distfiles
 /dtb/linux-*
 /dtb/*.dt?

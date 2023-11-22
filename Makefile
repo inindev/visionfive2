@@ -1,6 +1,8 @@
+#
+# Copyright (C) 2023, John Clark <inindev@gmail.com>
+#
 
 LDIST ?= $(shell cat "ubuntu/make_ubuntu_img.sh" | sed -n 's/\s*local ubu_dist=.\([[:alpha:]]\+\)./\1/p')
-
 
 all: uboot dtb ubuntu
 	@echo "all binaries ready"

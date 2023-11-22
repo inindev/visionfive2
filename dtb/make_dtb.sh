@@ -67,7 +67,8 @@ main() {
     local fldtc='-Wno-interrupt_provider -Wno-unique_unit_address -Wno-unit_address_vs_reg -Wno-avoid_unnecessary_addr_size -Wno-alias_paths -Wno-graph_child_address -Wno-simple_bus_reg'
     gcc -I "linux-$lv/include" -E -nostdinc -undef -D__DTS__ -x assembler-with-cpp -o "${dt}-top.dts" "$sfpath/${dt}.dts"
     dtc -I dts -O dtb -b 0 ${fldtc} -o "${dt}.dtb" "${dt}-top.dts"
-    is_param 'cp' "$@" && cp_to_ubuntu "${dt}.dtb"
+    make -C overlays
+    is_param 'cp' "$@" && cp_to_ubuntu "${dt}.dtb" && make -C overlays install
     echo "\n${cya}device tree ready: ${dt}.dtb${rst}\n"
 }
 

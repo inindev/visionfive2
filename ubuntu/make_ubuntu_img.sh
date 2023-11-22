@@ -102,6 +102,16 @@ main() {
     ln -svf '../../../boot/mk_extlinux' "$mountpt/etc/kernel/postinst.d/update_extlinux"
     ln -svf '../../../boot/mk_extlinux' "$mountpt/etc/kernel/postrm.d/update_extlinux"
 
+    # install overlay files
+    local dtbos="$(find "$cache/overlays" -maxdepth 1 -name '*.dtbo' 2>/dev/null | sort)"
+    if [ -n "$dtbos" ]; then
+        local dtbo dtgt="$mountpt/boot/overlay/lib"
+        mkdir -p "$dtgt"
+        for dtbo in $dtbos; do
+            install -vm 644 "$dtbo" "$dtgt"
+        done
+    fi
+
     print_hdr "installing firmware"
     mkdir -p "$mountpt/usr/lib/firmware"
     local lfwn=$(basename "$lfw")
@@ -131,7 +141,7 @@ main() {
     pkgs="$pkgs, sysvinit-utils, tar, tasksel-data, tasksel, tzdata, ubuntu-keyring, ucf, udev, unzip"
     pkgs="$pkgs, usr-is-merged, util-linux-extra, util-linux, vim-common, vim-tiny, wget, whiptail, xxd"
     pkgs="$pkgs, xz-utils, zip, zlib1g, zstd"
-    debootstrap --arch riscv64 --components=main,universe --include "$pkgs, $extra_pkgs" --exclude 'networkd-dispatcher, ubuntu-advantage-tools, ubuntu-minimal' "$ubu_dist" "$mountpt" 'http://ports.ubuntu.com/ubuntu-ports'
+    debootstrap --arch riscv64 --components=main,universe --include "$pkgs, $extra_pkgs" --exclude 'networkd-dispatcher, rsyslog, ubuntu-advantage-tools, ubuntu-minimal' "$ubu_dist" "$mountpt" 'http://ports.ubuntu.com/ubuntu-ports'
 
     umount "$mountpt/var/cache"
     umount "$mountpt/var/lib/apt/lists"
