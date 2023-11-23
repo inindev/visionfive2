@@ -148,7 +148,8 @@ main() {
 
     # a deadlock on reboot seems to be related to agetty shutdown timing
     # adding an ExecStop to the serial-getty service file appears to move the timing window
-    sed -i '/ExecStart/a ExecStop=-/usr/bin/echo -n' "$mountpt/usr/lib/systemd/system/serial-getty@.service"
+    mkdir -p  "$mountpt/etc/systemd/system/serial-getty@.service.d"
+    printf '[Service]\nExecStop=-/usr/bin/echo -n\n' > "$mountpt/etc/systemd/system/serial-getty@.service.d/override.conf"
 
     # apt sources & default locale
     echo "$(file_apt_sources $ubu_dist)\n" > "$mountpt/etc/apt/sources.list"
