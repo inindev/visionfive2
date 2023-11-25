@@ -20,7 +20,7 @@ main() {
     local hostname='visionfive2'
     local acct_uid='ubuntu'
     local acct_pass='ubuntu'
-    local extra_pkgs='curl, pciutils, nano, unzip, wget, xxd, xz-utils, zip, zstd'
+    local pkgs_extra=''
 
     # partition table sector offsets
     local sec_spl=4096
@@ -127,21 +127,9 @@ main() {
     mount -o bind "$cache/var/cache" "$mountpt/var/cache"
     mount -o bind "$cache/var/lib/apt/lists" "$mountpt/var/lib/apt/lists"
 
-    local pkgs='initramfs-tools'
-    pkgs="$pkgs, adduser, apt-utils, apt, apparmor, bc, base-files, base-passwd, bash, bc, binutils"
-    pkgs="$pkgs, bsdutils, ca-certificates, coreutils, cpio, cron, cron-daemon-common, curl, dash, dbus"
-    pkgs="$pkgs, dbus-bin, dbus-daemon, dbus-session-bus-common, dbus-system-bus-common, debconf"
-    pkgs="$pkgs, debconf-i18n, debianutils, dhcpcd-base, dhcpcd, diffutils, dmidecode, dmsetup, dpkg"
-    pkgs="$pkgs, e2fsprogs, fdisk, findutils, gcc-12-base, gpgv, grep, gzip, hostname, ifupdown"
-    pkgs="$pkgs, init-system-helpers, init, initramfs-tools-core, initramfs-tools, iproute2, iputils-ping"
-    pkgs="$pkgs, klibc-utils, kmod, less, libpam-systemd, login, logrotate, logsave, lsb-base, mawk, mount"
-    pkgs="$pkgs, ncurses-base, ncurses-bin, netbase, nftables, openssh-client, openssh-server"
-    pkgs="$pkgs, openssh-sftp-server, openssl, passwd, pci.ids, pciutils, perl-base, procps, readline-common"
-    pkgs="$pkgs, runit-helper, sed, sensible-utils, sudo, systemd-sysv, systemd-timesyncd, systemd"
-    pkgs="$pkgs, sysvinit-utils, tar, tasksel-data, tasksel, tzdata, ubuntu-keyring, ucf, udev, unzip"
-    pkgs="$pkgs, usr-is-merged, util-linux-extra, util-linux, vim-common, vim-tiny, wget, whiptail, xxd"
-    pkgs="$pkgs, xz-utils, zip, zlib1g, zstd"
-    debootstrap --arch riscv64 --components=main,universe --include "$pkgs, $extra_pkgs" --exclude 'networkd-dispatcher, rsyslog, ubuntu-advantage-tools, ubuntu-minimal' "$ubu_dist" "$mountpt" 'http://ports.ubuntu.com/ubuntu-ports'
+    local pkgs_incl="$(cat 'files/my_ubuntu_minimal.txt' | sed '/^!/d'              | xargs | tr ' ' ',')"
+    local pkgs_excl="$(cat 'files/my_ubuntu_minimal.txt' | sed -n 's/^!\(.*\)/\1/p' | xargs | tr ' ' ',')"
+    debootstrap --arch riscv64 --components=main,universe --no-resolve-deps --include "$pkgs_incl, $pkgs_extra" --exclude "$pkgs_excl" "$ubu_dist" "$mountpt" 'http://ports.ubuntu.com/ubuntu-ports'
 
     umount "$mountpt/var/cache"
     umount "$mountpt/var/lib/apt/lists"
