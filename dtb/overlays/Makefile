@@ -17,7 +17,7 @@ dtbo: $(targets)
 	@dtc -@ -Hepapr -I dts -O dtb -o $@ $*-overlay.dts
 
 install: dtbo
-	@mkdir -p $(CDIR)
+	@sudo mkdir -p $(CDIR)
 	@sudo cp -v *.dtbo $(CDIR)
 
 clean:

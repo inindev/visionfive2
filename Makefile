@@ -4,15 +4,18 @@
 
 LDIST ?= $(shell cat "ubuntu/make_ubuntu_img.sh" | sed -n 's/\s*local ubu_dist=.\([[:alpha:]]\+\)./\1/p')
 
-all: uboot dtb ubuntu
+all: uboot dtb dtbo ubuntu
 	@echo "all binaries ready"
 
-ubuntu: screen uboot dtb ubuntu/mmc_4g.img kernel
+ubuntu: screen uboot dtb dtbo ubuntu/mmc_4g.img kernel
 	sudo sh ubuntu/install_kernel.sh
 	@echo "ubuntu with kernel image ready"
 
 dtb: dtb/jh7110-starfive-visionfive-2-v1.3b.dtb
 	@echo "device tree binaries ready"
+
+dtbo: dtb/overlays/rtc-ds3231.dtbo dtb/overlays/rtc-pcf8523.dtbo
+	$(MAKE) -C dtb/overlays install
 
 kernel: screen kernel/linux-image-*_riscv64.deb
 	@echo "kernel package is ready"
@@ -39,6 +42,7 @@ clean:
 	@rm -rfv distfiles
 	sudo sh ubuntu/make_ubuntu_img.sh clean
 	sh dtb/make_dtb.sh clean
+	$(MAKE) -C dtb/overlays clean
 	sh kernel/make_kernel.sh clean
 	sh uboot/make_uboot.sh clean
 	@echo "all targets clean"
