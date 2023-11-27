@@ -136,6 +136,7 @@ zstd
 !rsyslog
 !shared-mime-info
 !systemd-hwe-hwdb
+!systemd-resolved
 !ubuntu-advantage-tools
 !ubuntu-minimal
 !xdg-user-dirs
