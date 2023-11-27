@@ -132,6 +132,7 @@ zstd
 !kbd
 !keyboard-configuration
 !networkd-dispatcher
+!netplan-generator
 !python3-gi
 !rsyslog
 !shared-mime-info
