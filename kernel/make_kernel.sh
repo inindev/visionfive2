@@ -75,7 +75,7 @@ main() {
     fi
 
     print_hdr 'beginning compile'
-    rm -f linux-image-*.deb
+    rm -f linux-*.deb
     local kver="$(make --no-print-directory -C "$lpath" kernelversion)"
     local bver="$(expr "$(cat "$lpath/.version" 2>/dev/null || echo 0)" + 1 2>/dev/null)"
     local lver="$bver-starfive"
