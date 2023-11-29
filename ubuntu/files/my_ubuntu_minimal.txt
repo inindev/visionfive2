@@ -133,7 +133,9 @@ zstd
 !keyboard-configuration
 !networkd-dispatcher
 !netplan-generator
+!netplan.io
 !python3-gi
+!python3-netplan
 !rsyslog
 !shared-mime-info
 !systemd-hwe-hwdb
