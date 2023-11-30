@@ -1,9 +1,9 @@
 # visionfive2
 #### *Ubuntu riscv64 Linux for the StarFive VisionFive 2*
 
-This Ubuntu riscv64 Linux image is built directly from official ports packages using the Debian [debootstrap](https://packages.ubuntu.com/mantic/debootstrap) utility, see: https://github.com/inindev/visionfive2/blob/main/ubuntu/make_ubuntu_img.sh#L120
+This Ubuntu riscv64 Linux image is built directly from official ports packages using the Debian [debootstrap](https://packages.ubuntu.com/mantic/debootstrap) utility, see: https://github.com/inindev/visionfive2/blob/main/ubuntu/make_ubuntu_img.sh#L132
 
-Updaates are supplied from [ubuntu-ports](http://ports.ubuntu.com/ubuntu-ports/dists/mantic/main/binary-riscv64/) repos using the built-in **apt** package manager, see: https://github.com/inindev/visionfive2/blob/main/ubuntu/make_ubuntu_img.sh#L329-L336
+Updaates are supplied from [ubuntu-ports](http://ports.ubuntu.com/ubuntu-ports/dists/mantic/main/binary-riscv64/) repos using the built-in **apt** package manager, see: https://github.com/inindev/visionfive2/blob/main/ubuntu/make_ubuntu_img.sh#L344-L351
 
 Note: There are two kernels available in the ```/boot``` directory. The 6.5 kernel is supplied by ubuntu and does not currently support nvme. The 6.6 kernel in this bundle is built from kernel.org and will not get updates from ubuntu.
 
@@ -16,7 +16,7 @@ Note: There are two kernels available in the ```/boot``` directory. The 6.5 kern
 
 **1. download image**
 ```
-wget https://github.com/inindev/visionfive2/releases/download/v23.10-6.6.1/visionfive2_mantic-v23.10-6.6.1.img.xz
+wget https://github.com/inindev/visionfive2/releases/download/v23.10-6.6.3/visionfive2_mantic-v23.10-6.6.3.img.xz
 ```
 
 <br/>
@@ -41,7 +41,7 @@ brw-rw---- 1 root disk 8, 0 Apr 10 15:56 /dev/sda
 **3. in the case above, substitute 'a' for 'X' in the command below (for /dev/sda)**
 ```
 sudo su
-xzcat visionfive2_mantic-v23.10-6.6.1.img.xz > /dev/sdX
+xzcat visionfive2_mantic-v23.10-6.6.3.img.xz > /dev/sdX
 sync
 ```
 
@@ -107,9 +107,9 @@ sudo nano /etc/hosts
 
 **2. download and copy the image file on to the nvme media**
 ```
-wget https://github.com/inindev/visionfive2/releases/download/v23.10-6.6.1/visionfive2_mantic-v23.10-6.6.1.img.xz
+wget https://github.com/inindev/visionfive2/releases/download/v23.10-6.6.3/visionfive2_mantic-v23.10-6.6.3.img.xz
 sudo su
-xzcat visionfive2_mantic-v23.10-6.6.1.img.xz > /dev/nvme0n1
+xzcat visionfive2_mantic-v23.10-6.6.3.img.xz > /dev/nvme0n1
 sync
 ```
 
@@ -159,8 +159,8 @@ sudo flash_erase /dev/mtd3 0 0
 
 **4. write u-boot to spi flash**
 ```
-wget https://github.com/inindev/visionfive2/releases/download/v23.10-6.6.1/u-boot-spl.bin.normal.out
-wget https://github.com/inindev/visionfive2/releases/download/v23.10-6.6.1/u-boot.itb
+wget https://github.com/inindev/visionfive2/releases/download/v23.10-6.6.3/u-boot-spl.bin.normal.out
+wget https://github.com/inindev/visionfive2/releases/download/v23.10-6.6.3/u-boot.itb
 sudo flashcp -v u-boot-spl.bin.normal.out /dev/mtd0
 sudo flashcp -v u-boot.itb /dev/mtd2
 ```
