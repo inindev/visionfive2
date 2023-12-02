@@ -66,9 +66,9 @@ main() {
     [ "$lfwsha" = $(sha256sum "$lfw" | cut -c1-64) ] || { echo "invalid hash for $lfw"; exit 5; }
 
     # u-boot
-    local uboot_spl=$(download "$cache" 'https://github.com/inindev/visionfive2/releases/download/v23.10-6.6.1/u-boot-spl.bin.normal.out')
+    local uboot_spl=$(download "$cache" 'https://github.com/inindev/visionfive2/releases/download/v23.10-6.6.3/u-boot-spl.bin.normal.out')
     [ -f "$uboot_spl" ] || { echo "unable to fetch $uboot_spl"; exit 4; }
-    local uboot_itb=$(download "$cache" 'https://github.com/inindev/visionfive2/releases/download/v23.10-6.6.1/u-boot.itb')
+    local uboot_itb=$(download "$cache" 'https://github.com/inindev/visionfive2/releases/download/v23.10-6.6.3/u-boot.itb')
     [ -f "$uboot_itb" ] || { echo "unable to fetch: $uboot_itb"; exit 4; }
 
     # setup media
