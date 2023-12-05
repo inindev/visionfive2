@@ -1,12 +1,12 @@
-From dee14767a8ef0984678d7986420d317d19387b99 Mon Sep 17 00:00:00 2001
+From b5cef05053396f98651996cf225fdc09412eab4e Mon Sep 17 00:00:00 2001
 From: Minda Chen <minda.chen@starfivetech.com>
-Date: Tue, 31 Oct 2023 19:54:25 +0800
+Date: Wed, 15 Nov 2023 19:49:07 +0800
 Subject: [PATCH 15/20] PCI: microchip: Add event IRQ domain ops to struct
  plda_event
 
 For lack of an MSI controller, The new added PCIe interrupts have to be
-added to global interrupt event field. PolarFire event domain ops can
-not be re-used.
+added to global interrupt event field. PolarFire event domain ops can not
+be re-used.
 
 PLDA event domain ops instances will be implemented in later patch.
 

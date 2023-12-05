@@ -1,13 +1,13 @@
-From cfae260fc09710ddee3fad58775ec4569ca5b29d Mon Sep 17 00:00:00 2001
+From 5ffa18d08f4a70ce9310696d5e38abcc9a497267 Mon Sep 17 00:00:00 2001
 From: Minda Chen <minda.chen@starfivetech.com>
-Date: Tue, 31 Oct 2023 19:54:22 +0800
+Date: Wed, 15 Nov 2023 19:49:04 +0800
 Subject: [PATCH 12/20] PCI: microchip: Add request_event_irq() callback
  function
 
-PolarFire implements specific PCIe interrupts except PLDA local inter-
-rupt. For lack of MSI controller, these interrupts have to be added to
-global event field. PolarFire driver also register additional interrupt
-symbol name.
+PolarFire implements specific PCIe interrupts except PLDA local interrupt.
+For lack of MSI controller, these interrupts have to be added to global
+event field. PolarFire driver also register additional interrupt symbol
+name.
 
 PolarFire PCIe contain total 28 interrupts event while PLDA contain 13
 local interrupts event, interrupt to event num mapping is different.

@@ -1,6 +1,6 @@
-From c36e19cef4a7729b5dc131d138f54551f9f6fae2 Mon Sep 17 00:00:00 2001
+From 249c8f3b4540d54eabaf0476f7650fea310d43a8 Mon Sep 17 00:00:00 2001
 From: Minda Chen <minda.chen@starfivetech.com>
-Date: Tue, 31 Oct 2023 19:54:29 +0800
+Date: Wed, 15 Nov 2023 19:49:11 +0800
 Subject: [PATCH 19/20] PCI: starfive: Add JH7110 PCIe controller
 
 Add StarFive JH7110 SoC PCIe controller platform driver codes, JH7110
@@ -20,10 +20,10 @@ Reviewed-by: Mason Huo <mason.huo@starfivetech.com>
  create mode 100644 drivers/pci/controller/plda/pcie-starfive.c
 
 diff --git a/MAINTAINERS b/MAINTAINERS
-index 1486cbc6b..8a09a7216 100644
+index 6b243d5e3..8e21bff8f 100644
 --- a/MAINTAINERS
 +++ b/MAINTAINERS
-@@ -16680,6 +16680,13 @@ S:	Maintained
+@@ -16687,6 +16687,13 @@ S:	Maintained
  F:	Documentation/devicetree/bindings/pci/socionext,uniphier-pcie*
  F:	drivers/pci/controller/dwc/pcie-uniphier*
  

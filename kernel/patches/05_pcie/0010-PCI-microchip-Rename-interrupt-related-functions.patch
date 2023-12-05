@@ -1,6 +1,6 @@
-From 34e234641cc4f2907cf3dbcdf942ec5886c760ad Mon Sep 17 00:00:00 2001
+From 2fab7186482601e351a6309eb2af1f5a311e7938 Mon Sep 17 00:00:00 2001
 From: Minda Chen <minda.chen@starfivetech.com>
-Date: Tue, 31 Oct 2023 19:54:20 +0800
+Date: Wed, 15 Nov 2023 19:49:02 +0800
 Subject: [PATCH 10/20] PCI: microchip: Rename interrupt related functions
 
 Rename mc_* to plda_* for IRQ functions and related IRQ domain ops data

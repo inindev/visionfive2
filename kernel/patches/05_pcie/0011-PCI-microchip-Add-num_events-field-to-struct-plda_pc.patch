@@ -1,11 +1,11 @@
-From f51fe402964181e8840b1eee0bfeefbe3f946b5e Mon Sep 17 00:00:00 2001
+From 69be6dac662c640eeda8d088501b252084e75493 Mon Sep 17 00:00:00 2001
 From: Minda Chen <minda.chen@starfivetech.com>
-Date: Tue, 31 Oct 2023 19:54:21 +0800
+Date: Wed, 15 Nov 2023 19:49:03 +0800
 Subject: [PATCH 11/20] PCI: microchip: Add num_events field to struct
  plda_pcie_rp
 
-The event num is different in other platform. For re-use interrupt
-process codes, replace with variable.
+The event num is different in other platform. For re-use interrupt process
+codes, replace with variable.
 
 Signed-off-by: Minda Chen <minda.chen@starfivetech.com>
 Reviewed-by: Conor Dooley <conor.dooley@microchip.com>

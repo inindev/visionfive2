@@ -1,6 +1,6 @@
-From 03c647c9aff8c9d25b1214dcf28257aa00a4ac5d Mon Sep 17 00:00:00 2001
+From 079a28f18eac0d5c8c0881c4c5ea3c1ecc58bc89 Mon Sep 17 00:00:00 2001
 From: Minda Chen <minda.chen@starfivetech.com>
-Date: Tue, 31 Oct 2023 19:54:26 +0800
+Date: Wed, 15 Nov 2023 19:49:08 +0800
 Subject: [PATCH 16/20] PCI: microchip: Move IRQ functions to pcie-plda-host.c
 
 Move IRQ related functions to pcie-plda-host.c for re-use these codes.

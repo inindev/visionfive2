@@ -1,13 +1,13 @@
-From bf84a768d80c95d059cd869358f122a55f4891e0 Mon Sep 17 00:00:00 2001
+From 12477b2de0c02d8f4f9d126b0fe0f29030ea2fc5 Mon Sep 17 00:00:00 2001
 From: Minda Chen <minda.chen@starfivetech.com>
-Date: Tue, 31 Oct 2023 19:54:17 +0800
+Date: Wed, 15 Nov 2023 19:48:59 +0800
 Subject: [PATCH 07/20] PCI: microchip: Rename two setup functions
 
 Rename two setup functions to plda prefix. Prepare to re-use these two
 setup function.
 
-For two setup functions names are similar, rename mc_pcie_setup_
-windows() to plda_pcie_setup_iomems().
+For two setup functions names are similar, rename mc_pcie_setup_windows()
+to plda_pcie_setup_iomems().
 
 Signed-off-by: Minda Chen <minda.chen@starfivetech.com>
 Reviewed-by: Conor Dooley <conor.dooley@microchip.com>

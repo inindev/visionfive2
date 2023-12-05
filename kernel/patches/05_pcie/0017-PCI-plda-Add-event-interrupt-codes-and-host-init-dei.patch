@@ -1,13 +1,13 @@
-From 19c59b26527cb672cfb922971bcd6469abf59c41 Mon Sep 17 00:00:00 2001
+From e817086b3a4097b6e1b668de9ce85cfc47562aef Mon Sep 17 00:00:00 2001
 From: Minda Chen <minda.chen@starfivetech.com>
-Date: Tue, 31 Oct 2023 19:54:27 +0800
+Date: Wed, 15 Nov 2023 19:49:09 +0800
 Subject: [PATCH 17/20] PCI: plda: Add event interrupt codes and host
  init/deinit functions
 
 PLDA implements new codes and IRQ domain ops like PolarFire.
 
-plda_get_events() adds interrupt register to event num mapping codes
-for PLDA local event except DMA engine interrupt events. The DMA engine
+plda_get_events() adds interrupt register to event num mapping codes for
+PLDA local event except DMA engine interrupt events. The DMA engine
 interrupt events are implemented by vendors.
 
 Add PLDA host init and deinit functions. So vendor can use it to init

@@ -1,16 +1,16 @@
-From 05dc18dcd85b5bc9e5a5a2aa9c9ec1302821224d Mon Sep 17 00:00:00 2001
+From d580a48a672b33fa095ec7d866469407b8da9a8c Mon Sep 17 00:00:00 2001
 From: Minda Chen <minda.chen@starfivetech.com>
-Date: Tue, 31 Oct 2023 19:54:24 +0800
+Date: Wed, 15 Nov 2023 19:49:06 +0800
 Subject: [PATCH 14/20] PCI: microchip: Add get_events() callback function
 
 PolarFire implements its own PCIe interrupts, additional to the regular
-PCIe interrupts, due to the lack of an MSI controller, so the interrupt
-to event number mapping is different to the PLDA local interrupts,
+PCIe interrupts, due to lack of an MSI controller, so the interrupt to
+event number mapping is different to the PLDA local interrupts,
 necessitating a custom get_events() implementation.
 
-plda_handle_events() will call the get_events() callback function
-pointer directly. For the robustness of codes, add checking in plda_
-init_interrupts().
+plda_handle_events() will call the get_events() callback function pointer
+directly. For the robustness of codes, add checking in
+plda_init_interrupts().
 
 Signed-off-by: Minda Chen <minda.chen@starfivetech.com>
 Acked-by: Conor Dooley <conor.dooley@microchip.com>

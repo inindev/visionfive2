@@ -1,6 +1,6 @@
-From 15d17aa37babfb805fb098999d1b9cfd6fa873fb Mon Sep 17 00:00:00 2001
+From 4e1332be40c879f27984916015e11477799f0e5f Mon Sep 17 00:00:00 2001
 From: Minda Chen <minda.chen@starfivetech.com>
-Date: Tue, 31 Oct 2023 19:54:19 +0800
+Date: Wed, 15 Nov 2023 19:49:01 +0800
 Subject: [PATCH 09/20] PCI: microchip: Move setup functions to
  pcie-plda-host.c
 

@@ -1,12 +1,12 @@
-From 38f555bd6b47c6479941ab9ec139063b14bf38da Mon Sep 17 00:00:00 2001
+From e9549c35b64aaa0acf18209ffe053d2803c2a61a Mon Sep 17 00:00:00 2001
 From: Minda Chen <minda.chen@starfivetech.com>
-Date: Tue, 31 Oct 2023 19:54:11 +0800
+Date: Wed, 15 Nov 2023 19:48:53 +0800
 Subject: [PATCH 01/20] dt-bindings: PCI: Add PLDA XpressRICH PCIe host common
  properties
 
 Add PLDA XpressRICH PCIe host common properties dt-binding doc.
-PolarFire PCIe host using PLDA IP. Move common properties from Micro-
-chip PolarFire PCIe host to PLDA files.
+PolarFire PCIe host using PLDA IP. Move common properties from Microchip
+PolarFire PCIe host to PLDA files.
 
 Signed-off-by: Minda Chen <minda.chen@starfivetech.com>
 Reviewed-by: Hal Feng <hal.feng@starfivetech.com>

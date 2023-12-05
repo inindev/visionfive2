@@ -1,6 +1,6 @@
-From f337d71c9e670859a7a994ff7604bea9ce2e8d13 Mon Sep 17 00:00:00 2001
+From 35112d8de62450eeb7382f3cc48bf8ca2ef29be2 Mon Sep 17 00:00:00 2001
 From: Minda Chen <minda.chen@starfivetech.com>
-Date: Tue, 31 Oct 2023 19:54:30 +0800
+Date: Wed, 15 Nov 2023 19:49:12 +0800
 Subject: [PATCH 20/20] riscv: dts: starfive: add PCIe dts configuration for
  JH7110
 
@@ -14,7 +14,7 @@ Reviewed-by: Hal Feng <hal.feng@starfivetech.com>
  2 files changed, 150 insertions(+)
 
 diff --git a/arch/riscv/boot/dts/starfive/jh7110-starfive-visionfive-2.dtsi b/arch/riscv/boot/dts/starfive/jh7110-starfive-visionfive-2.dtsi
-index 2c02358ab..2124539f4 100644
+index 823f298c3..0b2a114ef 100644
 --- a/arch/riscv/boot/dts/starfive/jh7110-starfive-visionfive-2.dtsi
 +++ b/arch/riscv/boot/dts/starfive/jh7110-starfive-visionfive-2.dtsi
 @@ -232,6 +232,22 @@ &mmc1 {
@@ -40,7 +40,7 @@ index 2c02358ab..2124539f4 100644
  &qspi {
  	#address-cells = <1>;
  	#size-cells = <0>;
-@@ -402,6 +418,54 @@ GPOEN_SYS_SDIO1_DATA3,
+@@ -424,6 +440,54 @@ GPOEN_SYS_PWM0_CHANNEL1,
  		};
  	};
  
@@ -96,10 +96,10 @@ index 2c02358ab..2124539f4 100644
  		mosi-pins {
  			pinmux = <GPIOMUX(52, GPOUT_SYS_SPI0_TXD,
 diff --git a/arch/riscv/boot/dts/starfive/jh7110.dtsi b/arch/riscv/boot/dts/starfive/jh7110.dtsi
-index e85464c32..1a1e97287 100644
+index ba000db7f..435253699 100644
 --- a/arch/riscv/boot/dts/starfive/jh7110.dtsi
 +++ b/arch/riscv/boot/dts/starfive/jh7110.dtsi
-@@ -1045,5 +1045,91 @@ voutcrg: clock-controller@295c0000 {
+@@ -1074,5 +1074,91 @@ voutcrg: clock-controller@295c0000 {
  			#reset-cells = <1>;
  			power-domains = <&pwrc JH7110_PD_VOUT>;
  		};
