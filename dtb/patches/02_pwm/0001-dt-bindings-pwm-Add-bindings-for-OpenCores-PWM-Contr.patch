@@ -1,10 +1,10 @@
-From 7f3d706ae52cf2ac9c198e530b0eb698de81e478 Mon Sep 17 00:00:00 2001
+From 4dee16bf76a64c30f394b93911561fbc1d3d5cfe Mon Sep 17 00:00:00 2001
 From: William Qiu <william.qiu@starfivetech.com>
-Date: Fri, 10 Nov 2023 14:20:36 +0800
-Subject: [PATCH 1/4] dt-bindings: pwm: Add OpenCores PWM module
+Date: Wed, 29 Nov 2023 17:27:29 +0800
+Subject: [PATCH 1/4] dt-bindings: pwm: Add bindings for OpenCores PWM
+ Controller
 
-Add documentation to describe OpenCores Pulse Width Modulation
-controller driver.
+Add bindings for OpenCores PWM Controller.
 
 Signed-off-by: William Qiu <william.qiu@starfivetech.com>
 Reviewed-by: Hal Feng <hal.feng@starfivetech.com>
@@ -15,7 +15,7 @@ Reviewed-by: Hal Feng <hal.feng@starfivetech.com>
 
 diff --git a/Documentation/devicetree/bindings/pwm/opencores,pwm.yaml b/Documentation/devicetree/bindings/pwm/opencores,pwm.yaml
 new file mode 100644
-index 000000000..8f776bbc1
+index 0000000..133f2cd
 --- /dev/null
 +++ b/Documentation/devicetree/bindings/pwm/opencores,pwm.yaml
 @@ -0,0 +1,56 @@
@@ -31,9 +31,9 @@ index 000000000..8f776bbc1
 +  - William Qiu <william.qiu@starfivetech.com>
 +
 +description:
-+  OpenCores PTC ip core contains a PWM controller. When operating in PWM mode, the PTC core
-+  generates binary signal with user-programmable low and high periods. All PTC counters and
-+  registers are 32-bit.
++  OpenCores PTC ip core contains a PWM controller. When operating in PWM mode,
++  the PTC core generates binary signal with user-programmable low and high
++  periods. All PTC counters and registers are 32-bit.
 +
 +allOf:
 +  - $ref: pwm.yaml#
@@ -45,7 +45,7 @@ index 000000000..8f776bbc1
 +          - enum:
 +              - starfive,jh7100-pwm
 +              - starfive,jh7110-pwm
-+          - const: opencores,pwm
++          - const: opencores,pwm-v1
 +
 +  reg:
 +    maxItems: 1
@@ -69,7 +69,7 @@ index 000000000..8f776bbc1
 +examples:
 +  - |
 +    pwm@12490000 {
-+        compatible = "starfive,jh7110-pwm", "opencores,pwm";
++        compatible = "starfive,jh7110-pwm", "opencores,pwm-v1";
 +        reg = <0x12490000 0x10000>;
 +        clocks = <&clkgen 181>;
 +        resets = <&rstgen 109>;

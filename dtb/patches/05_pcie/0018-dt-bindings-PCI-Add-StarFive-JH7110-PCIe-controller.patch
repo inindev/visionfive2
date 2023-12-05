@@ -1,6 +1,6 @@
-From bae254ec18bc9a2cca44b0239498a3e22ea33f8a Mon Sep 17 00:00:00 2001
+From 2f651bfd9227aa397a8d958466ece54f3100f5a9 Mon Sep 17 00:00:00 2001
 From: Minda Chen <minda.chen@starfivetech.com>
-Date: Tue, 31 Oct 2023 19:54:28 +0800
+Date: Wed, 15 Nov 2023 19:49:10 +0800
 Subject: [PATCH 18/20] dt-bindings: PCI: Add StarFive JH7110 PCIe controller
 
 Add StarFive JH7110 SoC PCIe controller dt-bindings. JH7110 using PLDA
