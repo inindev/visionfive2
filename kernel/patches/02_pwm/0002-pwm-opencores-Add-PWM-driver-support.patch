@@ -1,9 +1,10 @@
-From e7561bfd5babd4c3e9789faf919d145d497b6a4b Mon Sep 17 00:00:00 2001
+From abfe7603d34ed4a780a13c2395ee008cd817343d Mon Sep 17 00:00:00 2001
 From: William Qiu <william.qiu@starfivetech.com>
-Date: Fri, 10 Nov 2023 14:20:37 +0800
+Date: Wed, 29 Nov 2023 17:27:30 +0800
 Subject: [PATCH 2/4] pwm: opencores: Add PWM driver support
 
-Add Pulse Width Modulation driver support for OpenCores.
+Add driver for OpenCores PWM Controller. And add compatibility code
+which based on StarFive SoC.
 
 Co-developed-by: Hal Feng <hal.feng@starfivetech.com>
 Signed-off-by: Hal Feng <hal.feng@starfivetech.com>
@@ -12,12 +13,12 @@ Signed-off-by: William Qiu <william.qiu@starfivetech.com>
  MAINTAINERS              |   7 ++
  drivers/pwm/Kconfig      |  12 ++
  drivers/pwm/Makefile     |   1 +
- drivers/pwm/pwm-ocores.c | 236 +++++++++++++++++++++++++++++++++++++++
- 4 files changed, 256 insertions(+)
+ drivers/pwm/pwm-ocores.c | 232 +++++++++++++++++++++++++++++++++++++++
+ 4 files changed, 252 insertions(+)
  create mode 100644 drivers/pwm/pwm-ocores.c
 
 diff --git a/MAINTAINERS b/MAINTAINERS
-index 22a8face0..07dc4461d 100644
+index 22a8fac..14cc476 100644
 --- a/MAINTAINERS
 +++ b/MAINTAINERS
 @@ -16006,6 +16006,13 @@ F:	Documentation/i2c/busses/i2c-ocores.rst
@@ -28,14 +29,14 @@ index 22a8face0..07dc4461d 100644
 +M:	William Qiu <william.qiu@starfivetech.com>
 +M:	Hal Feng <hal.feng@starfivetech.com>
 +S:	Supported
-+F:	Documentation/devicetree/bindings/pwm/opencores,pwm-ocores.yaml
++F:	Documentation/devicetree/bindings/pwm/opencores,pwm.yaml
 +F:	drivers/pwm/pwm-ocores.c
 +
  OPENRISC ARCHITECTURE
  M:	Jonas Bonn <jonas@southpole.se>
  M:	Stefan Kristiansson <stefan.kristiansson@saunalahti.fi>
 diff --git a/drivers/pwm/Kconfig b/drivers/pwm/Kconfig
-index 8ebcddf91..a9db2d7ab 100644
+index 8ebcddf..a9db2d7 100644
 --- a/drivers/pwm/Kconfig
 +++ b/drivers/pwm/Kconfig
 @@ -434,6 +434,18 @@ config PWM_NTXEC
@@ -58,7 +59,7 @@ index 8ebcddf91..a9db2d7ab 100644
  	tristate "OMAP Dual-Mode Timer PWM support"
  	depends on OF
 diff --git a/drivers/pwm/Makefile b/drivers/pwm/Makefile
-index c822389c2..542b98202 100644
+index c822389..542b982 100644
 --- a/drivers/pwm/Makefile
 +++ b/drivers/pwm/Makefile
 @@ -39,6 +39,7 @@ obj-$(CONFIG_PWM_MICROCHIP_CORE)	+= pwm-microchip-core.o
@@ -71,10 +72,10 @@ index c822389c2..542b98202 100644
  obj-$(CONFIG_PWM_PXA)		+= pwm-pxa.o
 diff --git a/drivers/pwm/pwm-ocores.c b/drivers/pwm/pwm-ocores.c
 new file mode 100644
-index 000000000..4b98a152d
+index 0000000..d96318b
 --- /dev/null
 +++ b/drivers/pwm/pwm-ocores.c
-@@ -0,0 +1,236 @@
+@@ -0,0 +1,232 @@
 +// SPDX-License-Identifier: GPL-2.0
 +/*
 + * OpenCores PWM Driver
@@ -225,7 +226,7 @@ index 000000000..4b98a152d
 +};
 +
 +static const struct of_device_id ocores_pwm_of_match[] = {
-+	{ .compatible = "opencores,pwm" },
++	{ .compatible = "opencores,pwm-v1" },
 +	{ .compatible = "starfive,jh7100-pwm", .data = &jh7100_pwm_data},
 +	{ .compatible = "starfive,jh7110-pwm", .data = &jh7110_pwm_data},
 +	{ /* sentinel */ }
@@ -260,14 +261,10 @@ index 000000000..4b98a152d
 +		return dev_err_probe(dev, PTR_ERR(ddata->regs),
 +				     "Unable to map IO resources\n");
 +
-+	ddata->clk = devm_clk_get(dev, NULL);
++	ddata->clk = devm_clk_get_enabled(dev, NULL);
 +	if (IS_ERR(ddata->clk))
 +		return dev_err_probe(dev, PTR_ERR(ddata->clk),
 +				     "Unable to get pwm's clock\n");
-+
-+	ret = clk_prepare_enable(ddata->clk);
-+	if (ret)
-+		return dev_err_probe(dev, ret, "Clock enable failed\n");
 +
 +	ddata->rst = devm_reset_control_get_optional_exclusive(dev, NULL);
 +	reset_control_deassert(ddata->rst);
@@ -279,9 +276,9 @@ index 000000000..4b98a152d
 +
 +	ret = devm_pwmchip_add(dev, chip);
 +	if (ret < 0) {
-+		dev_err_probe(dev, ret, "Could not register PWM chip\n");
-+		clk_disable_unprepare(ddata->clk);
 +		reset_control_assert(ddata->rst);
++		clk_disable_unprepare(ddata->clk);
++		return dev_err_probe(dev, ret, "Could not register PWM chip\n");
 +	}
 +
 +	platform_set_drvdata(pdev, ddata);
