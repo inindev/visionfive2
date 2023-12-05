@@ -149,7 +149,7 @@ index 6fb292287..e73fd0154 100644
  
 -		pwm: pwm@120d0000 {
 +		ptc: pwm@120d0000 {
- 			compatible = "starfive,jh7110-pwm", "opencores,pwm";
+ 			compatible = "starfive,jh7110-pwm", "opencores,pwm-v1";
  			reg = <0x0 0x120d0000 0x0 0x10000>;
  			clocks = <&syscrg JH7110_SYSCLK_PWM_APB>;
 @@ -1087,6 +1087,7 @@ pcie0: pcie@940000000 {
