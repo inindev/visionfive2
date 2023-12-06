@@ -16,7 +16,7 @@ Note: There are two kernels available in the ```/boot``` directory. The 6.5 kern
 
 **1. download image**
 ```
-wget https://github.com/inindev/visionfive2/releases/download/v23.10-6.6.3/visionfive2_mantic-v23.10-6.6.3.img.xz
+wget https://github.com/inindev/visionfive2/releases/download/v23.10-6.6.4/visionfive2_mantic-v23.10-6.6.4.img.xz
 ```
 
 <br/>
@@ -41,7 +41,7 @@ brw-rw---- 1 root disk 8, 0 Apr 10 15:56 /dev/sda
 **3. in the case above, substitute 'a' for 'X' in the command below (for /dev/sda)**
 ```
 sudo su
-xzcat visionfive2_mantic-v23.10-6.6.3.img.xz > /dev/sdX
+xzcat visionfive2_mantic-v23.10-6.6.4.img.xz > /dev/sdX
 sync
 ```
 
@@ -107,9 +107,9 @@ sudo nano /etc/hosts
 
 **2. download and copy the image file on to the nvme media**
 ```
-wget https://github.com/inindev/visionfive2/releases/download/v23.10-6.6.3/visionfive2_mantic-v23.10-6.6.3.img.xz
+wget https://github.com/inindev/visionfive2/releases/download/v23.10-6.6.4/visionfive2_mantic-v23.10-6.6.4.img.xz
 sudo su
-xzcat visionfive2_mantic-v23.10-6.6.3.img.xz > /dev/nvme0n1
+xzcat visionfive2_mantic-v23.10-6.6.4.img.xz > /dev/nvme0n1
 sync
 ```
 
@@ -159,8 +159,8 @@ sudo flash_erase /dev/mtd3 0 0
 
 **4. write u-boot to spi flash**
 ```
-wget https://github.com/inindev/visionfive2/releases/download/v23.10-6.6.3/u-boot-spl.bin.normal.out
-wget https://github.com/inindev/visionfive2/releases/download/v23.10-6.6.3/u-boot.itb
+wget https://github.com/inindev/visionfive2/releases/download/v23.10-6.6.4/u-boot-spl.bin.normal.out
+wget https://github.com/inindev/visionfive2/releases/download/v23.10-6.6.4/u-boot.itb
 sudo flashcp -v u-boot-spl.bin.normal.out /dev/mtd0
 sudo flashcp -v u-boot.itb /dev/mtd2
 ```
