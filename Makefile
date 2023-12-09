@@ -2,8 +2,8 @@
 # Copyright (C) 2023, John Clark <inindev@gmail.com>
 #
 
-DDIST ?= $(shell cat "debian/make_debian_img.sh" | sed -n 's/\s*local ubu_dist=.\([[:alpha:]]\+\)./\1/p')
-UDIST ?= $(shell cat "ubuntu/make_ubuntu_img.sh" | sed -n 's/\s*local ubu_dist=.\([[:alpha:]]\+\)./\1/p')
+DDIST ?= $(shell cat "debian/make_debian_img.sh" | sed -n 's/\s*local deb_dist=.\([[:alpha:]]\+\).*/\1/p' | sed 's/sid/trixie/')
+UDIST ?= $(shell cat "ubuntu/make_ubuntu_img.sh" | sed -n 's/\s*local ubu_dist=.\([[:alpha:]]\+\).*/\1/p')
 
 all: uboot dtb dtbo debian ubuntu
 	@echo "all binaries ready"
