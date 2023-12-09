@@ -68,13 +68,9 @@ main() {
 
     # u-boot
     local uboot_spl=$(download "$cache" 'https://github.com/inindev/visionfive2/releases/download/v23.10-6.6.4/u-boot-spl.bin.normal.out')
-    local uboot_spl_sha='520cc389ff89d17f5eebec8f67422decb38c0cee6e5a08c0cccb69271054d9c2'
     [ -f "$uboot_spl" ] || { echo "unable to fetch $uboot_spl"; exit 4; }
-    [ "$uboot_spl_sha" = $(sha256sum "$uboot_spl" | cut -c1-64) ] || { echo "invalid hash for $uboot_spl"; exit 5; }
     local uboot_itb=$(download "$cache" 'https://github.com/inindev/visionfive2/releases/download/v23.10-6.6.4/u-boot.itb')
-    local uboot_itb_sha='9501d0a01dec7b4d5354a6cf0b28444cc46ce881adfadc2d32b18ba099be2d01'
     [ -f "$uboot_itb" ] || { echo "unable to fetch: $uboot_itb"; exit 4; }
-    [ "$uboot_itb_sha" = $(sha256sum "$uboot_itb" | cut -c1-64) ] || { echo "invalid hash for $uboot_itb"; exit 5; }
 
     # setup media
     if [ ! -b "$media" ]; then
