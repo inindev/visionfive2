@@ -1,10 +1,10 @@
-## debian sid linux for the visionfive2
+## debian trixie/sid linux for the visionfive2
 
 <i>Note: This script is intended to be run from a 64 bit risc-v device such as the starfive visionfive2.</i>
 
 <br/>
 
-**build debian sid using debootstrap**
+**build debian trixie/sid using debootstrap**
 ```
 sudo sh make_debian_img.sh nocomp
 ```
