@@ -5,7 +5,7 @@
 DDIST ?= $(shell cat "../../debian/make_debian_img.sh" | sed -n 's/\s*local deb_dist=.\([[:alpha:]]\+\).*/\1/p')
 UDIST ?= $(shell cat "../../ubuntu/make_ubuntu_img.sh" | sed -n 's/\s*local ubu_dist=.\([[:alpha:]]\+\).*/\1/p')
 
-DCDIR := "../../ubuntu/cache.$(DDIST)/overlays"
+DCDIR := "../../debian/cache.$(DDIST)/overlays"
 UCDIR := "../../ubuntu/cache.$(UDIST)/overlays"
 
 targets = \

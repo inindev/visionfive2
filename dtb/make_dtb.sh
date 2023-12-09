@@ -75,17 +75,17 @@ main() {
         local deb_dist=$(cat "../debian/make_debian_img.sh" | sed -n 's/\s*local deb_dist=.\([[:alpha:]]\+\).*/\1/p')
         if [ -n "$deb_dist" ]; then
             print_hdr 'copying to debian cache'
-            sudo mkdir -pv "../debian/cache.$deb_dist"
+            sudo mkdir -pv "../debian/cache.$deb_dist/overlays"
             sudo cp -v "${dt}.dtb" "../debian/cache.$deb_dist"
-            sudo cp -v overlays/*.dtbo "../debian/cache.$deb_dist"
+            sudo cp -v overlays/*.dtbo "../debian/cache.$deb_dist/overlays"
         fi
 
         local ubu_dist=$(cat "../ubuntu/make_ubuntu_img.sh" | sed -n 's/\s*local ubu_dist=.\([[:alpha:]]\+\).*/\1/p')
         if [ -n "$ubu_dist" ]; then
             print_hdr 'copying to ubuntu cache'
-            sudo mkdir -pv "../ubuntu/cache.$ubu_dist"
+            sudo mkdir -pv "../ubuntu/cache.$ubu_dist/overlays"
             sudo cp -v "${dt}.dtb" "../ubuntu/cache.$ubu_dist"
-            sudo cp -v overlays/*.dtbo "../ubuntu/cache.$ubu_dist"
+            sudo cp -v overlays/*.dtbo "../ubuntu/cache.$ubu_dist/overlays"
         fi
     fi
 

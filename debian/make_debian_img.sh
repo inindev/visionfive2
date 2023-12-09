@@ -107,7 +107,7 @@ main() {
     local dtbos="$(find "$cache/overlays" -maxdepth 1 -name '*.dtbo' 2>/dev/null | sort)"
     if [ -n "$dtbos" ]; then
         local dtbo dtgt="$mountpt/boot/overlay/lib"
-        mkdir -p "$dtgt"
+        mkdir -pv "$dtgt"
         for dtbo in $dtbos; do
             install -vm 644 "$dtbo" "$dtgt"
         done
