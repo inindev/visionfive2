@@ -67,19 +67,29 @@ main() {
     local fldtc='-Wno-interrupt_provider -Wno-unique_unit_address -Wno-unit_address_vs_reg -Wno-avoid_unnecessary_addr_size -Wno-alias_paths -Wno-graph_child_address -Wno-simple_bus_reg'
     gcc -I "linux-$lv/include" -E -nostdinc -undef -D__DTS__ -x assembler-with-cpp -o "${dt}-top.dts" "$sfpath/${dt}.dts"
     dtc -I dts -O dtb -b 0 ${fldtc} -o "${dt}.dtb" "${dt}-top.dts"
-    make -C overlays
-    is_param 'cp' "$@" && cp_to_ubuntu "${dt}.dtb" && make -C overlays install
-    echo "\n${cya}device tree ready: ${dt}.dtb${rst}\n"
-}
 
-cp_to_ubuntu() {
-    local target="$1"
-    local ubu_dist=$(cat "../ubuntu/make_ubuntu_img.sh" | sed -n 's/\s*local ubu_dist=.\([[:alpha:]]\+\)./\1/p')
-    [ -z "$ubu_dist" ] && return
-    local cdir="../ubuntu/cache.$ubu_dist"
-    print_hdr 'copying to ubuntu cache'
-    sudo mkdir -p "$cdir"
-    sudo cp -v "$target" "$cdir"
+    print_hdr 'making overlays'
+    make -C overlays
+
+    if is_param 'cp' "$@"; then
+        local deb_dist=$(cat "../debian/make_debian_img.sh" | sed -n 's/\s*local deb_dist=.\([[:alpha:]]\+\).*/\1/p')
+        if [ -n "$deb_dist" ]; then
+            print_hdr 'copying to debian cache'
+            sudo mkdir -pv "../debian/cache.$deb_dist"
+            sudo cp -v "${dt}.dtb" "../debian/cache.$deb_dist"
+            sudo cp -v overlays/*.dtbo "../debian/cache.$deb_dist"
+        fi
+
+        local ubu_dist=$(cat "../ubuntu/make_ubuntu_img.sh" | sed -n 's/\s*local ubu_dist=.\([[:alpha:]]\+\).*/\1/p')
+        if [ -n "$ubu_dist" ]; then
+            print_hdr 'copying to ubuntu cache'
+            sudo mkdir -pv "../ubuntu/cache.$ubu_dist"
+            sudo cp -v "${dt}.dtb" "../ubuntu/cache.$ubu_dist"
+            sudo cp -v overlays/*.dtbo "../ubuntu/cache.$ubu_dist"
+        fi
+    fi
+
+    echo "\n${cya}device tree ready: ${dt}.dtb${rst}\n"
 }
 
 is_param() {

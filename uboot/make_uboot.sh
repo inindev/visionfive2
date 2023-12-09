@@ -77,7 +77,7 @@ main() {
     ln -sfv 'u-boot/spl/u-boot-spl.bin.normal.out'
     ln -sfv 'u-boot/u-boot.itb'
 
-    is_param 'cp' "$@" && cp_to_ubuntu
+    is_param 'cp' "$@" && cp_to_dists
 
     echo "\n${cya}u-boot-spl.bin.normal.out and u-boot binaries are now ready${rst}"
     echo "\n${cya}copy images to media:${rst}"
@@ -91,14 +91,20 @@ main() {
     echo
 }
 
-cp_to_ubuntu() {
-    local ubu_dist=$(cat "../ubuntu/make_ubuntu_img.sh" | sed -n 's/\s*local ubu_dist=.\([[:alpha:]]\+\)./\1/p')
-    [ -z "$ubu_dist" ] && return
-    local cdir="../ubuntu/cache.$ubu_dist"
-    print_hdr 'copying to ubuntu cache'
-    sudo mkdir -p "$cdir"
-    sudo cp -v './u-boot-spl.bin.normal.out' "$cdir"
-    sudo cp -v './u-boot.itb' "$cdir"
+cp_to_dists() {
+    local deb_dist=$(cat "../debian/make_debian_img.sh" | sed -n 's/\s*local deb_dist=.\([[:alpha:]]\+\).*/\1/p')
+    if [ -n "$deb_dist" ]; then
+        print_hdr 'copying to debian cache'
+        sudo mkdir -pv "../debian/cache.$deb_dist"
+        sudo cp -v './u-boot-spl.bin.normal.out' './u-boot.itb' "../debian/cache.$deb_dist"
+    fi
+
+    local ubu_dist=$(cat "../ubuntu/make_ubuntu_img.sh" | sed -n 's/\s*local ubu_dist=.\([[:alpha:]]\+\).*/\1/p')
+    if [ -n "$ubu_dist" ]; then
+        print_hdr 'copying to ubuntu cache'
+        sudo mkdir -pv "../ubuntu/cache.$ubu_dist"
+        sudo cp -v './u-boot-spl.bin.normal.out' './u-boot.itb' "../ubuntu/cache.$ubu_dist"
+    fi
 }
 
 is_param() {
