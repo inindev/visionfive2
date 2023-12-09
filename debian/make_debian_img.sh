@@ -101,6 +101,7 @@ main() {
 
     print_hdr 'setting up extlinux boot'
     install -Dvm 754 'files/dtb_cp' "$mountpt/etc/kernel/postinst.d/dtb_cp"
+    install -Dvm 754 'files/kernel_chmod' "$mountpt/etc/kernel/postinst.d/kernel_chmod"
     install -Dvm 754 'files/dtb_rm' "$mountpt/etc/kernel/postrm.d/dtb_rm"
     install -Dvm 754 'files/mk_extlinux' "$mountpt/boot/mk_extlinux"
     ln -svf '../../../boot/mk_extlinux' "$mountpt/etc/kernel/postinst.d/update_extlinux"
@@ -136,6 +137,11 @@ main() {
 
     umount "$mountpt/var/cache"
     umount "$mountpt/var/lib/apt/lists"
+
+    # a deadlock on reboot seems to be related to agetty shutdown timing
+    # adding an ExecStop to the serial-getty service file appears to move the timing window
+    mkdir -p  "$mountpt/etc/systemd/system/serial-getty@.service.d"
+    printf '[Service]\nExecStop=-/usr/bin/echo -n\n' > "$mountpt/etc/systemd/system/serial-getty@.service.d/override.conf"
 
     # apt sources & default locale
     echo "$(file_apt_sources $deb_dist)\n" > "$mountpt/etc/apt/sources.list"
