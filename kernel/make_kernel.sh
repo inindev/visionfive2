@@ -78,10 +78,13 @@ main() {
     rm -f linux-*.deb
     local kver="$(make --no-print-directory -C "$lpath" kernelversion)"
     local bver="$(expr "$(cat "$lpath/.version" 2>/dev/null || echo 0)" + 1 2>/dev/null)"
-    local lver="$bver-starfive"
+#    local lver="$bver-starfive"
+    local lver="$bver-riscv64"
     export SOURCE_DATE_EPOCH="$(stat -c %Y "$lpath/README")"
-    export KDEB_CHANGELOG_DIST='mantic'
-    export KBUILD_BUILD_TIMESTAMP="$(date -d @$SOURCE_DATE_EPOCH)"
+#    export KDEB_CHANGELOG_DIST='mantic'
+    export KDEB_CHANGELOG_DIST='sid'
+#    export KBUILD_BUILD_TIMESTAMP="$(date -d @$SOURCE_DATE_EPOCH)"
+    export KBUILD_BUILD_TIMESTAMP="Debian $kv-$bv $(date -d @$SOURCE_DATE_EPOCH +'(%Y-%m-%d)')"
     export KBUILD_BUILD_HOST='github.com/inindev'
     export KBUILD_BUILD_USER='linux-kernel'
     export KBUILD_BUILD_VERSION="$bver"

@@ -9,14 +9,14 @@
 sudo sh make_ubuntu_img.sh nocomp
 ```
 
-<i>the build will produce the target file ```mmc_4g.img```</i>
+<i>the build will produce the target file ```mmc_2g.img```</i>
 
 <br/>
 
 **copy the image to mmc media**
 ```
 sudo su
-cat mmc_4g.img > /dev/sdX
+cat mmc_2g.img > /dev/sdX
 sync
 ```
 
@@ -24,7 +24,7 @@ sync
 
 **multiple build options are available by editing make_ubuntu_img.sh**
 ```
-media='mmc_4g.img' # or block device '/dev/sdX'
+media='mmc_2g.img' # or block device '/dev/sdX'
 ubu_dist='mantic'
 hostname='visionfive2'
 acct_uid='ubuntu'

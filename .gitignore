@@ -11,7 +11,7 @@
 /uboot/u-boot
 /uboot/u-boot-spl.bin.normal.out
 /uboot/u-boot*.itb
-/ubuntu/cache*
-/ubuntu/rootfs
-/ubuntu/*.img
-/ubuntu/*.img.xz
+cache*
+rootfs
+*.img
+*.img.xz

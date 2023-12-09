@@ -203,7 +203,7 @@ sudo sh make_ubuntu_img.sh
 
 **3. the output if the build completes successfully**
 ```
-mmc_4g.img.xz
+mmc_2g.img.xz
 ```
 
 <br/>

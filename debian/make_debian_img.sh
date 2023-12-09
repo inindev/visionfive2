@@ -16,11 +16,11 @@ main() {
     # file media is sized with the number between 'mmc_' and '.img'
     #   use 'm' for 1024^2 and 'g' for 1024^3
     local media='mmc_2g.img' # or block device '/dev/sdX'
-    local ubu_dist='mantic'
+    local deb_dist='trixie'
     local hostname='visionfive2'
-    local acct_uid='ubuntu'
-    local acct_pass='ubuntu'
-    local pkgs_extra=''
+    local acct_uid='debian'
+    local acct_pass='debian'
+    local extra_pkgs='curl, pciutils, sudo, unzip, wget, xxd, xz-utils, zip, zstd'
 
     # partition table sector offsets
     local sec_spl=4096
@@ -57,52 +57,56 @@ main() {
         fi
     fi
 
-    print_hdr 'downloading files'
-    local cache="cache.$ubu_dist"
+    print_hdr "downloading files"
+    local cache="cache.$deb_dist"
 
     # linux firmware
     local lfw=$(download "$cache" 'https://mirrors.edge.kernel.org/pub/linux/kernel/firmware/linux-firmware-20230515.tar.xz')
-    local lfwsha='8b1acfa16f1ee94732a6acb50d9d6c835cf53af11068bd89ed207bbe04a1e951'
-    [ "$lfwsha" = $(sha256sum "$lfw" | cut -c1-64) ] || { echo "invalid hash for $lfw"; exit 5; }
+    local lfw_sha='8b1acfa16f1ee94732a6acb50d9d6c835cf53af11068bd89ed207bbe04a1e951'
+    [ -f "$lfw" ] || { echo "unable to fetch $lfw"; exit 4; }
+    [ "$lfw_sha" = $(sha256sum "$lfw" | cut -c1-64) ] || { echo "invalid hash for $lfw"; exit 5; }
 
     # u-boot
-    local uboot_spl=$(download "$cache" 'https://github.com/inindev/visionfive2/releases/download/v23.10-6.6.3/u-boot-spl.bin.normal.out')
+    local uboot_spl=$(download "$cache" 'https://github.com/inindev/visionfive2/releases/download/v23.10-6.6.4/u-boot-spl.bin.normal.out')
+    local uboot_spl_sha='520cc389ff89d17f5eebec8f67422decb38c0cee6e5a08c0cccb69271054d9c2'
     [ -f "$uboot_spl" ] || { echo "unable to fetch $uboot_spl"; exit 4; }
-    local uboot_itb=$(download "$cache" 'https://github.com/inindev/visionfive2/releases/download/v23.10-6.6.3/u-boot.itb')
+    [ "$uboot_spl_sha" = $(sha256sum "$uboot_spl" | cut -c1-64) ] || { echo "invalid hash for $uboot_spl"; exit 5; }
+    local uboot_itb=$(download "$cache" 'https://github.com/inindev/visionfive2/releases/download/v23.10-6.6.4/u-boot.itb')
+    local uboot_itb_sha='9501d0a01dec7b4d5354a6cf0b28444cc46ce881adfadc2d32b18ba099be2d01'
     [ -f "$uboot_itb" ] || { echo "unable to fetch: $uboot_itb"; exit 4; }
+    [ "$uboot_itb_sha" = $(sha256sum "$uboot_itb" | cut -c1-64) ] || { echo "invalid hash for $uboot_itb"; exit 5; }
 
     # setup media
     if [ ! -b "$media" ]; then
-        print_hdr 'creating image file'
+        print_hdr "creating image file"
         make_image_file "$media"
     fi
 
-    print_hdr 'partitioning media'
+    print_hdr "partitioning media"
     parition_media "$media" $sec_spl $sec_itb $sec_rfs
 
-    print_hdr 'formatting media'
+    print_hdr "formatting media"
     format_media "$media" 3
 
-    print_hdr 'mounting media'
+    print_hdr "mounting media"
     mount_media "$media" 3 $sec_rfs
 
-    print_hdr 'configuring files'
+    print_hdr "configuring files"
     install -Dvm 644 'files/kernel-img.conf' "$mountpt/etc/kernel-img.conf"
 
-    # setup fstab
+    print_hdr "setting up fstab"
     local mdev="$(findmnt -no source "$mountpt")"
     local uuid="$(blkid -o value -s UUID "$mdev")"
     echo "$(file_fstab $uuid)\n" > "$mountpt/etc/fstab"
 
-    # setup extlinux boot
+    print_hdr "setting up extlinux boot"
     install -Dvm 754 'files/dtb_cp' "$mountpt/etc/kernel/postinst.d/dtb_cp"
-    install -Dvm 754 'files/kernel_chmod' "$mountpt/etc/kernel/postinst.d/kernel_chmod"
     install -Dvm 754 'files/dtb_rm' "$mountpt/etc/kernel/postrm.d/dtb_rm"
     install -Dvm 754 'files/mk_extlinux' "$mountpt/boot/mk_extlinux"
     ln -svf '../../../boot/mk_extlinux' "$mountpt/etc/kernel/postinst.d/update_extlinux"
     ln -svf '../../../boot/mk_extlinux' "$mountpt/etc/kernel/postrm.d/update_extlinux"
 
-    # install overlay files
+    print_hdr "installing overlay files"
     local dtbos="$(find "$cache/overlays" -maxdepth 1 -name '*.dtbo' 2>/dev/null | sort)"
     if [ -n "$dtbos" ]; then
         local dtbo dtgt="$mountpt/boot/overlay/lib"
@@ -118,8 +122,8 @@ main() {
     local lfwbn="${lfwn%%.*}"
     tar -C "$mountpt/usr/lib/firmware" --strip-components=1 --wildcards -xavf "$lfw" "$lfwbn/rtl_bt" "$lfwbn/rtl_nic"
 
-    # install ubuntu linux from packages (debootstrap)
-    print_hdr 'installing root filesystem from ubuntu.com'
+    # install debian linux from deb packages (debootstrap)
+    print_hdr "installing root filesystem from debian.org"
 
     # do not write the cache to the image
     mkdir -p "$cache/var/cache" "$cache/var/lib/apt/lists"
@@ -127,36 +131,43 @@ main() {
     mount -o bind "$cache/var/cache" "$mountpt/var/cache"
     mount -o bind "$cache/var/lib/apt/lists" "$mountpt/var/lib/apt/lists"
 
-    local pkgs_incl="$(cat 'files/my_ubuntu_minimal.txt' | sed '/^!/d'              | xargs | tr ' ' ',')"
-    local pkgs_excl="$(cat 'files/my_ubuntu_minimal.txt' | sed -n 's/^!\(.*\)/\1/p' | xargs | tr ' ' ',')"
-    debootstrap --arch riscv64 --components=main,universe --no-resolve-deps --include "$pkgs_incl, $pkgs_extra" --exclude "$pkgs_excl" "$ubu_dist" "$mountpt" 'http://ports.ubuntu.com/ubuntu-ports'
+    local pkgs="initramfs-tools, dbus, dhcpcd, libpam-systemd, openssh-server, systemd-timesyncd"
+#    pkgs="$pkgs, wireless-regdb, wpasupplicant"
+    pkgs="$pkgs, $extra_pkgs"
+    debootstrap --arch 'riscv64' --include "$pkgs" --exclude "isc-dhcp-client" 'sid' "$mountpt" 'https://deb.debian.org/debian/'
 
     umount "$mountpt/var/cache"
     umount "$mountpt/var/lib/apt/lists"
 
-    # a deadlock on reboot seems to be related to agetty shutdown timing
-    # adding an ExecStop to the serial-getty service file appears to move the timing window
-    mkdir -p  "$mountpt/etc/systemd/system/serial-getty@.service.d"
-    printf '[Service]\nExecStop=-/usr/bin/echo -n\n' > "$mountpt/etc/systemd/system/serial-getty@.service.d/override.conf"
-
     # apt sources & default locale
-    echo "$(file_apt_sources $ubu_dist)\n" > "$mountpt/etc/apt/sources.list"
+    echo "$(file_apt_sources $deb_dist)\n" > "$mountpt/etc/apt/sources.list"
     echo "$(file_locale_cfg)\n" > "$mountpt/etc/default/locale"
 
-    # set watchdog timeout to 300s
-    sed -i '/RebootWatchdogSec/s/.*/RebootWatchdogSec=5min/' "$mountpt/etc/systemd/system.conf"
+    # wpa supplicant
+ #   rm -rfv "$mountpt/etc/systemd/system/multi-user.target.wants/wpa_supplicant.service"
+ #   echo "$(file_wpa_supplicant_conf)\n" > "$mountpt/etc/wpa_supplicant/wpa_supplicant.conf"
+ #   cp -v "$mountpt/usr/share/dhcpcd/hooks/10-wpa_supplicant" "$mountpt/usr/lib/dhcpcd/dhcpcd-hooks"
+
+    # enable ll alias
+    sed -i '/alias.ll=/s/^#*\s*//' "$mountpt/etc/skel/.bashrc"
+    sed -i '/export.LS_OPTIONS/s/^#*\s*//' "$mountpt/root/.bashrc"
+    sed -i '/eval.*dircolors/s/^#*\s*//' "$mountpt/root/.bashrc"
+    sed -i '/alias.l.=/s/^#*\s*//' "$mountpt/root/.bashrc"
+
+    # motd (off by default)
+    is_param 'motd' "$@" && [ -f '../etc/motd' ] && cp -f '../etc/motd' "$mountpt/etc"
 
     # hostname
     echo $hostname > "$mountpt/etc/hostname"
     sed -i "s/127.0.0.1\tlocalhost/127.0.0.1\tlocalhost\n127.0.1.1\t$hostname/" "$mountpt/etc/hosts"
 
-    print_hdr 'creating user account'
+    print_hdr "creating user account"
     chroot "$mountpt" /usr/sbin/useradd -m "$acct_uid" -s '/bin/bash'
     chroot "$mountpt" /bin/sh -c "/usr/bin/echo $acct_uid:$acct_pass | /usr/sbin/chpasswd -c YESCRYPT"
     chroot "$mountpt" /usr/bin/passwd -e "$acct_uid"
     (umask 377 && echo "$acct_uid ALL=(ALL) NOPASSWD: ALL" > "$mountpt/etc/sudoers.d/$acct_uid")
 
-    print_hdr 'installing rootfs expansion script to /etc/rc.local'
+    print_hdr "installing rootfs expansion script to /etc/rc.local"
     install -Dvm 754 'files/rc.local' "$mountpt/etc/rc.local"
 
     # disable sshd until after keys are regenerated on first boot
@@ -173,12 +184,12 @@ main() {
     umount "$mountpt"
     rm -rf "$mountpt"
 
-    print_hdr 'installing u-boot'
+    print_hdr "installing u-boot"
     dd if="$uboot_spl" of="$media" bs=512 seek=$sec_spl conv=notrunc
-    dd if="$uboot_itb" of="$media" bs=512 seek=$sec_itb conv=notrunc
+    dd if="$uboot_itb" of="$media" bs=512 seek=$sec_itb conv=notrunc,fsync
 
     if $compress; then
-        print_hdr 'compressing image file'
+        print_hdr "compressing image file"
         xz -z8v "$media"
         echo "\n${cya}compressed image is now ready${rst}"
         echo "\n${cya}copy image to target media:${rst}"
@@ -314,6 +325,7 @@ check_mount_only() {
         fi
     fi
 
+
     echo "mounting file ${yel}$img${rst}..."
     mount_media "$img" 3 16384  # todo: remove hardcode
     trap - EXIT INT QUIT ABRT TERM
@@ -335,20 +347,20 @@ file_fstab() {
 }
 
 file_apt_sources() {
-    local ubu_dist="$1"
+    local deb_dist="$1"
 
     cat <<-EOF
 	# For information about how to configure apt package sources,
 	# see the sources.list(5) manual.
 
-	deb http://ports.ubuntu.com/ubuntu-ports ${ubu_dist} main universe
-	# deb-src http://ports.ubuntu.com/ubuntu-ports ${ubu_dist} main universe
+	deb http://deb.debian.org/debian ${deb_dist} main contrib non-free non-free-firmware
+	#deb-src http://deb.debian.org/debian ${deb_dist} main contrib non-free non-free-firmware
 
-	deb http://ports.ubuntu.com/ubuntu-ports ${ubu_dist}-security main universe
-	# deb-src http://ports.ubuntu.com/ubuntu-ports ${ubu_dist}-security main universe
+	#deb http://deb.debian.org/debian-security ${deb_dist}-security main contrib non-free non-free-firmware
+	#deb-src http://deb.debian.org/debian-security ${deb_dist}-security main contrib non-free non-free-firmware
 
-	deb http://ports.ubuntu.com/ubuntu-ports ${ubu_dist}-updates main universe
-	# deb-src http://ports.ubuntu.com/ubuntu-ports ${ubu_dist}-updates main universe
+	#deb http://deb.debian.org/debian ${deb_dist}-updates main contrib non-free non-free-firmware
+	#deb-src http://deb.debian.org/debian ${deb_dist}-updates main contrib non-free non-free-firmware
 	EOF
 }
 
@@ -406,6 +418,7 @@ is_param() {
     return 1
 }
 
+# check if debian package is installed
 check_installed() {
     local item todo
     for item in "$@"; do
@@ -423,6 +436,7 @@ print_hdr() {
     local msg="$1"
     echo "\n${h1}$msg...${rst}"
 }
+
 rst='\033[m'
 bld='\033[1m'
 red='\033[31m'
