@@ -84,7 +84,7 @@ main() {
 #    export KDEB_CHANGELOG_DIST='mantic'
     export KDEB_CHANGELOG_DIST='sid'
 #    export KBUILD_BUILD_TIMESTAMP="$(date -d @$SOURCE_DATE_EPOCH)"
-    export KBUILD_BUILD_TIMESTAMP="Debian $kv-$bv $(date -d @$SOURCE_DATE_EPOCH +'(%Y-%m-%d)')"
+    export KBUILD_BUILD_TIMESTAMP="Debian ${kver}-${bver} $(date -d @$SOURCE_DATE_EPOCH +'(%Y-%m-%d)')"
     export KBUILD_BUILD_HOST='github.com/inindev'
     export KBUILD_BUILD_USER='linux-kernel'
     export KBUILD_BUILD_VERSION="$bver"
