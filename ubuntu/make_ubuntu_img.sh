@@ -62,14 +62,19 @@ main() {
 
     # linux firmware
     local lfw=$(download "$cache" 'https://mirrors.edge.kernel.org/pub/linux/kernel/firmware/linux-firmware-20230515.tar.xz')
-    local lfwsha='8b1acfa16f1ee94732a6acb50d9d6c835cf53af11068bd89ed207bbe04a1e951'
-    [ "$lfwsha" = $(sha256sum "$lfw" | cut -c1-64) ] || { echo "invalid hash for $lfw"; exit 5; }
+    local lfw_sha='8b1acfa16f1ee94732a6acb50d9d6c835cf53af11068bd89ed207bbe04a1e951'
+    [ -f "$lfw" ] || { echo "unable to fetch $lfw"; exit 4; }
+    [ "$lfw_sha" = $(sha256sum "$lfw" | cut -c1-64) ] || { echo "invalid hash for $lfw"; exit 5; }
 
     # u-boot
-    local uboot_spl=$(download "$cache" 'https://github.com/inindev/visionfive2/releases/download/v23.10-6.6.3/u-boot-spl.bin.normal.out')
+    local uboot_spl=$(download "$cache" 'https://github.com/inindev/visionfive2/releases/download/v23.10-6.6.4/u-boot-spl.bin.normal.out')
+    local uboot_spl_sha='520cc389ff89d17f5eebec8f67422decb38c0cee6e5a08c0cccb69271054d9c2'
     [ -f "$uboot_spl" ] || { echo "unable to fetch $uboot_spl"; exit 4; }
-    local uboot_itb=$(download "$cache" 'https://github.com/inindev/visionfive2/releases/download/v23.10-6.6.3/u-boot.itb')
+    [ "$uboot_spl_sha" = $(sha256sum "$uboot_spl" | cut -c1-64) ] || { echo "invalid hash for $uboot_spl"; exit 5; }
+    local uboot_itb=$(download "$cache" 'https://github.com/inindev/visionfive2/releases/download/v23.10-6.6.4/u-boot.itb')
+    local uboot_itb_sha='9501d0a01dec7b4d5354a6cf0b28444cc46ce881adfadc2d32b18ba099be2d01'
     [ -f "$uboot_itb" ] || { echo "unable to fetch: $uboot_itb"; exit 4; }
+    [ "$uboot_itb_sha" = $(sha256sum "$uboot_itb" | cut -c1-64) ] || { echo "invalid hash for $uboot_itb"; exit 5; }
 
     # setup media
     if [ ! -b "$media" ]; then
@@ -89,12 +94,12 @@ main() {
     print_hdr 'configuring files'
     install -Dvm 644 'files/kernel-img.conf' "$mountpt/etc/kernel-img.conf"
 
-    # setup fstab
+    print_hdr 'setting up fstab'
     local mdev="$(findmnt -no source "$mountpt")"
     local uuid="$(blkid -o value -s UUID "$mdev")"
     echo "$(file_fstab $uuid)\n" > "$mountpt/etc/fstab"
 
-    # setup extlinux boot
+    print_hdr 'setting up extlinux boot'
     install -Dvm 754 'files/dtb_cp' "$mountpt/etc/kernel/postinst.d/dtb_cp"
     install -Dvm 754 'files/kernel_chmod' "$mountpt/etc/kernel/postinst.d/kernel_chmod"
     install -Dvm 754 'files/dtb_rm' "$mountpt/etc/kernel/postrm.d/dtb_rm"
@@ -102,7 +107,7 @@ main() {
     ln -svf '../../../boot/mk_extlinux' "$mountpt/etc/kernel/postinst.d/update_extlinux"
     ln -svf '../../../boot/mk_extlinux' "$mountpt/etc/kernel/postrm.d/update_extlinux"
 
-    # install overlay files
+    print_hdr 'installing overlay files'
     local dtbos="$(find "$cache/overlays" -maxdepth 1 -name '*.dtbo' 2>/dev/null | sort)"
     if [ -n "$dtbos" ]; then
         local dtbo dtgt="$mountpt/boot/overlay/lib"
@@ -112,7 +117,7 @@ main() {
         done
     fi
 
-    print_hdr "installing firmware"
+    print_hdr 'installing firmware'
     mkdir -p "$mountpt/usr/lib/firmware"
     local lfwn=$(basename "$lfw")
     local lfwbn="${lfwn%%.*}"
@@ -142,6 +147,9 @@ main() {
     # apt sources & default locale
     echo "$(file_apt_sources $ubu_dist)\n" > "$mountpt/etc/apt/sources.list"
     echo "$(file_locale_cfg)\n" > "$mountpt/etc/default/locale"
+
+    # motd (off by default)
+    is_param 'motd' "$@" && [ -f '../misc/motd' ] && cp -f '../misc/motd' "$mountpt/etc"
 
     # set watchdog timeout to 300s
     sed -i '/RebootWatchdogSec/s/.*/RebootWatchdogSec=5min/' "$mountpt/etc/systemd/system.conf"
@@ -175,7 +183,7 @@ main() {
 
     print_hdr 'installing u-boot'
     dd if="$uboot_spl" of="$media" bs=512 seek=$sec_spl conv=notrunc
-    dd if="$uboot_itb" of="$media" bs=512 seek=$sec_itb conv=notrunc
+    dd if="$uboot_itb" of="$media" bs=512 seek=$sec_itb conv=notrunc,fsync
 
     if $compress; then
         print_hdr 'compressing image file'
@@ -423,6 +431,7 @@ print_hdr() {
     local msg="$1"
     echo "\n${h1}$msg...${rst}"
 }
+
 rst='\033[m'
 bld='\033[1m'
 red='\033[31m'
