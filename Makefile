@@ -60,8 +60,8 @@ ifeq ($(STY)$(TMUX),)
 	$(error please start a screen or tmux session)
 endif
 
-debain/mmc_2g.img:
-	sudo sh ubuntu/make_debian_img.sh nocomp
+debian/mmc_2g.img:
+	sudo sh debian/make_debian_img.sh nocomp
 
 ubuntu/mmc_2g.img:
 	sudo sh ubuntu/make_ubuntu_img.sh nocomp
