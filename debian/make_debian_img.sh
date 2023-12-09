@@ -156,6 +156,9 @@ main() {
     # motd (off by default)
     is_param 'motd' "$@" && [ -f '../misc/motd' ] && cp -f '../misc/motd' "$mountpt/etc"
 
+    # set watchdog timeout to 300s
+    sed -i '/RebootWatchdogSec/s/.*/RebootWatchdogSec=5min/' "$mountpt/etc/systemd/system.conf"
+
     # hostname
     echo $hostname > "$mountpt/etc/hostname"
     sed -i "s/127.0.0.1\tlocalhost/127.0.0.1\tlocalhost\n127.0.1.1\t$hostname/" "$mountpt/etc/hosts"
