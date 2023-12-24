@@ -1,22 +1,22 @@
 # visionfive2
-#### *Ubuntu riscv64 Linux for the StarFive VisionFive 2*
+#### *Debian riscv64 Linux for the StarFive VisionFive 2*
 
-This Ubuntu riscv64 Linux image is built directly from official ports packages using the Debian [debootstrap](https://packages.ubuntu.com/mantic/debootstrap) utility, see: https://github.com/inindev/visionfive2/blob/main/ubuntu/make_ubuntu_img.sh#L132
+This Debian riscv64 Linux image is built directly from official packages using the Debian [debootstrap](https://wiki.debian.org/Debootstrap) utility, see: https://github.com/inindev/visionfive2/blob/main/debian/make_debian_img.sh#L132
 
-Updaates are supplied from [ubuntu-ports](http://ports.ubuntu.com/ubuntu-ports/dists/mantic/main/binary-riscv64/) repos using the built-in **apt** package manager, see: https://github.com/inindev/visionfive2/blob/main/ubuntu/make_ubuntu_img.sh#L344-L351
+Most patches are directly available from the Debian repos using the built-in apt package manager, see: https://github.com/inindev/visionfive2/blob/main/debian/make_debian_img.sh#L354-L361
 
-Note: There are two kernels available in the ```/boot``` directory. The 6.5 kernel is supplied by ubuntu and does not currently support nvme. The 6.6 kernel in this bundle is built from kernel.org and will not get updates from ubuntu.
+Note: The kernel in this bundle is from kernel.org and will not get updates from debian.
 
 <br/>
 
 ---
-### ubuntu mantic setup
+### debian trixie setup
 
 <br/>
 
 **1. download image**
 ```
-wget https://github.com/inindev/visionfive2/releases/download/v23.10-6.6.4/visionfive2_mantic-v23.10-6.6.4.img.xz
+wget https://github.com/inindev/visionfive2/releases/download/v13-6.6.5/visionfive2_trixie-v13-6.6.5.img.xz
 ```
 
 <br/>
@@ -41,7 +41,7 @@ brw-rw---- 1 root disk 8, 0 Apr 10 15:56 /dev/sda
 **3. in the case above, substitute 'a' for 'X' in the command below (for /dev/sda)**
 ```
 sudo su
-xzcat visionfive2_mantic-v23.10-6.6.4.img.xz > /dev/sdX
+xzcat visionfive2_trixie-v13-6.6.5.img.xz > /dev/sdX
 sync
 ```
 
@@ -52,8 +52,8 @@ sync
 
 **4. login account**
 ```
-login id: ubuntu
-password: ubuntu
+login id: debian
+password: debian
 ```
 
 <br/>
@@ -75,15 +75,15 @@ sudo chmod 440 /etc/sudoers.d/<youruserid>
 
 <br/>
 
-**7. lockout and/or delete ubuntu account**
+**7. lockout and/or delete debian account**
 ```
-sudo passwd -l ubuntu
-sudo chsh -s /usr/sbin/nologin ubuntu
+sudo passwd -l debain
+sudo chsh -s /usr/sbin/nologin debian
 ```
 
 ```
-sudo deluser --remove-home ubuntu
-sudo rm /etc/sudoers.d/ubuntu
+sudo deluser --remove-home debian
+sudo rm /etc/sudoers.d/debian
 ```
 
 <br/>
@@ -103,13 +103,13 @@ sudo nano /etc/hosts
 
 **1. boot from removable mmc**
 
-[Follow the instructions](https://github.com/inindev/visionfive2#ubuntu-mantic-setup) for creating bootable mmc media.
+[Follow the instructions](https://github.com/inindev/visionfive2#debian-trixie-setup) for creating bootable mmc media.
 
 **2. download and copy the image file on to the nvme media**
 ```
-wget https://github.com/inindev/visionfive2/releases/download/v23.10-6.6.4/visionfive2_mantic-v23.10-6.6.4.img.xz
+wget https://github.com/inindev/visionfive2/releases/download/v13-6.6.5/visionfive2_trixie-v13-6.6.5.img.xz
 sudo su
-xzcat visionfive2_mantic-v23.10-6.6.4.img.xz > /dev/nvme0n1
+xzcat visionfive2_trixie-v13-6.6.5.img.xz > /dev/nvme0n1
 sync
 ```
 
@@ -131,7 +131,7 @@ sfdisk -r /dev/nvme0n1
 
 **1. boot from removable mmc**
 
-[Follow the instructions](https://github.com/inindev/visionfive2#ubuntu-mantic-setup) for creating bootable mmc media.
+[Follow the instructions](https://github.com/inindev/visionfive2#debian-trixie-setup) for creating bootable mmc media.
 
 Note: Configure the [boot switch setting](https://github.com/inindev/visionfive2/blob/main/misc/vf2_mmc.jpg) needed to select mmc boot.
 
@@ -159,8 +159,8 @@ sudo flash_erase /dev/mtd3 0 0
 
 **4. write u-boot to spi flash**
 ```
-wget https://github.com/inindev/visionfive2/releases/download/v23.10-6.6.4/u-boot-spl.bin.normal.out
-wget https://github.com/inindev/visionfive2/releases/download/v23.10-6.6.4/u-boot.itb
+wget https://github.com/inindev/visionfive2/releases/download/v13-6.6.5/u-boot-spl.bin.normal.out
+wget https://github.com/inindev/visionfive2/releases/download/v13-6.6.5/u-boot.itb
 sudo flashcp -v u-boot-spl.bin.normal.out /dev/mtd0
 sudo flashcp -v u-boot.itb /dev/mtd2
 ```
@@ -175,7 +175,7 @@ Note: Configure the [boot switch setting](https://github.com/inindev/visionfive2
 
 ---
 
-### building ubuntu mantic riscv64 for the visionfive2 from scratch
+### building debian trixie riscv64 for the visionfive2 from scratch
 
 <br/>
 
@@ -192,12 +192,12 @@ cd visionfive2
 
 <br/>
 
-**2. run the ubuntu build script**
+**2. run the debian build script**
 ```
-cd ubuntu
-sudo sh make_ubuntu_img.sh
+cd debian
+sudo sh make_debian_img.sh
 ```
-* note: edit the build script to change various options: ```nano make_ubuntu_img.sh```
+* note: edit the build script to change various options: ```nano make_debian_img.sh```
 
 <br/>
 
