@@ -1,5 +1,7 @@
 #!/bin/sh
 
+# Copyright (C) 2024, John Clark <inindev@gmail.com>
+
 set -e
 
 # script exit codes:
@@ -10,13 +12,11 @@ set -e
 
 config_fixups() {
     local lpath="$1"
-
-    [ -e "$lpath/.version" ] || echo 3000 > "$lpath/.version"
 }
 
 main() {
-    local linux='https://cdn.kernel.org/pub/linux/kernel/v6.x/linux-6.6.5.tar.xz'
-    local lxsha='7c92795854a68d218c576097d50611f8eea86fd55810e0bc27724f020753b19e'
+    local linux='https://cdn.kernel.org/pub/linux/kernel/v6.x/linux-6.11.tar.xz'
+    local lxsha='55d2c6c025ebc27810c748d66325dd5bc601e8d32f8581d9e77673529bdacb2e'
 
     local lf="$(basename "$linux")"
     local lv="$(echo "$lf" | sed -nE 's/linux-(.*)\.tar\..z/\1/p')"
@@ -24,7 +24,6 @@ main() {
 
     if [ '_clean' = "_$1" ]; then
         print_hdr 'cleaning'
-        rm -fv *.deb
         rm -rfv kernel-$lv/*.deb
         rm -rfv kernel-$lv/*.buildinfo
         rm -rfv kernel-$lv/*.changes
@@ -68,34 +67,28 @@ main() {
     # build
     if [ '_inc' != "_$1" ]; then
         print_hdr 'configuring source tree'
-        make -C "$lpath" mrproper
+        #make -C "$lpath" mrproper
         [ -z "$1" ] || echo "$1" > "$lpath/.version"
         make -C "$lpath" ARCH=riscv starfive_visionfive2_defconfig
         config_fixups "$lpath"
     fi
 
+
     print_hdr 'beginning compile'
-    rm -f linux-*.deb
-    local kver="$(make --no-print-directory -C "$lpath" kernelversion)"
-    local bver="$(expr "$(cat "$lpath/.version" 2>/dev/null || echo 0)" + 1 2>/dev/null)"
-#    local lver="$bver-starfive"
-    local lver="$bver-riscv64"
-    export SOURCE_DATE_EPOCH="$(stat -c %Y "$lpath/README")"
-#    export KDEB_CHANGELOG_DIST='mantic'
-    export KDEB_CHANGELOG_DIST='sid'
-#    export KBUILD_BUILD_TIMESTAMP="$(date -d @$SOURCE_DATE_EPOCH)"
-    export KBUILD_BUILD_TIMESTAMP="Debian ${kver}-${bver} $(date -d @$SOURCE_DATE_EPOCH +'(%Y-%m-%d)')"
+    local kv="$(make --no-print-directory -C $(LDIR) kernelversion)"
+    local bv="$(expr "$(cat $(LDIR)/.version 2>/dev/null || echo 0)" + 1 2>/dev/null)"
+
+    export SOURCE_DATE_EPOCH="$(stat -c %Y $(LDIR)/README)"
+    export KDEB_CHANGELOG_DIST='stable'
+    export KBUILD_BUILD_TIMESTAMP="Debian $kv-$bv $(date -ud @$SOURCE_DATE_EPOCH +'(%Y-%m-%d)')"
     export KBUILD_BUILD_HOST='github.com/inindev'
     export KBUILD_BUILD_USER='linux-kernel'
-    export KBUILD_BUILD_VERSION="$bver"
+    export KBUILD_BUILD_VERSION="$bv"
 
-    local t1=$(date +%s)
-    nice make -C "$lpath" -j"$(nproc)" ARCH=riscv CC="$(readlink /usr/bin/gcc)" bindeb-pkg KBUILD_IMAGE='arch/riscv/boot/Image' LOCALVERSION="-$lver"
-    local t2=$(date +%s)
-    echo "\n${cya}kernel package ready (elapsed: $(date -d@$((t2-t1)) '+%H:%M:%S'))${mag}"
-    ln -sfv "kernel-$lv/linux-image-${kver}-${lver}_${kver}-${bver}_riscv64.deb"
-    ln -sfv "kernel-$lv/linux-headers-${kver}-${lver}_${kver}-${bver}_riscv64.deb"
-    echo "${rst}"
+    t1=$(date +%s)
+    nice make -C "$lpath" -j"$(nproc)" ARCH=riscv CC="$(readlink /usr/bin/gcc)" bindeb-pkg KBUILD_IMAGE='arch/riscv/boot/Image' LOCALVERSION="-$bv-riscv64"
+    t2=$(date +%s)
+    echo "\n${cya}kernel package ready (elapsed: $(date -d@$((t2-t1)) '+%H:%M:%S'))${rst}\n"
 }
 
 check_installed() {
