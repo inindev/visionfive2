@@ -8,7 +8,7 @@ set -e
 #   1: missing utility
 
 main() {
-    local utag='v2023.10.01' # hack: will force tag to c41df16b27 below
+    local utag='v2024.10-rc5'
     local osbi_file='./opensbi/build/platform/generic/firmware/fw_dynamic.bin'
 
     # branch name is yyyy.mm[-rc]
@@ -29,7 +29,7 @@ main() {
         exit 0
     fi
 
-    check_installed 'bc' 'bison' 'flex' 'libssl-dev' 'make' 'python3-dev' 'python3-setuptools' 'swig'
+    check_installed 'bc' 'bison' 'flex' 'libgnutls28-dev' 'libssl-dev' 'make' 'python3-dev' 'python3-setuptools' 'swig' 'uuid-dev'
 
     if [ ! -d opensbi ]; then
         print_hdr 'cloning opensbi'
@@ -42,20 +42,17 @@ main() {
         git -C u-boot fetch --tags
     fi
 
-    # we are building from ref c41df16b27 right now...
-    if ! git -C u-boot show-ref --tags "$utag" --quiet; then
-        git -C u-boot tag "$utag" 'c41df16b27'
-    fi
-
     print_hdr "u-boot branch: $branch"
     if ! git -C u-boot branch | grep -q "$branch"; then
         git -C u-boot checkout -b "$branch" "$utag"
 
-        print_hdr 'patching u-boot'
-        local patch
-        for patch in patches/*.patch; do
-            git -C u-boot am "../$patch"
-        done
+        if [ -d patches ]; then
+            print_hdr 'patching u-boot'
+            local patch
+            for patch in patches/*.patch; do
+                git -C u-boot am "../$patch"
+            done
+        fi
     elif [ "$branch" != "$(git -C u-boot branch --show-current)" ]; then
         git -C u-boot checkout "$branch"
     fi
@@ -82,8 +79,8 @@ main() {
     echo "\n${cya}u-boot-spl.bin.normal.out and u-boot binaries are now ready${rst}"
     echo "\n${cya}copy images to media:${rst}"
     echo "  ${cya}sudo su${rst}"
-    echo "  ${cya}cat u-boot-spl.bin.normal.out > /dev/mmcblkX1${rst}"
-    echo "  ${cya}cat u-boot.itb > /dev/mmcblkX2${rst}"
+    echo "  ${cya}cat u-boot-spl.bin.normal.out > /dev/mmcblkXp1${rst}"
+    echo "  ${cya}cat u-boot.itb > /dev/mmcblkXp2${rst}"
     echo
     echo "${blu}optionally, flash to spi (apt install mtd-utils):${rst}"
     echo "  ${blu}sudo flashcp -Av u-boot-spl.bin.normal.out /dev/mtd0${rst}"

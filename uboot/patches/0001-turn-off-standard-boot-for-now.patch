@@ -1,0 +1,70 @@
+From de81f44ea9fcb7a924323468c9a238f4e9d20872 Mon Sep 17 00:00:00 2001
+From: John Clark <inindev@gmail.com>
+Date: Fri, 20 Sep 2024 19:17:44 +0000
+Subject: [PATCH] turn off standard boot for now
+
+Signed-off-by: John Clark <inindev@gmail.com>
+---
+ configs/starfive_visionfive2_defconfig |  2 +-
+ include/configs/starfive-visionfive2.h | 25 +++++++++++++++++++++++--
+ 2 files changed, 24 insertions(+), 3 deletions(-)
+
+diff --git a/configs/starfive_visionfive2_defconfig b/configs/starfive_visionfive2_defconfig
+index 174ac24dc7..bed6819fea 100644
+--- a/configs/starfive_visionfive2_defconfig
++++ b/configs/starfive_visionfive2_defconfig
+@@ -32,8 +32,8 @@ CONFIG_RISCV_SMODE=y
+ # CONFIG_OF_BOARD_FIXUP is not set
+ # CONFIG_SYS_MALLOC_CLEAR_ON_INIT is not set
+ CONFIG_FIT=y
+-CONFIG_BOOTSTD_DEFAULTS=y
+ CONFIG_SYS_BOOTM_LEN=0x4000000
++CONFIG_DISTRO_DEFAULTS=y
+ CONFIG_BOOTSTAGE=y
+ CONFIG_QSPI_BOOT=y
+ CONFIG_SD_BOOT=y
+diff --git a/include/configs/starfive-visionfive2.h b/include/configs/starfive-visionfive2.h
+index 049b0a0630..a07371a24f 100644
+--- a/include/configs/starfive-visionfive2.h
++++ b/include/configs/starfive-visionfive2.h
+@@ -15,6 +15,17 @@
+ 
+ #define __io
+ 
++/* Environment options */
++
++#define BOOT_TARGET_DEVICES(func) \
++	func(MMC, mmc, 1) \
++	func(MMC, mmc, 0) \
++	func(USB, usb, 0) \
++	func(NVME, nvme, 0) \
++	func(DHCP, dhcp, na)
++
++#include <config_distro_bootcmd.h>
++
+ #define TYPE_GUID_SPL		"2E54B353-1271-4842-806F-E436D6AF6985"
+ #define TYPE_GUID_UBOOT	"BC13C2FF-59E6-4262-A352-B275FD6F7172"
+ #define TYPE_GUID_SYSTEM	"EBD0A0A2-B9E5-4433-87C0-68B6B72699C7"
+@@ -36,7 +47,17 @@
+ 	"type_guid_gpt_loader1=" TYPE_GUID_SPL "\0" \
+ 	"type_guid_gpt_loader2=" TYPE_GUID_UBOOT "\0" \
+ 	"type_guid_gpt_system=" TYPE_GUID_SYSTEM "\0" \
+-	"partitions=" PARTS_DEFAULT "\0" \
+-	"fdtfile=" CONFIG_DEFAULT_FDT_FILE "\0"
++	"fdtfile=" CONFIG_DEFAULT_FDT_FILE "\0" \
++	BOOTENV \
++	"scan_dev_for_boot_part="                               \
++		"part list ${devtype} ${devnum} devplist; "     \
++			"env exists devplist || setenv devplist 1; "    \
++			"for distro_bootpart in ${devplist}; do "       \
++			"if fstype ${devtype} "                         \
++				"${devnum}:${distro_bootpart} "         \
++				"bootfstype; then "                     \
++				"run scan_dev_for_boot; "               \
++			"fi; "                                          \
++		"done\0"
+ 
+ #endif /* _STARFIVE_VISIONFIVE2_H */
+-- 
+2.45.2
+
