@@ -4,7 +4,7 @@ set -e
 
 
 main() {
-    local kerndeb="$(ls ../kernel/linux-image-*.deb | sort | tail -n1)"
+    local kerndeb="$(ls ../kernel/kernel-*/linux-image-*.deb | sort | tail -n1)"
     if [ ! -e "$kerndeb" ]; then
         echo 'kernel .deb file not found'
         exit 1

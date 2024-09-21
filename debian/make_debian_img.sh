@@ -1,6 +1,6 @@
 #!/bin/sh
 
-# Copyright (C) 2023, John Clark <inindev@gmail.com>
+# Copyright (C) 2024, John Clark <inindev@gmail.com>
 
 set -e
 
@@ -16,7 +16,7 @@ main() {
     # file media is sized with the number between 'mmc_' and '.img'
     #   use 'm' for 1024^2 and 'g' for 1024^3
     local media='mmc_2g.img' # or block device '/dev/sdX'
-    local deb_dist='sid' # trixie/sid
+    local deb_dist='trixie'
     local hostname='visionfive2'
     local acct_uid='debian'
     local acct_pass='debian'
@@ -61,15 +61,15 @@ main() {
     local cache="cache.$deb_dist"
 
     # linux firmware
-    local lfw=$(download "$cache" 'https://mirrors.edge.kernel.org/pub/linux/kernel/firmware/linux-firmware-20230515.tar.xz')
-    local lfw_sha='8b1acfa16f1ee94732a6acb50d9d6c835cf53af11068bd89ed207bbe04a1e951'
+    local lfw=$(download "$cache" 'https://mirrors.edge.kernel.org/pub/linux/kernel/firmware/linux-firmware-20240513.tar.xz')
+    local lfw_sha='9f05edb99668135d37cedc4fdd18aac2802dc9e4566e086e6c6c2e321f3ecc4e'
     [ -f "$lfw" ] || { echo "unable to fetch $lfw"; exit 4; }
     [ "$lfw_sha" = $(sha256sum "$lfw" | cut -c1-64) ] || { echo "invalid hash for $lfw"; exit 5; }
 
     # u-boot
-    local uboot_spl=$(download "$cache" 'https://github.com/inindev/visionfive2/releases/download/v23.10-6.6.4/u-boot-spl.bin.normal.out')
+    local uboot_spl=$(download "$cache" 'https://github.com/inindev/visionfive2/releases/download/v13-6.6.5/u-boot-spl.bin.normal.out')
     [ -f "$uboot_spl" ] || { echo "unable to fetch $uboot_spl"; exit 4; }
-    local uboot_itb=$(download "$cache" 'https://github.com/inindev/visionfive2/releases/download/v23.10-6.6.4/u-boot.itb')
+    local uboot_itb=$(download "$cache" 'https://github.com/inindev/visionfive2/releases/download/v13-6.6.5/u-boot.itb')
     [ -f "$uboot_itb" ] || { echo "unable to fetch: $uboot_itb"; exit 4; }
 
     # setup media
@@ -117,7 +117,7 @@ main() {
     mkdir -p "$mountpt/usr/lib/firmware"
     local lfwn=$(basename "$lfw")
     local lfwbn="${lfwn%%.*}"
-    tar -C "$mountpt/usr/lib/firmware" --strip-components=1 --wildcards -xavf "$lfw" "$lfwbn/rtl_bt" "$lfwbn/rtl_nic"
+    tar -C "$mountpt/usr/lib/firmware" --strip-components=1 --wildcards -xavf "$lfw" "$lfwbn/microchip" "$lfwbn/r8a779x_usb3*" "$lfwbn/rtl_bt" "$lfwbn/rtl_nic"
 
     # install debian linux from deb packages (debootstrap)
     print_hdr 'installing root filesystem from debian.org'
@@ -128,8 +128,9 @@ main() {
     mount -o bind "$cache/var/cache" "$mountpt/var/cache"
     mount -o bind "$cache/var/lib/apt/lists" "$mountpt/var/lib/apt/lists"
 
-    local pkgs="initramfs-tools, dbus, dhcpcd, libpam-systemd, openssh-server, systemd-timesyncd"
-    debootstrap --arch 'riscv64' --include "$pkgs, $extra_pkgs" --exclude "isc-dhcp-client" "$deb_dist" "$mountpt" 'https://deb.debian.org/debian/'
+    local pkgs="linux-image-riscv64, dbus, dhcpcd, libpam-systemd, openssh-server, systemd-timesyncd"
+#    debootstrap --arch 'riscv64' --include "$pkgs, $extra_pkgs" --exclude "isc-dhcp-client" "$deb_dist" "$mountpt" 'https://deb.debian.org/debian/'
+    debootstrap --arch 'riscv64' --include "$pkgs, $extra_pkgs" --exclude "isc-dhcp-client" 'sid' "$mountpt" 'https://deb.debian.org/debian/'
 
     umount "$mountpt/var/cache"
     umount "$mountpt/var/lib/apt/lists"

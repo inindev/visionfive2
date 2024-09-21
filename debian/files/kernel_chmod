@@ -15,4 +15,4 @@ fi
 
 chmod 644 "/boot/jh7110-starfive-visionfive-2-v1.3b.dtb-${version}"
 chmod 600 "/boot/System.map-${version}"
-chmod 600 "/boot/vmlinuz-${version}"
+chmod 600 "/boot/vmlinu"?"-${version}"

@@ -52,10 +52,11 @@ gen_menu_item() {
     local prms="$4"
 
     local boot_dir=$([ "$(stat --printf %d /)" -eq "$(stat --printf %d /boot)" ] && echo '/boot')
+    local kern=$(ls "${boot_dir}/vmlinu"?"-${kver}")
 
     echo "label l${num}"
     echo "\tmenu label ${PRETTY_NAME} ${kver}"
-    echo "\tlinux ${boot_dir}/vmlinuz-${kver}"
+    echo "\tlinux ${kern}"
     echo "\tinitrd ${boot_dir}/initrd.img-${kver}"
     echo "\tfdt ${boot_dir}/jh7110-starfive-visionfive-2-v1.3b.dtb-${kver}"
     [ -z "${dtbos}" ] || echo "\tfdtoverlays ${dtbos}"
