@@ -39,10 +39,10 @@ render() {
 
     cat <<-EOF
 	tag: $tag
-	title: ubuntu $dn $tag for the $board
+	title: debian $dn $tag for the $board
 	---
 	**$board mmc / emmc / nvme image file**
-	 - [$img_name](https://github.com/inindev/$board/releases/download/$tag/$img_name) - complete image of riscv64 ubuntu linux $dv built from linux $lv, [patched kernel](https://github.com/inindev/$board/tree/$branch/kernel/patches)
+	 - [$img_name](https://github.com/inindev/$board/releases/download/$tag/$img_name) - complete image of riscv64 debian linux $dv with a linux $lv, [patched kernel](https://github.com/inindev/$board/tree/$branch/kernel/patches)
 	        \`\`\`sha256: $img_sha\`\`\`
 
 	**device tree**

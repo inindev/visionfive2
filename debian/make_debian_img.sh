@@ -20,7 +20,7 @@ main() {
     local hostname='visionfive2'
     local acct_uid='debian'
     local acct_pass='debian'
-    local extra_pkgs='curl, pciutils, sudo, unzip, wget, xxd, xz-utils, zip, zstd'
+    local extra_pkgs='bc, curl, pciutils, sudo, unzip, wget, xxd, xz-utils, zip, zstd'
 
     # partition table sector offsets
     local sec_spl=4096
@@ -67,9 +67,9 @@ main() {
     [ "$lfw_sha" = $(sha256sum "$lfw" | cut -c1-64) ] || { echo "invalid hash for $lfw"; exit 5; }
 
     # u-boot
-    local uboot_spl=$(download "$cache" 'https://github.com/inindev/visionfive2/releases/download/v13-6.6.5/u-boot-spl.bin.normal.out')
+    local uboot_spl=$(download "$cache" 'https://github.com/inindev/visionfive2/releases/download/v13-6.11/u-boot-spl.bin.normal.out')
     [ -f "$uboot_spl" ] || { echo "unable to fetch $uboot_spl"; exit 4; }
-    local uboot_itb=$(download "$cache" 'https://github.com/inindev/visionfive2/releases/download/v13-6.6.5/u-boot.itb')
+    local uboot_itb=$(download "$cache" 'https://github.com/inindev/visionfive2/releases/download/v13-6.11/u-boot.itb')
     [ -f "$uboot_itb" ] || { echo "unable to fetch: $uboot_itb"; exit 4; }
 
     # setup media
@@ -117,7 +117,14 @@ main() {
     mkdir -p "$mountpt/usr/lib/firmware"
     local lfwn=$(basename "$lfw")
     local lfwbn="${lfwn%%.*}"
-    tar -C "$mountpt/usr/lib/firmware" --strip-components=1 --wildcards -xavf "$lfw" "$lfwbn/microchip" "$lfwbn/r8a779x_usb3*" "$lfwbn/rtl_bt" "$lfwbn/rtl_nic"
+    tar -C "$mountpt/usr/lib/firmware" --strip-components=1 --wildcards -xavf "$lfw" \
+        "$lfwbn/microchip" \
+        "$lfwbn/r8a779x_usb3*" \
+        "$lfwbn/rtl_bt" \
+        "$lfwbn/rtl_nic" \
+        "$lfwbn/rtlwifi" \
+        "$lfwbn/rtw88" \
+        "$lfwbn/rtw89"
 
     # install debian linux from deb packages (debootstrap)
     print_hdr 'installing root filesystem from debian.org'
@@ -175,7 +182,7 @@ main() {
     rm -fv "$mountpt/etc/ssh/ssh_host_"*
 
     # generate machine id on first boot
-    echo -n > "$mountpt/etc/machine-id"
+    truncate -s0 "$mountpt/etc/machine-id"
 
     # reduce entropy on non-block media
     [ -b "$media" ] || fstrim -v "$mountpt"
