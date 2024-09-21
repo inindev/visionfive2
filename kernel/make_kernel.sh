@@ -75,18 +75,18 @@ main() {
 
 
     print_hdr 'beginning compile'
-    local kv="$(make --no-print-directory -C $(LDIR) kernelversion)"
-    local bv="$(expr "$(cat $(LDIR)/.version 2>/dev/null || echo 0)" + 1 2>/dev/null)"
+    local kv="$(make --no-print-directory -C "$lpath" kernelversion)"
+    local bv="$(expr "$(cat "$lpath/.version" 2>/dev/null || echo 0)" + 1 2>/dev/null)"
 
-    export SOURCE_DATE_EPOCH="$(stat -c %Y $(LDIR)/README)"
+    export SOURCE_DATE_EPOCH="$(stat -c %Y "$lpath/README")"
     export KDEB_CHANGELOG_DIST='stable'
-    export KBUILD_BUILD_TIMESTAMP="Debian $kv-$bv $(date -ud @$SOURCE_DATE_EPOCH +'(%Y-%m-%d)')"
+    export KBUILD_BUILD_TIMESTAMP="Debian ${kv}-${bv} $(date -ud @$SOURCE_DATE_EPOCH +'(%Y-%m-%d)')"
     export KBUILD_BUILD_HOST='github.com/inindev'
     export KBUILD_BUILD_USER='linux-kernel'
     export KBUILD_BUILD_VERSION="$bv"
 
     t1=$(date +%s)
-    nice make -C "$lpath" -j"$(nproc)" ARCH=riscv CC="$(readlink /usr/bin/gcc)" bindeb-pkg KBUILD_IMAGE='arch/riscv/boot/Image' LOCALVERSION="-$bv-riscv64"
+    nice make -C "$lpath" -j"$(nproc)" ARCH=riscv CC="$(readlink /usr/bin/gcc)" bindeb-pkg KBUILD_IMAGE='arch/riscv/boot/Image' LOCALVERSION="-${bv}-riscv64"
     t2=$(date +%s)
     echo "\n${cya}kernel package ready (elapsed: $(date -d@$((t2-t1)) '+%H:%M:%S'))${rst}\n"
 }
