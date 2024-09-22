@@ -16,11 +16,11 @@ main() {
     # file media is sized with the number between 'mmc_' and '.img'
     #   use 'm' for 1024^2 and 'g' for 1024^3
     local media='mmc_2g.img' # or block device '/dev/sdX'
-    local deb_dist='trixie'
+    local deb_dist='testing'  # testing/trixie
     local hostname='visionfive2'
     local acct_uid='debian'
     local acct_pass='debian'
-    local extra_pkgs='bc, curl, pciutils, sudo, unzip, wget, xxd, xz-utils, zip, zstd'
+    local extra_pkgs='bc, curl, pciutils, sudo, unzip, usbutils, wget, xxd, xz-utils, zip, zstd'
 
     # partition table sector offsets
     local sec_spl=4096
@@ -136,8 +136,7 @@ main() {
     mount -o bind "$cache/var/lib/apt/lists" "$mountpt/var/lib/apt/lists"
 
     local pkgs="linux-image-riscv64, dbus, dhcpcd, libpam-systemd, openssh-server, systemd-timesyncd"
-#    debootstrap --arch 'riscv64' --include "$pkgs, $extra_pkgs" --exclude "isc-dhcp-client" "$deb_dist" "$mountpt" 'https://deb.debian.org/debian/'
-    debootstrap --arch 'riscv64' --include "$pkgs, $extra_pkgs" --exclude "isc-dhcp-client" 'sid' "$mountpt" 'https://deb.debian.org/debian/'
+    debootstrap --arch 'riscv64' --include "$pkgs, $extra_pkgs" --exclude "isc-dhcp-client" "$deb_dist" "$mountpt" 'https://deb.debian.org/debian/'
 
     umount "$mountpt/var/cache"
     umount "$mountpt/var/lib/apt/lists"
