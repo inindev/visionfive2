@@ -1,0 +1,116 @@
+From da9212dc18968272ef725166e89b0a9c967d1975 Mon Sep 17 00:00:00 2001
+From: Keith Zhao <keith.zhao@starfivetech.com>
+Date: Fri, 1 Mar 2024 09:52:21 +0800
+Subject: [PATCH 1/2] dt-bindings: display: bridge: cdns: Add display bridge
+ support for dsi on StarFive JH7110 SoC
+
+Add compatible to support dsi bridge on StarFive JH7110 SoC
+
+Signed-off-by: Keith Zhao <keith.zhao@starfivetech.com>
+Signed-off-by: Shengyang Chen <shengyang.chen@starfivetech.com>
+Reviewed-by: Conor Dooley <conor.dooley@microchip.com>
+---
+ .../bindings/display/bridge/cdns,dsi.yaml     | 56 ++++++++++++++++++-
+ 1 file changed, 54 insertions(+), 2 deletions(-)
+
+diff --git a/Documentation/devicetree/bindings/display/bridge/cdns,dsi.yaml b/Documentation/devicetree/bindings/display/bridge/cdns,dsi.yaml
+index 23060324d..4ad0ecaac 100644
+--- a/Documentation/devicetree/bindings/display/bridge/cdns,dsi.yaml
++++ b/Documentation/devicetree/bindings/display/bridge/cdns,dsi.yaml
+@@ -16,6 +16,7 @@ properties:
+   compatible:
+     enum:
+       - cdns,dsi
++      - starfive,jh7110-dsi
+       - ti,j721e-dsi
+ 
+   reg:
+@@ -27,14 +28,20 @@ properties:
+           Register block for wrapper settings registers in case of TI J7 SoCs.
+ 
+   clocks:
++    minItems: 2
+     items:
+       - description: PSM clock, used by the IP
+       - description: sys clock, used by the IP
++      - description: dpi clock, used by the IP
++      - description: txesc clock, used by the IP
+ 
+   clock-names:
++    minItems: 2
+     items:
+       - const: dsi_p_clk
+       - const: dsi_sys_clk
++      - const: dpi
++      - const: txesc
+ 
+   phys:
+     maxItems: 1
+@@ -46,10 +53,22 @@ properties:
+     maxItems: 1
+ 
+   resets:
+-    maxItems: 1
++    minItems: 1
++    items:
++      - description: apb reset, associated to dsi_p_clk
++      - description: sys reset, associated to sys clock
++      - description: dpi reset, associated to dpi clock
++      - description: txesc reset, associated to txesc clock
++      - description: txbytehs reset, associated to txbytehs clock
+ 
+   reset-names:
+-    const: dsi_p_rst
++    minItems: 1
++    items:
++      - const: dsi_p_rst
++      - const: sys
++      - const: dpi
++      - const: txesc
++      - const: txbytehs
+ 
+   ports:
+     $ref: /schemas/graph.yaml#/properties/ports
+@@ -90,6 +109,39 @@ allOf:
+         reg:
+           maxItems: 1
+ 
++  - if:
++      properties:
++        compatible:
++          contains:
++            const: starfive,jh7110-dsi
++    then:
++      properties:
++        clocks:
++          minItems: 4
++          maxItems: 4
++        clock-names:
++          minItems: 4
++          maxItems: 4
++        resets:
++          minItems: 5
++          maxItems: 5
++        reset-names:
++          minItems: 5
++          maxItems: 5
++      required:
++        - resets
++        - reset-names
++    else:
++      properties:
++        clocks:
++          maxItems: 2
++        clock-names:
++          maxItems: 2
++        resets:
++          maxItems: 1
++        reset-names:
++          maxItems: 1
++
+ required:
+   - compatible
+   - reg
+-- 
+2.45.2
+

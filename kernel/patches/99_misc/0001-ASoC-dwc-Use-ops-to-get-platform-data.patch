@@ -1,4 +1,4 @@
-From 8e92368c7bf506325da0a9a9c9adb68e6dbe067f Mon Sep 17 00:00:00 2001
+From ad9c2aff59ef88c0018e82cd4a65db87a8442a05 Mon Sep 17 00:00:00 2001
 From: Xingyu Wu <xingyu.wu@starfivetech.com>
 Date: Mon, 21 Aug 2023 22:41:48 +0800
 Subject: [PATCH 1/2] ASoC: dwc: Use ops to get platform data

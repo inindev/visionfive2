@@ -1,0 +1,33 @@
+From 0d068f83e48fa0ccfabf75a5009f92734f0304c9 Mon Sep 17 00:00:00 2001
+From: William Qiu <william.qiu@starfivetech.com>
+Date: Sun, 22 Sep 2024 22:51:47 +0800
+Subject: [PATCH 1/4] dt-bindings: vendor-prefixes: Add cast vendor prefix
+
+CAST (Computer-Aided Software Technologies, Inc.) is a company developing,
+selling, and supporting digital Silicon IP Cores for ASICs or FPGAs.
+
+https://www.cast-inc.com/
+
+Acked-by: Conor Dooley <conor.dooley@microchip.com>
+Signed-off-by: William Qiu <william.qiu@starfivetech.com>
+Signed-off-by: Hal Feng <hal.feng@starfivetech.com>
+---
+ Documentation/devicetree/bindings/vendor-prefixes.yaml | 2 ++
+ 1 file changed, 2 insertions(+)
+
+diff --git a/Documentation/devicetree/bindings/vendor-prefixes.yaml b/Documentation/devicetree/bindings/vendor-prefixes.yaml
+index a70ce43b3..9bfb0156b 100644
+--- a/Documentation/devicetree/bindings/vendor-prefixes.yaml
++++ b/Documentation/devicetree/bindings/vendor-prefixes.yaml
+@@ -256,6 +256,8 @@ patternProperties:
+     description: Capella Microsystems, Inc
+   "^cascoda,.*":
+     description: Cascoda, Ltd.
++  "^cast,.*":
++    description: Computer-Aided Software Technologies, Inc.
+   "^catalyst,.*":
+     description: Catalyst Semiconductor, Inc.
+   "^cavium,.*":
+-- 
+2.45.2
+

@@ -1,20 +1,20 @@
-From d2ef22b9f59366f45475dcb9c971eb5919d9d3af Mon Sep 17 00:00:00 2001
+From b5976b2ec26ee19e3a434c409e626497d0ab74a9 Mon Sep 17 00:00:00 2001
 From: John Clark <inindev@gmail.com>
 Date: Mon, 13 Nov 2023 03:50:50 +0000
 Subject: [PATCH 2/2] default config for the starfive visionfive2
 
 Signed-off-by: John Clark <inindev@gmail.com>
 ---
- .../configs/starfive_visionfive2_defconfig    | 842 ++++++++++++++++++
- 1 file changed, 842 insertions(+)
+ .../configs/starfive_visionfive2_defconfig    | 846 ++++++++++++++++++
+ 1 file changed, 846 insertions(+)
  create mode 100644 arch/riscv/configs/starfive_visionfive2_defconfig
 
 diff --git a/arch/riscv/configs/starfive_visionfive2_defconfig b/arch/riscv/configs/starfive_visionfive2_defconfig
 new file mode 100644
-index 000000000..b99803f46
+index 000000000..2dad7e5b3
 --- /dev/null
 +++ b/arch/riscv/configs/starfive_visionfive2_defconfig
-@@ -0,0 +1,842 @@
+@@ -0,0 +1,846 @@
 +CONFIG_COMPILE_TEST=y
 +CONFIG_DEFAULT_HOSTNAME="StarFive"
 +CONFIG_SYSVIPC=y
@@ -538,6 +538,7 @@ index 000000000..b99803f46
 +CONFIG_MICROCHIP_PHY=y
 +CONFIG_MICROSEMI_PHY=y
 +CONFIG_MOTORCOMM_PHY=y
++CONFIG_CAN_CASTCAN=m
 +CONFIG_CAN_RCAR_CANFD=m
 +# CONFIG_WLAN is not set
 +CONFIG_INPUT_MOUSEDEV=y
@@ -610,6 +611,8 @@ index 000000000..b99803f46
 +CONFIG_DRM_RADEON=m
 +CONFIG_DRM_NOUVEAU=m
 +CONFIG_DRM_SUN4I=m
++CONFIG_DRM_CDNS_DSI=m
++CONFIG_DRM_CDNS_DSI_JH7110=y
 +CONFIG_FB=y
 +CONFIG_BACKLIGHT_CLASS_DEVICE=y
 +CONFIG_SOUND=y
@@ -746,6 +749,7 @@ index 000000000..b99803f46
 +CONFIG_IIO=y
 +CONFIG_IIO_ST_ACCEL_3AXIS=y
 +CONFIG_PWM=y
++CONFIG_PWM_OCORES=m
 +CONFIG_PHY_SUN4I_USB=m
 +CONFIG_PHY_RCAR_GEN3_USB2=y
 +CONFIG_PHY_STARFIVE_JH7110_DPHY_RX=y
