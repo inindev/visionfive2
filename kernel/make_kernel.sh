@@ -15,8 +15,8 @@ config_fixups() {
 }
 
 main() {
-    local linux='https://cdn.kernel.org/pub/linux/kernel/v6.x/linux-6.11.tar.xz'
-    local lxsha='55d2c6c025ebc27810c748d66325dd5bc601e8d32f8581d9e77673529bdacb2e'
+    local linux='https://cdn.kernel.org/pub/linux/kernel/v6.x/linux-6.11.3.tar.xz'
+    local lxsha='057263d0afc17d5253794afd3d239ba4da4aa734b22fa36c1665f41b95449b73'
 
     local lf="$(basename "$linux")"
     local lv="$(echo "$lf" | sed -nE 's/linux-(.*)\.tar\..z/\1/p')"
